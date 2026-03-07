@@ -38,7 +38,8 @@
             this.driftSpeedY = 0.4 + Math.random() * 0.5;
             this.driftAmpX = 0.8 + Math.random() * 1.2;
             this.driftAmpY = 0.6 + Math.random() * 1.0;
-            this.radius = PARTICLE_SIZE * (0.8 + Math.random() * 0.4);
+            const size = width <= 768 ? 2 : PARTICLE_SIZE;
+            this.radius = size * (0.8 + Math.random() * 0.4);
         }
 
         update(rippleWidth, rippleLife, time) {
@@ -106,11 +107,16 @@
             ? ['LES', 'ONDES', 'MAY', '29 30 31', 'CER', 'BÈRE']
             : ['LES ONDES', 'MAY 29 30 31', 'CERBÈRE'];
 
-        const totalHeight = fontSize * lines.length + lineGap * (lines.length - 1);
+        // Extra spacing after certain lines on mobile (after ONDES, after 29 30 31)
+        const extraGaps = isMobile ? [0, 32, 0, 32, 0, 0] : [];
+        let totalHeight = fontSize * lines.length + lineGap * (lines.length - 1);
+        for (let i = 0; i < extraGaps.length; i++) totalHeight += extraGaps[i];
         const topY = (height - totalHeight) / 2 + fontSize / 2;
 
+        let yPos = topY;
         for (let l = 0; l < lines.length; l++) {
-            drawKernedText(lines[l], topY + (fontSize + lineGap) * l);
+            drawKernedText(lines[l], yPos);
+            yPos += fontSize + lineGap + (extraGaps[l] || 0);
         }
 
         const imageData = offCtx.getImageData(0, 0, width, height).data;
