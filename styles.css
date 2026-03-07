@@ -1,0 +1,51 @@
+@font-face {
+    font-family: 'ABCPelikan';
+    src: url('fonts/ABCPelikanCondensed-Extrabold-Trial.woff2') format('woff2'),
+         url('fonts/ABCPelikanCondensed-Extrabold-Trial.woff') format('woff');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ABCPelikan';
+    src: url('fonts/ABCPelikanCondensed-ExtraboldItalic-Trial.woff2') format('woff2'),
+         url('fonts/ABCPelikanCondensed-ExtraboldItalic-Trial.woff') format('woff');
+    font-weight: 800;
+    font-style: italic;
+    font-display: swap;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+html, body {
+    height: 100%;
+}
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'ABCPelikan', Helvetica, Arial, sans-serif;
+    background: #fff;
+    overflow: hidden;
+}
+
+h1 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+canvas {
+    display: block;
+
+}
+
