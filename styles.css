@@ -126,5 +126,4 @@ body {
     left: 0;
     display: block;
     pointer-events: auto;
-    touch-action: pan-y;
 }

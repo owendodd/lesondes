@@ -822,12 +822,14 @@
         canvas.style.cursor = '';
         if (subscribeHovered) { subscribeHovered = false; startSubscribeFade(); }
     });
-    canvas.addEventListener('touchmove', (e) => {
-        e.preventDefault();
+    canvas.addEventListener('touchstart', (e) => {
         const rect = canvas.getBoundingClientRect();
-        handleMove(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top);
-    }, { passive: false });
-    canvas.addEventListener('touchend', () => { mouse.x = mouse.y = -1; mouseActive = false; lastPokeX = lastPokeY = -1; });
+        const nx = (e.touches[0].clientX - rect.left) / rect.width;
+        const ny = (e.touches[0].clientY - rect.top) / rect.height;
+        if (nx >= 0 && nx <= 1 && ny >= 0 && ny <= 1) {
+            pokeWave(nx, ny, params.pokeForce.value);
+        }
+    }, { passive: true });
 
     canvas.addEventListener('click', (e) => {
         const rect = canvas.getBoundingClientRect();
