@@ -7,28 +7,50 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav id="lang-toggle">
-        <button id="lang-fr" class="lang-btn" data-lang="fr">FR</button>
-        <button id="lang-en" class="lang-btn active" data-lang="en">EN</button>
-    </nav>
     <div id="content">
-        <p class="heavy" data-en="LES ONDES Cerbére" data-fr="LES ONDES Cerbére">LES ONDES Cerbére</p>
-        <p class="medium center" data-en="3 days of experimental music by the sea" data-fr="3 jours de musique expérimentale au bord de la mer">3 days of experimental music by the sea</p>
-        <p class="medium" data-en="May 29 30 31" data-fr="Mai 29 30 31">May 29 30 31</p>
-        <p class="medium right" data-en="at L&#x2019;Hôtel le Belvédère du Rayon Vert" data-fr="à L&#x2019;Hôtel le Belvédère du Rayon Vert">at L&#x2019;Hôtel le Belvédère du Rayon Vert</p>
-        <p class="medium center" data-en="with performances by" data-fr="avec des performances de">with performances by</p>
-        <p class="heavy" data-en="Alvin Curran" data-fr="Alvin Curran">Alvin Curran</p>
-        <p class="heavy center" data-en="Pierre Bastien" data-fr="Pierre Bastien">Pierre Bastien</p>
-        <p class="heavy" data-en="Mats Erlandsson" data-fr="Mats Erlandsson">Mats Erlandsson</p>
-        <p class="heavy right" data-en="Lukas de Clerck" data-fr="Lukas de Clerck">Lukas de Clerck</p>
-        <p class="heavy" data-en="Fredrik Rasten" data-fr="Fredrik Rasten">Fredrik Rasten</p>
-        <p class="heavy center" data-en="Youmna Saba" data-fr="Youmna Saba">Youmna Saba</p>
-        <p class="heavy right" data-en="Anenon" data-fr="Anenon">Anenon</p>
-        <p class="medium right" data-en="with more to come" data-fr="et d&#x2019;autres à venir">with more to come</p>
-        <p class="medium" data-en="Food from Harry Lester of Comptoir Central des Bazars" data-fr="Cuisine de Harry Lester du Comptoir Central des Bazars">Food from Harry Lester of Comptoir Central des Bazars</p>
-        <p class="medium center" data-en="and wine selections from Clara Blume" data-fr="et une sélection de vins par Clara Blume">and wine selections from Clara Blume</p>
-        <p class="medium right" data-en="Sign up for tickets and info" data-fr="Inscrivez-vous pour les billets et infos">Sign up for tickets and info</p>
+        <div class="lang-row">
+            <p class="lang-option" data-lang="fr" id="lang-fr">FR</p>
+            <p class="lang-option" data-lang="en" id="lang-en">EN</p>
+        </div>
+        <div class="section title">
+            <p class="heavy" data-en="LES ONDES" data-fr="LES ONDES">LES ONDES</p>
+            <p class="heavy" data-en="Cerbère" data-fr="Cerbère">Cerbère</p>
+        </div>
+        <div class="section">
+            <p class="medium right" data-en="3 days of experimental music by the sea" data-fr="3 jours de musique expérimentale au bord de la mer">3 days of experimental music by the sea</p>
+        </div>
+        <div class="section">
+            <p class="heavy center" data-en="MAY 29 30 31" data-fr="MAI 29 30 31">MAY 29 30 31</p>
+        </div>
+        <div class="section">
+            <p class="medium" data-en="at L&#x2019;Hôtel le Belvédère du Rayon Vert" data-fr="à L&#x2019;Hôtel le Belvédère du Rayon Vert">at L&#x2019;Hôtel le Belvédère du Rayon Vert</p>
+        </div>
+        <div class="section">
+            <p class="medium center" data-en="with performances by" data-fr="avec des performances de">with performances by</p>
+        </div>
+        <div class="section">
+            <p class="heavy" data-en="Alvin Curran" data-fr="Alvin Curran">Alvin Curran</p>
+            <p class="heavy center" data-en="Pierre Bastien" data-fr="Pierre Bastien">Pierre Bastien</p>
+            <p class="heavy" data-en="Mats Erlandsson" data-fr="Mats Erlandsson">Mats Erlandsson</p>
+            <p class="heavy right" data-en="Lukas de Clerck" data-fr="Lukas de Clerck">Lukas de Clerck</p>
+            <p class="heavy" data-en="Fredrik Rasten" data-fr="Fredrik Rasten">Fredrik Rasten</p>
+            <p class="heavy center" data-en="Youmna Saba" data-fr="Youmna Saba">Youmna Saba</p>
+            <p class="heavy right" data-en="Anenon" data-fr="Anenon">Anenon</p>
+            <p class="heavy center" data-en="more tba" data-fr="plus à venir">more tba</p>
+        </div>
+        <div class="section">
+            <p class="medium" data-en="Food from Harry Lester of Comptoir Central des Bazars" data-fr="Cuisine de Harry Lester du Comptoir Central des Bazars">Food from Harry Lester of Comptoir Central des Bazars</p>
+        </div>
+        <div class="section">
+            <p class="medium right" data-en="and wine selections from Clara Blume" data-fr="et une sélection de vins par Clara Blume">and wine selections from Clara Blume</p>
+        </div>
+        <div class="section">
+            <p class="medium" data-en="Sign up for updates" data-fr="Inscrivez-vous pour les mises à jour">Sign up for updates</p>
+            <p class="medium" id="email-display">Enter your email...</p>
+            <p class="medium" id="subscribe-btn" data-en="Subscribe" data-fr="S'inscrire">Subscribe</p>
+        </div>
     </div>
+    <input type="email" id="email-input" autocomplete="email" aria-label="Email address">
     <canvas id="textCanvas" aria-hidden="true"></canvas>
     <script src="main.js"></script>
 </body>
