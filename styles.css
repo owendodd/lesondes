@@ -81,7 +81,7 @@ body {
 }
 
 #content .section {
-    margin-bottom: min(4vw, 2.5vh);
+    margin-bottom: 24px;
 }
 
 #content .section:first-of-type {
