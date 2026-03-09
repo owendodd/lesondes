@@ -46,17 +46,23 @@ body {
 
 .lang-row {
     position: absolute;
-    top: min(3vw, 2vh);
-    right: 2.8vw;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
     display: flex;
     gap: 16px;
     font-size: 40px;
+    line-height: 1em;
     font-weight: 900;
     text-transform: uppercase;
+    pointer-events: auto;
+    cursor: pointer;
 }
 
 @media (max-width: 768px) {
     .lang-row {
+        top: 5px;
+        right: 5px;
         font-size: 32px;
         gap: 12px;
     }

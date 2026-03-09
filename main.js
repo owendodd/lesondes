@@ -142,7 +142,7 @@
         displaceStr:  { value: 29,   min: 0,    max: 150,  step: 1,    label: 'Displace Strength' },
         pokeRadius:   { value: 3,    min: 2,    max: 30,   step: 1,    label: 'Poke Radius' },
         pokeForce:    { value: 0.25, min: 0.05, max: 2.0,  step: 0.05, label: 'Poke Force' },
-        pokeDelay:    { value: 270,  min: 0,    max: 800,  step: 10,   label: 'Poke Delay (ms)' },
+        pokeDelay:    { value: 0,  min: 0,    max: 800,  step: 10,   label: 'Poke Delay (ms)' },
     };
 
     // --- Tuning panel UI ---
@@ -638,14 +638,14 @@
     // --- Resize ---
     // Responsive particle settings
     const mobileParams = {
-        spacing: 3.5, pointSize: 5.7, threshold: 50, jitter: 2.6,
+        spacing: 3.5, pointSize: 6.5, threshold: 50, jitter: 2.6,
         waveSpeed: 0.45, waveDamping: 0.965, displaceStr: 29,
-        pokeRadius: 3, pokeForce: 0.25, pokeDelay: 270
+        pokeRadius: 3, pokeForce: 0.25, pokeDelay: 0
     };
     const desktopParams = {
         spacing: 5, pointSize: 7.6, threshold: 194, jitter: 3.4,
         waveSpeed: 0.35, waveDamping: 0.974, displaceStr: 29,
-        pokeRadius: 3, pokeForce: 0.25, pokeDelay: 270
+        pokeRadius: 3, pokeForce: 0.25, pokeDelay: 0
     };
 
     function applyResponsiveParams(cssW) {
@@ -760,6 +760,25 @@
 
     // --- Animation loop ---
     function draw() {
+        if (!autoPokeReady) {
+            autoPokeReady = true;
+            const isMobile = window.innerWidth <= 768;
+            const pokeCount = isMobile ? 45 : 90;
+            const pokeInterval = isMobile ? [60, 140] : [30, 70];
+            function scheduleAutoPoke() {
+                const delay = pokeInterval[0] + Math.random() * pokeInterval[1];
+                setTimeout(() => {
+                    if (waveH0) pokeWave(Math.random(), Math.random(), params.pokeForce.value);
+                    scheduleAutoPoke();
+                }, delay);
+            }
+            for (let i = 0; i < pokeCount; i++) {
+                setTimeout(() => {
+                    if (waveH0) pokeWave(Math.random(), Math.random(), params.pokeForce.value);
+                }, Math.random() * 3000);
+            }
+            setTimeout(scheduleAutoPoke, 3000);
+        }
         updateSmoothedPoke();
         processPokeQueue();
         stepWave();
@@ -822,14 +841,16 @@
         canvas.style.cursor = '';
         if (subscribeHovered) { subscribeHovered = false; startSubscribeFade(); }
     });
-    canvas.addEventListener('touchstart', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const nx = (e.touches[0].clientX - rect.left) / rect.width;
-        const ny = (e.touches[0].clientY - rect.top) / rect.height;
-        if (nx >= 0 && nx <= 1 && ny >= 0 && ny <= 1) {
-            pokeWave(nx, ny, params.pokeForce.value);
-        }
-    }, { passive: true });
+    if (!('ontouchstart' in window)) {
+        canvas.addEventListener('touchstart', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const nx = (e.touches[0].clientX - rect.left) / rect.width;
+            const ny = (e.touches[0].clientY - rect.top) / rect.height;
+            if (nx >= 0 && nx <= 1 && ny >= 0 && ny <= 1) {
+                pokeWave(nx, ny, params.pokeForce.value);
+            }
+        }, { passive: true });
+    }
 
     canvas.addEventListener('click', (e) => {
         const rect = canvas.getBoundingClientRect();
@@ -849,6 +870,13 @@
     });
 
     // --- Language ---
+    document.querySelectorAll('.lang-option').forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const lang = el.dataset.lang;
+            if (lang !== currentLang) switchLang(lang);
+        });
+    });
     let currentLang = 'en';
 
     function switchLang(lang) {
@@ -916,6 +944,9 @@
         emailDisplay.textContent = confirmations[currentLang];
         scheduleRetexture();
     }
+
+    // --- Auto ripples (ongoing) ---
+    let autoPokeReady = false;
 
     // --- Init ---
     document.fonts.ready.then(() => {
