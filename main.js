@@ -793,7 +793,7 @@
         gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
         gl.enableVertexAttribArray(bu.position);
         gl.vertexAttribPointer(bu.position, 2, gl.FLOAT, false, 0, 0);
-        gl.uniform3f(bu.bgColor, 0.863, 0.863, 0.863);
+        gl.uniform3f(bu.bgColor, 0.961, 0.961, 0.961);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
 
         // Draw particles
@@ -897,7 +897,7 @@
     let emailSubmitted = false;
     let retextureTimer = null;
 
-    const placeholders = { en: 'Enter your email...', fr: 'Entrez votre email...' };
+    const placeholders = { en: 'Your email...', fr: 'Votre email...' };
     const confirmations = { en: 'Thank you!', fr: 'Merci!' };
 
     function scheduleRetexture() {
@@ -943,15 +943,70 @@
         emailInput.blur();
         emailDisplay.textContent = confirmations[currentLang];
         scheduleRetexture();
+
+        // Submit to Brevo via hidden form → iframe (avoids CORS and page navigation)
+        const brevoEmail = document.getElementById('brevo-email');
+        const brevoForm = document.getElementById('brevo-form');
+        if (brevoEmail && brevoForm) {
+            brevoEmail.value = email;
+            brevoForm.submit();
+        }
     }
 
     // --- Auto ripples (ongoing) ---
     let autoPokeReady = false;
 
     // --- Init ---
+    function generateFavicon() {
+        const size = 128;
+        // Render O into a temp canvas to get pixel data
+        const tmp = document.createElement('canvas');
+        tmp.width = size;
+        tmp.height = size;
+        const tctx = tmp.getContext('2d');
+        tctx.fillStyle = '#000';
+        tctx.font = `900 ${size * 0.92}px ABCROMCondensed, Helvetica, Arial, sans-serif`;
+        tctx.textAlign = 'center';
+        tctx.textBaseline = 'middle';
+        tctx.fillText('O', size / 2, size / 2);
+
+        const imageData = tctx.getImageData(0, 0, size, size);
+
+        // Draw dotted version onto output canvas
+        const out = document.createElement('canvas');
+        out.width = size;
+        out.height = size;
+        const octx = out.getContext('2d');
+        octx.fillStyle = '#f5f5f5';
+        octx.fillRect(0, 0, size, size);
+        octx.fillStyle = '#000';
+
+        const spacing = 3;
+        const dotRadius = 1.4;
+        for (let y = 0; y < size; y += spacing) {
+            for (let x = 0; x < size; x += spacing) {
+                const i = (y * size + x) * 4;
+                if (imageData.data[i + 3] > 128) {
+                    octx.beginPath();
+                    octx.arc(x, y, dotRadius, 0, Math.PI * 2);
+                    octx.fill();
+                }
+            }
+        }
+
+        let link = document.querySelector("link[rel~='icon']");
+        if (!link) {
+            link = document.createElement('link');
+            link.rel = 'icon';
+            document.head.appendChild(link);
+        }
+        link.href = out.toDataURL('image/png');
+    }
+
     document.fonts.ready.then(() => {
         resize();
         new ResizeObserver(resize).observe(content);
         requestAnimationFrame(draw);
+        generateFavicon();
     });
 })();

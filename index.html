@@ -8,50 +8,45 @@
 </head>
 <body>
     <div id="content">
+        <div class="top-content">
+            <div class="title-row">
+                <p class="heavy" data-en="LES ONDES" data-fr="LES ONDES">LES ONDES</p>
+                <p class="heavy" data-en="Cerbère" data-fr="Cerbère">Cerbère</p>
+            </div>
+            <div class="section">
+                <p class="medium" data-en="3 days of music" data-fr="3 jours de musique">3 days of music</p>
+                <p class="medium" data-en="by the sea" data-fr="au bord de la mer">by the sea</p>
+            </div>
+        </div>
+        <div class="dates-section">
+            <p class="heavy" data-en="May 29&nbsp;30&nbsp;31" data-fr="29&nbsp;30&nbsp;31 Mai">May 29&nbsp;30&nbsp;31</p>
+        </div>
+        <div class="subscribe-section">
+            <p class="medium" data-en="Get updates" data-fr="Restez informé">Get updates</p>
+            <div class="email-row">
+                <p class="medium" id="email-display">Your email...</p>
+                <p class="medium" id="subscribe-btn" data-en="Subscribe" data-fr="S'inscrire">Subscribe</p>
+            </div>
+        </div>
         <div class="lang-row">
             <p class="lang-option" data-lang="fr" id="lang-fr">FR</p>
             <p class="lang-option" data-lang="en" id="lang-en">EN</p>
         </div>
-        <div class="section title">
-            <p class="heavy" data-en="LES ONDES" data-fr="LES ONDES">LES ONDES</p>
-            <p class="heavy" data-en="Cerbère" data-fr="Cerbère">Cerbère</p>
-        </div>
-        <div class="section">
-            <p class="medium right" data-en="3 days of acoustic experimentation by the sea" data-fr="3 jours d&#x2019;expérimentation acoustique au bord de la mer">3 days of acoustic experimentation by the sea</p>
-        </div>
-        <div class="section">
-            <p class="heavy center" data-en="MAY 29 30 31" data-fr="MAI 29 30 31">MAY 29 30 31</p>
-        </div>
-        <div class="section">
-            <p class="medium" data-en="at L&#x2019;Hôtel le Belvédère" data-fr="à L&#x2019;Hôtel le Belvédère">at L&#x2019;Hôtel le Belvédère</p>
-            <p class="medium" data-en="du Rayon Vert" data-fr="du Rayon Vert">du Rayon Vert</p>
-        </div>
-        <div class="section">
-            <p class="medium center" data-en="featuring" data-fr="avec">featuring</p>
-        </div>
-        <div class="section">
-            <p class="heavy" data-en="Alvin Curran" data-fr="Alvin Curran">Alvin Curran</p>
-            <p class="heavy center" data-en="Pierre Bastien" data-fr="Pierre Bastien">Pierre Bastien</p>
-            <p class="heavy" data-en="Mats Erlandsson" data-fr="Mats Erlandsson">Mats Erlandsson</p>
-            <p class="heavy right" data-en="Lukas de Clerck" data-fr="Lukas de Clerck">Lukas de Clerck</p>
-            <p class="heavy" data-en="Fredrik Rasten" data-fr="Fredrik Rasten">Fredrik Rasten</p>
-            <p class="heavy center" data-en="Youmna Saba" data-fr="Youmna Saba">Youmna Saba</p>
-            <p class="heavy right" data-en="Anenon" data-fr="Anenon">Anenon</p>
-            <p class="heavy center" data-en="more tba" data-fr="plus à venir">more tba</p>
-        </div>
-        <div class="section">
-            <p class="medium" data-en="Food from Harry Lester of Comptoir Central des Bazars" data-fr="Cuisine de Harry Lester du Comptoir Central des Bazars">Food from Harry Lester of Comptoir Central des Bazars</p>
-        </div>
-        <div class="section">
-            <p class="medium right" data-en="and wine selections from Clara Blume" data-fr="et une sélection de vins par Clara Blume">and wine selections from Clara Blume</p>
-        </div>
-        <div class="section">
-            <p class="medium" data-en="Sign up for updates" data-fr="Inscrivez-vous pour les mises à jour">Sign up for updates</p>
-            <p class="medium" id="email-display">Enter your email...</p>
-            <p class="medium" id="subscribe-btn" data-en="Subscribe" data-fr="S'inscrire">Subscribe</p>
-        </div>
     </div>
     <input type="email" id="email-input" autocomplete="email" aria-label="Email address">
+
+    <!-- Hidden Brevo form — submitted to iframe to avoid page navigation -->
+    <iframe name="brevo-target" style="display:none;" aria-hidden="true"></iframe>
+    <form id="brevo-form" method="POST"
+          action="https://abd5fd25.sibforms.com/serve/MUIFAG8i_gtTVlsPfTO3iFE1Lb00fwt8g9jB8hRS9qx2f9-eH08PvA7aD6JDewUtEGiI0u-ljxed7KLYrRgegt8nb536wy8Cusouw4hEMDcp91HuUtQ4N5l870UhwLJhrp9CzoYoBLgqdL1hhhFBujcqxsVEaamfkd0GMmBtjLeB03GTKTrbErK6p8CHoKUe7PTyj96ex-VftRbYTg=="
+          target="brevo-target"
+          style="display:none;" aria-hidden="true">
+        <input type="text" name="EMAIL" id="brevo-email">
+        <input type="text" name="email_address_check" value="">
+        <input type="hidden" name="locale" value="en">
+        <input type="hidden" name="html_type" value="simple">
+    </form>
+
     <canvas id="textCanvas" aria-hidden="true"></canvas>
     <script src="main.js"></script>
 </body>

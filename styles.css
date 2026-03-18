@@ -18,6 +18,15 @@
 
 @font-face {
     font-family: 'ABCROMCondensed';
+    src: url('fonts/ABCROMCondensed-Regular-Trial.woff2') format('woff2'),
+         url('fonts/ABCROMCondensed-Regular-Trial.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ABCROMCondensed';
     src: url('fonts/ABCROMCondensed-Medium-Trial.woff2') format('woff2'),
          url('fonts/ABCROMCondensed-Medium-Trial.woff') format('woff');
     font-weight: 500;
@@ -41,18 +50,14 @@
 
 body {
     font-family: 'ABCROMCondensed', Helvetica, Arial, sans-serif;
-    background: #dcdcdc;
+    background: #f5f5f5;
 }
 
 .lang-row {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 10;
     display: flex;
-    gap: 16px;
-    font-size: 40px;
-    line-height: 1em;
+    gap: 32px;
+    font-size: 56px;
+    line-height: 0.9;
     font-weight: 900;
     text-transform: uppercase;
     pointer-events: auto;
@@ -61,18 +66,21 @@ body {
 
 @media (max-width: 768px) {
     .lang-row {
-        top: 5px;
-        right: 5px;
-        font-size: 32px;
-        gap: 12px;
+        font-size: 45px;
+        gap: 24px;
     }
 }
 
 #content {
     position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    box-sizing: border-box;
     padding: min(3vw, 2vh) 2.8vw;
-    font-size: min(21.6vw, 13.5vh);
-    line-height: 0.9em;
+    font-size: min(32.4vw, 20.25vh);
+    line-height: 0.9;
     letter-spacing: -0.04em;
     color: transparent;
     -webkit-user-select: none;
@@ -80,42 +88,62 @@ body {
     overflow-wrap: break-word;
 }
 
-#content .section {
-    margin-bottom: 24px;
-}
-
-#content .section:first-of-type {
-    margin-top: 0;
-}
-
-#content .title p {
-    font-size: 1.5em;
-    line-height: 0.9em;
-}
-
 #content .heavy {
     font-weight: 900;
 }
 
 #content .medium {
-    font-weight: 500;
+    font-weight: 400;
 }
 
-#content .center {
-    text-align: center;
+.title-row {
+    display: flex;
+    flex-direction: column;
 }
 
-#content .right {
+.title-row p:last-child {
     text-align: right;
+}
+
+.top-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.dates-section {
+    display: flex;
+    justify-content: center;
+}
+
+.dates-section p {
+    text-align: center;
+    width: 100%;
+}
+
+.subscribe-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.email-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#subscribe-btn {
+    text-align: right;
+    width: 100%;
+}
+
+#email-display {
+    flex: 1;
+    min-width: 0;
 }
 
 @media (max-width: 768px) {
     #content {
-        font-size: 14vw;
-    }
-    #content .title p {
-        font-size: 2em;
-        line-height: 0.8em;
+        font-size: 21vw;
     }
 }
 
