@@ -79,7 +79,7 @@ body {
     gap: 32px;
     box-sizing: border-box;
     padding: min(3vw, 2vh) 2.8vw;
-    font-size: min(32.4vw, 20.25vh);
+    font-size: min(32.4vw, 22vh);
     line-height: 0.9;
     letter-spacing: -0.04em;
     color: transparent;
