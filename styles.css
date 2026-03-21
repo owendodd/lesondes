@@ -1,45 +1,9 @@
 @font-face {
-    font-family: 'ABCROMCondensed';
-    src: url('fonts/ABCROMCondensed-Heavy-Trial.woff2') format('woff2'),
-         url('fonts/ABCROMCondensed-Heavy-Trial.woff') format('woff');
-    font-weight: 900;
+    font-family: 'ITCSouvenirMono';
+    src: url('fonts/ITCSouvenirMonospacedProBold.woff2') format('woff2'),
+         url('fonts/ITCSouvenirMonospacedProBold.woff') format('woff');
+    font-weight: 700;
     font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'ABCROMCondensed';
-    src: url('fonts/ABCROMCondensed-HeavyItalic-Trial.woff2') format('woff2'),
-         url('fonts/ABCROMCondensed-HeavyItalic-Trial.woff') format('woff');
-    font-weight: 900;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'ABCROMCondensed';
-    src: url('fonts/ABCROMCondensed-Regular-Trial.woff2') format('woff2'),
-         url('fonts/ABCROMCondensed-Regular-Trial.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'ABCROMCondensed';
-    src: url('fonts/ABCROMCondensed-Medium-Trial.woff2') format('woff2'),
-         url('fonts/ABCROMCondensed-Medium-Trial.woff') format('woff');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'ABCROMCondensed';
-    src: url('fonts/ABCROMCondensed-MediumItalic-Trial.woff2') format('woff2'),
-         url('fonts/ABCROMCondensed-MediumItalic-Trial.woff') format('woff');
-    font-weight: 500;
-    font-style: italic;
     font-display: swap;
 }
 
@@ -48,103 +12,199 @@
     padding: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    font-family: 'ABCROMCondensed', Helvetica, Arial, sans-serif;
-    background: #f5f5f5;
+    font-family: 'ITCSouvenirMono', 'Courier New', monospace;
+    font-weight: 700;
+    background: white;
+    color: black;
+}
+
+#content {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(40px, 6.67vw, 96px);
+    box-sizing: border-box;
+    padding: clamp(16px, 1.67vw, 24px);
+}
+
+/* ── Header block: nav + title + dates ── */
+
+.header-block {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2px, 0.4vw, 6px);
+}
+
+.nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: clamp(10px, 1.1vw, 16px);
+    line-height: 1.1;
+}
+
+.nav-links {
+    display: flex;
+    gap: clamp(16px, 2.78vw, 40px);
+}
+
+.nav-links a {
+    color: inherit;
+    text-decoration: none;
 }
 
 .lang-row {
     display: flex;
-    gap: 32px;
-    font-size: 56px;
-    line-height: 0.9;
-    font-weight: 900;
-    text-transform: uppercase;
-    pointer-events: auto;
+    gap: clamp(8px, 1.11vw, 16px);
     cursor: pointer;
 }
 
-@media (max-width: 768px) {
-    .lang-row {
-        font-size: 45px;
-        gap: 24px;
-    }
+.lang-option {
+    color: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
 }
 
-#content {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    box-sizing: border-box;
-    padding: min(3vw, 2vh) 2.8vw;
-    font-size: min(32.4vw, 22vh);
-    line-height: 0.9;
-    letter-spacing: -0.04em;
-    color: transparent;
-    -webkit-user-select: none;
-    user-select: none;
-    overflow-wrap: break-word;
-}
-
-#content .heavy {
-    font-weight: 900;
-}
-
-#content .medium {
-    font-weight: 400;
+.lang-option.active {
+    color: black;
 }
 
 .title-row {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: clamp(44px, 8vw, 115px);
+    line-height: 1.1;
 }
 
-.title-row p:last-child {
-    text-align: right;
+.dates-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: clamp(44px, 8vw, 115px);
+    line-height: 0.9;
 }
 
-.top-content {
+/* ── Content sections ── */
+
+.section {
     display: flex;
     flex-direction: column;
-}
-
-.dates-section {
-    display: flex;
-    justify-content: center;
-}
-
-.dates-section p {
-    text-align: center;
+    gap: clamp(12px, 1.67vw, 24px);
+    max-width: 1000px;
+    margin-inline: auto;
     width: 100%;
 }
 
 .subscribe-section {
+    max-width: 1000px;
+    margin-inline: auto;
+    width: 100%;
+}
+
+.label {
+    font-size: clamp(10px, 1.1vw, 16px);
+    line-height: 1.1;
+}
+
+.section-content {
+    font-size: clamp(16px, 2.6vw, 38px);
+    line-height: 1.1;
+}
+
+.large {
+    font-size: clamp(16px, 2.6vw, 38px);
+    line-height: 1.1;
+}
+
+/* ── Tickets ── */
+
+.ticket-option {
     display: flex;
     flex-direction: column;
+    gap: clamp(4px, 0.56vw, 8px);
+}
+
+/* ── Concrete poetry: artist wave ── */
+/* Names stagger left→right, reset for long names — like sound rippling outward */
+
+#section-artists .label            { text-align: left; }
+
+#section-artists .section-content p:nth-child(1)  { padding-left: 0; }
+#section-artists .section-content p:nth-child(2)  { padding-left: 12%; }
+#section-artists .section-content p:nth-child(3)  { padding-left: 22%; }
+#section-artists .section-content p:nth-child(4)  { padding-left: 14%; }
+#section-artists .section-content p:nth-child(5)  { padding-left: 27%; }
+#section-artists .section-content p:nth-child(6)  { padding-left: 0; }
+#section-artists .section-content p:nth-child(7)  { padding-left: 10%; }
+#section-artists .section-content p:nth-child(8)  { padding-left: 20%; }
+#section-artists .section-content p:nth-child(9)  { padding-left: 6%; }
+#section-artists .section-content p:nth-child(10) { padding-left: 16%; }
+#section-artists .section-content p:nth-child(11) { padding-left: 0; }
+#section-artists .section-content p:nth-child(12) { padding-left: 10%; }
+#section-artists .section-content p:nth-child(13) { padding-left: 22%; }
+#section-artists .section-content p:nth-child(14) { padding-left: 35%; }
+
+/* ── Concrete poetry: wine — right-aligned (Clara Blume & Zoe Boinet staggered) ── */
+
+#section-wine .label               { text-align: right; }
+#section-wine .section-content     { text-align: right; }
+#section-wine .section-content p:nth-child(2) { padding-right: 12%; }
+
+/* ── Concrete poetry: location — right edge of the continent ── */
+
+#section-location .label           { text-align: center; }
+#section-location .section-content { text-align: right; }
+#section-location .section-content p:nth-child(2) { padding-right: 8%; }
+
+/* ── Concrete poetry: tickets ── */
+
+#section-tickets .ticket-option:nth-child(3) .large { text-align: right; }
+#section-tickets .ticket-option:nth-child(3) .label { text-align: right; }
+
+/* ── Subscribe ── */
+
+.subscribe-section {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(4px, 0.56vw, 8px);
+    padding-bottom: clamp(40px, 6.67vw, 96px);
 }
 
 .email-row {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-#subscribe-btn {
-    text-align: right;
-    width: 100%;
-}
-
-#email-display {
-    flex: 1;
-    min-width: 0;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
 }
 
 @media (max-width: 768px) {
-    #content {
-        font-size: 21vw;
-    }
+    #section-artists .section-content p:nth-child(2)  { padding-left: 6%; }
+    #section-artists .section-content p:nth-child(3)  { padding-left: 11%; }
+    #section-artists .section-content p:nth-child(4)  { padding-left: 7%; }
+    #section-artists .section-content p:nth-child(5)  { padding-left: 14%; }
+    #section-artists .section-content p:nth-child(7)  { padding-left: 5%; }
+    #section-artists .section-content p:nth-child(8)  { padding-left: 10%; }
+    #section-artists .section-content p:nth-child(9)  { padding-left: 3%; }
+    #section-artists .section-content p:nth-child(10) { padding-left: 8%; }
+    #section-artists .section-content p:nth-child(12) { padding-left: 5%; }
+    #section-artists .section-content p:nth-child(13) { padding-left: 11%; }
+    #section-artists .section-content p:nth-child(14) { padding-left: 18%; }
+}
+
+#email-display {
+    color: rgba(0, 0, 0, 0.4);
+    cursor: text;
+}
+
+#email-display.has-value {
+    color: black;
+}
+
+#subscribe-btn {
+    cursor: pointer;
 }
 
 #email-input {
@@ -152,12 +212,4 @@ body {
     left: -9999px;
     opacity: 0;
     pointer-events: none;
-}
-
-#textCanvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: block;
-    pointer-events: auto;
 }
