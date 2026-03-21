@@ -187,6 +187,12 @@
         emailInput.addEventListener('keydown', e => {
             if (e.key === 'Enter') submitEmail();
         });
+        emailInput.addEventListener('focus', () => {
+            if (subscribeBtn) { subscribeBtn.style.opacity = '1'; subscribeBtn.style.pointerEvents = 'auto'; }
+        });
+        emailInput.addEventListener('blur', () => {
+            if (subscribeBtn && !emailInput.value) { subscribeBtn.style.opacity = '0'; subscribeBtn.style.pointerEvents = 'none'; }
+        });
     }
 
     if (subscribeBtn) {
