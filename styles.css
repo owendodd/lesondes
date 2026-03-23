@@ -112,6 +112,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: clamp(2px, 0.3vw, 4px);
+    padding-top: 64px;
+    margin-bottom: 0;
 }
 
 #section-artists .section-content p { margin-bottom: 16px; }
@@ -165,9 +167,10 @@ body {
 .subscribe-section {
     display: flex;
     flex-direction: column;
-    gap: clamp(12px, 1.67vw, 24px);
+    gap: clamp(2px, 0.3vw, 4px);
     padding-bottom: clamp(12px, 1.5vw, 20px);
 }
+
 
 
 @keyframes cursor-blink {
@@ -176,10 +179,16 @@ body {
 }
 
 .email-wrap {
-    position: relative;
+    display: grid;
+}
+
+#email-input,
+#email-display {
+    grid-area: 1 / 1;
 }
 
 #email-input {
+    display: block;
     background: transparent;
     border: none;
     outline: none;
@@ -189,6 +198,9 @@ body {
     color: rgba(0, 0, 0, 0.85);
     caret-color: rgba(0, 0, 0, 0.85);
     font-family: inherit;
+    font-size: clamp(36px, 7.5vw, 107px);
+    line-height: 1;
+    appearance: none;
     opacity: 0;
     transition: opacity 0.1s;
 }
@@ -199,21 +211,18 @@ body {
 }
 
 #email-display {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
     pointer-events: none;
     color: #aaa;
     transition: opacity 0.1s;
+    align-self: end;
 }
 
 #email-display.hidden {
     opacity: 0;
 }
 
-
 #subscribe-btn {
+    margin-top: 16px;
     cursor: pointer;
     transition: opacity 0.15s;
 }
