@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Ondes Cerbère</title>
+    <style>
+        @font-face {
+            font-family: 'ITCSouvenirMono';
+            src: url('fonts/ITCSouvenirMonospacedProBold.woff2') format('woff2'),
+                 url('fonts/ITCSouvenirMonospacedProBold.woff') format('woff');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Bradford';
+            src: url('fonts/BradfordMono_8-3-Regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Quadrant';
+            src: url('fonts/QuadrantTextMono-Regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        .post.souvenir {
+            font-family: 'ITCSouvenirMono', monospace;
+            font-weight: 700;
+        }
+
+        .post.bradford {
+            font-family: 'Bradford', monospace;
+            font-weight: 400;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Quadrant', monospace;
+            font-weight: 400;
+            background: #e8e8e8;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── 1080×1350 canvas, scaled to fit viewport ── */
+        .post {
+            position: relative;
+            width: 1080px;
+            height: 1350px;
+            background: #f0ede8;
+            transform-origin: center center;
+            flex-shrink: 0;
+            overflow: hidden;
+            filter: url(#roughen);
+        }
+
+        .post-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        /* ── Slides ── */
+        .slide {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        /* ── Slide 1: title / dates / location ── */
+        .slide-1 p {
+            position: absolute;
+            font-size: 80px;
+            line-height: 1.1;
+            color: rgba(0, 0, 0, 0.85);
+            white-space: pre;
+        }
+
+        #t-les     { top: 40px;    left: 40px; }
+        #t-ondes   { top: 40px;    left: 280px; }
+        #t-cerbere { top: 40px;    left: 640px; }
+
+        #dates {
+            top: 128px;
+            left: 40px;
+            line-height: 0.9;
+        }
+
+        #loc-at    { top: 966px;  left: 40px; }
+        #loc-hotel { top: 1054px; left: 40px; }
+        #loc-belv  { top: 1142px; left: 40px; }
+        #loc-rayon { top: 1230px; left: 40px; }
+
+        /* ── Color mode (slide 1 only) ── */
+        .post.color .slide-1 #t-les,
+        .post.color .slide-1 #t-ondes,
+        .post.color .slide-1 #t-cerbere,
+        .post.color .slide-1 #loc-at,
+        .post.color .slide-1 #loc-hotel,
+        .post.color .slide-1 #loc-belv,
+        .post.color .slide-1 #loc-rayon { color: #ff9b00; }
+
+        .post.color .slide-1 #dates { color: #d70dff; }
+
+        /* ── Color mode: slides 2 & 3 — alternating orange / purple ── */
+        .post.color .slide-2 #a1,
+        .post.color .slide-2 #a3,
+        .post.color .slide-2 #a5,
+        .post.color .slide-2 #a7 { color: #ff9b00; }
+
+        .post.color .slide-2 #a2,
+        .post.color .slide-2 #a4,
+        .post.color .slide-2 #a6 { color: #d70dff; }
+
+        .post.color .slide-3 #b1,
+        .post.color .slide-3 #b3,
+        .post.color .slide-3 #b5,
+        .post.color .slide-3 #b7 { color: #ff9b00; }
+
+        .post.color .slide-3 #b2,
+        .post.color .slide-3 #b4,
+        .post.color .slide-3 #b6 { color: #d70dff; }
+
+        /* ── Slides 2 & 3: artist names, spread full height ── */
+        .names-grid {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            width: 1000px;
+            height: 1270px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .names-grid p {
+            font-size: 80px;
+            line-height: 1.1;
+            color: rgba(0, 0, 0, 0.85);
+            white-space: pre;
+            overflow: visible;
+        }
+
+        /* Fixed heights prevent flex reflow while typing */
+        .names-grid .l1 { height: 88px; }   /* single line */
+        .names-grid .l2 { height: 176px; }  /* two lines   */
+
+        /* ── Controls: upper left, fixed ── */
+        .controls {
+            position: fixed;
+            top: clamp(14px, 2vh, 28px);
+            left: clamp(14px, 2vw, 28px);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .controls button {
+            font-family: 'ITCSouvenirMono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 13px;
+            background: none;
+            border: 1px solid rgba(0, 0, 0, 0.35);
+            padding: 5px 16px;
+            cursor: pointer;
+            color: black;
+            transition: background 0.1s, color 0.1s;
+        }
+
+        .controls button:hover {
+            background: black;
+            color: #e8e8e8;
+            border-color: black;
+        }
+
+        .controls select {
+            font-family: 'ITCSouvenirMono', 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 13px;
+            background: none;
+            border: 1px solid rgba(0, 0, 0, 0.35);
+            padding: 5px 16px;
+            cursor: pointer;
+            color: black;
+            appearance: none;
+        }
+    </style>
+</head>
+<body>
+    <svg style="display:none" aria-hidden="true">
+        <defs>
+            <filter id="roughen" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.35" numOctaves="4" seed="8" result="noise"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <div class="post" id="post">
+
+        <!-- Slide 1: LES ONDES / dates / location -->
+        <div class="slide slide-1 active" id="slide-1">
+            <p id="t-les"></p>
+            <p id="t-ondes"></p>
+            <p id="t-cerbere"></p>
+            <p id="dates"></p>
+            <p id="loc-at"></p>
+            <p id="loc-hotel"></p>
+            <p id="loc-belv"></p>
+            <p id="loc-rayon"></p>
+        </div>
+
+        <!-- Slide 2: Miriam → Elisabeth -->
+        <div class="slide slide-2" id="slide-2">
+            <div class="names-grid">
+                <p class="l1" id="a1"></p>
+                <p class="l1" id="a2"></p>
+                <p class="l2" id="a3"></p>
+                <p class="l1" id="a4"></p>
+                <p class="l2" id="a5"></p>
+                <p class="l1" id="a6"></p>
+                <p class="l2" id="a7"></p>
+            </div>
+        </div>
+
+        <!-- Slide 3: Louis → TLF Trio -->
+        <div class="slide slide-3" id="slide-3">
+            <div class="names-grid">
+                <p class="l1" id="b1"></p>
+                <p class="l1" id="b2"></p>
+                <p class="l1" id="b3"></p>
+                <p class="l2" id="b4"></p>
+                <p class="l2" id="b5"></p>
+                <p class="l1" id="b6"></p>
+                <p class="l1" id="b7"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btn-start">start</button>
+        <button id="btn-reset">reset</button>
+        <button id="btn-color">color</button>
+        <select id="sel-font">
+            <option value="quadrant">quadrant</option>
+            <option value="bradford">bradford</option>
+            <option value="souvenir">souvenir</option>
+        </select>
+    </div>
+
+    <script>
+        // ── WebGL particle background ───────────────────────────────────
+        (function () {
+            const W = 1080, H = 1350;
+            const canvas = document.createElement('canvas');
+            canvas.width  = W;
+            canvas.height = H;
+            canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+            document.getElementById('post').prepend(canvas);
+
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            if (!gl) return;
+
+            const COUNT = 220;
+
+            const vs = `
+                attribute vec2 a_pos;
+                attribute float a_size;
+                uniform vec2 u_res;
+                void main() {
+                    vec2 clip = (a_pos / u_res) * 2.0 - 1.0;
+                    gl_Position = vec4(clip.x, -clip.y, 0.0, 1.0);
+                    gl_PointSize = a_size;
+                }
+            `;
+            const fs = `
+                precision mediump float;
+                void main() {
+                    float d = length(gl_PointCoord - vec2(0.5));
+                    float a = 1.0 - smoothstep(0.3, 0.5, d);
+                    if (a < 0.01) discard;
+                    gl_FragColor = vec4(0.0, 0.0, 0.0, a);
+                }
+            `;
+
+            function mkShader(type, src) {
+                const s = gl.createShader(type);
+                gl.shaderSource(s, src);
+                gl.compileShader(s);
+                return s;
+            }
+
+            const prog = gl.createProgram();
+            gl.attachShader(prog, mkShader(gl.VERTEX_SHADER, vs));
+            gl.attachShader(prog, mkShader(gl.FRAGMENT_SHADER, fs));
+            gl.linkProgram(prog);
+            gl.useProgram(prog);
+
+            const aPos  = gl.getAttribLocation(prog, 'a_pos');
+            const aSize = gl.getAttribLocation(prog, 'a_size');
+            const uRes  = gl.getUniformLocation(prog, 'u_res');
+
+            gl.uniform2f(uRes, W, H);
+            gl.viewport(0, 0, W, H);
+            gl.enable(gl.BLEND);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+            const px     = new Float32Array(COUNT);
+            const py     = new Float32Array(COUNT);
+            const pvx    = new Float32Array(COUNT);
+            const pvy    = new Float32Array(COUNT);
+            const pphase = new Float32Array(COUNT);
+            const posData  = new Float32Array(COUNT * 2);
+            const sizeData = new Float32Array(COUNT);
+
+            const posBuf  = gl.createBuffer();
+            const sizeBuf = gl.createBuffer();
+
+            for (let i = 0; i < COUNT; i++) {
+                px[i]     = Math.random() * W;
+                py[i]     = Math.random() * H;
+                const spd = 0.008 + Math.random() * 0.03;
+                const ang = Math.random() * Math.PI * 2;
+                pvx[i]    = Math.cos(ang) * spd;
+                pvy[i]    = Math.sin(ang) * spd;
+                const r   = Math.random();
+                sizeData[i] = 1.8 + r * r * 3.2;
+                pphase[i] = Math.random() * Math.PI * 2;
+            }
+            gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuf);
+            gl.bufferData(gl.ARRAY_BUFFER, sizeData, gl.STATIC_DRAW);
+
+            const BG = [240 / 255, 237 / 255, 232 / 255, 1.0];
+
+            let t = 0;
+            function frame() {
+                requestAnimationFrame(frame);
+                t += 0.004;
+                for (let i = 0; i < COUNT; i++) {
+                    const wx = Math.sin(t * 0.55 + py[i] * 0.009 + pphase[i]) * 0.12;
+                    const wy = Math.cos(t * 0.40 + px[i] * 0.008 + pphase[i] * 1.37) * 0.10;
+                    px[i] += pvx[i] + wx;
+                    py[i] += pvy[i] + wy;
+                    if (px[i] < -8)    px[i] += W + 16;
+                    if (px[i] > W + 8) px[i] -= W + 16;
+                    if (py[i] < -8)    py[i] += H + 16;
+                    if (py[i] > H + 8) py[i] -= H + 16;
+                    posData[i * 2]     = px[i];
+                    posData[i * 2 + 1] = py[i];
+                }
+                gl.clearColor(...BG);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+                gl.bufferData(gl.ARRAY_BUFFER, posData, gl.STREAM_DRAW);
+                gl.enableVertexAttribArray(aPos);
+                gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+                gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuf);
+                gl.enableVertexAttribArray(aSize);
+                gl.vertexAttribPointer(aSize, 1, gl.FLOAT, false, 0, 0);
+                gl.drawArrays(gl.POINTS, 0, COUNT);
+            }
+            frame();
+        })();
+
+        // ── Scale post to fit viewport ──────────────────────────────────
+        const post = document.getElementById('post');
+
+        function scalePost() {
+            const scale = Math.min(
+                (window.innerWidth  * 0.9) / 1080,
+                (window.innerHeight * 0.9) / 1350
+            );
+            post.style.transform = `scale(${scale})`;
+            document.body.style.height = `${1350 * scale + 80}px`;
+        }
+        scalePost();
+        window.addEventListener('resize', scalePost);
+
+        // ── Slide definitions ───────────────────────────────────────────
+        // spaceExtra: extra ms added after each space character
+        // startDelay: ms gap before this line begins (within a slide)
+        const slides = [
+            {
+                el: document.getElementById('slide-1'),
+                nextOverlap: -1200,
+                lines: [
+                    { id: 't-les',     text: 'LES',                charDelay: 65,  pauseAfter: 30  },
+                    { id: 't-ondes',   text: 'ONDES',              charDelay: 45,  pauseAfter: 30  },
+                    { id: 't-cerbere', text: 'Cerb\u00e8re',       charDelay: 35,  pauseAfter: 280 },
+                    { id: 'dates',     text: '  May 29 30 31',     charDelay: 28,  spaceExtra: 40, pauseAfter: 0 },
+                    { id: 'loc-at',    text: '  at',               charDelay: 55,  pauseAfter: 15, startDelay: 500 },
+                    { id: 'loc-hotel', text: 'L\u2019H\u00f4tel le', charDelay: 22, pauseAfter: 15 },
+                    { id: 'loc-belv',  text: 'Belv\u00e9d\u00e8re', charDelay: 28, pauseAfter: 15 },
+                    { id: 'loc-rayon', text: '    du Rayon Vert',  charDelay: 18,  pauseAfter: 0  },
+                ],
+            },
+            {
+                el: document.getElementById('slide-2'),
+                lines: [
+                    { id: 'a1', text: '   Miriam  Adefris',                    charDelay: 22, pauseAfter: 60  },
+                    { id: 'a2', text: ' Pierre Bastien',                        charDelay: 16, pauseAfter: 90  },
+                    { id: 'a3', text: '     Lukas de \n       Clerck',          charDelay: 30, pauseAfter: 50  },
+                    { id: 'a4', text: '  Maya Dhondt',                          charDelay: 14, pauseAfter: 110 },
+                    { id: 'a5', text: '       Mats     \n      Erlandsson',     charDelay: 24, pauseAfter: 70  },
+                    { id: 'a6', text: 'Alex Zhang Hungtai',                     charDelay: 18, pauseAfter: 80  },
+                    { id: 'a7', text: '  Elisabeth \n       Klinck',            charDelay: 28, pauseAfter: 0   },
+                ],
+            },
+            {
+                el: document.getElementById('slide-3'),
+                lines: [
+                    { id: 'b1', text: ' Louis Laurain',                         charDelay: 20, pauseAfter: 75  },
+                    { id: 'b2', text: '    Lubomyr Melnyk',                     charDelay: 15, pauseAfter: 55  },
+                    { id: 'b3', text: 'Chantal Michelle',                       charDelay: 26, pauseAfter: 90  },
+                    { id: 'b4', text: ' Mohammad Reza    \n       Mortazavi',   charDelay: 17, pauseAfter: 65  },
+                    { id: 'b5', text: '         Fredrik   \n      Rasten',      charDelay: 32, pauseAfter: 80  },
+                    { id: 'b6', text: '  Youmna Saba',                          charDelay: 13, pauseAfter: 95  },
+                    { id: 'b7', text: '        TLF Trio',                       charDelay: 25, pauseAfter: 0   },
+                ],
+            },
+        ];
+
+        // ── Animation engine ────────────────────────────────────────────
+        // Each character is a pre-rendered invisible <span>. Typing/untyping
+        // toggles visibility so characters never shift position.
+        // All slides are always display:block; empty = all spans hidden.
+
+        let runId   = 0;
+        let running = false;
+
+        // Returns a Set of character indices that are layout-only spaces:
+        // leading spaces, trailing spaces, spaces before \n, spaces after \n.
+        function layoutSpaceSet(text) {
+            const s = new Set();
+            let i;
+            // leading
+            i = 0;
+            while (i < text.length && text[i] === ' ') s.add(i++);
+            // trailing
+            i = text.length - 1;
+            while (i >= 0 && text[i] === ' ') s.add(i--);
+            for (let j = 0; j < text.length; j++) {
+                if (text[j] === '\n') {
+                    // spaces before \n
+                    let k = j - 1;
+                    while (k >= 0 && text[k] === ' ') s.add(k--);
+                    // spaces after \n
+                    k = j + 1;
+                    while (k < text.length && text[k] === ' ') s.add(k++);
+                }
+            }
+            return s;
+        }
+
+        // Pre-populate an element with spans, one per character.
+        // Layout spaces are pre-revealed (always visible); content chars start hidden.
+        // \n becomes a <br> (structural, always present, not toggled).
+        function initLineSpans(line) {
+            const el = document.getElementById(line.id);
+            el.innerHTML = '';
+            const layout = layoutSpaceSet(line.text);
+            let i = 0;
+            for (const ch of line.text) {
+                if (ch === '\n') {
+                    el.appendChild(document.createElement('br'));
+                } else {
+                    const sp = document.createElement('span');
+                    sp.textContent = ch;
+                    sp.style.visibility = layout.has(i) ? 'visible' : 'hidden';
+                    el.appendChild(sp);
+                }
+                i++;
+            }
+        }
+
+        function clearAll() {
+            running = false;
+            runId++;
+            slides.forEach(s => s.lines.forEach(l => initLineSpans(l)));
+            document.getElementById('btn-start').textContent = 'start';
+        }
+
+        // Schedule a single guarded timeout
+        function at(myRun, ms, fn) {
+            setTimeout(() => { if (runId === myRun && running) fn(); }, ms);
+        }
+
+        // Build timeline events that show (type) or hide (untype) spans left→right.
+        // vis: 'visible' to type, 'hidden' to untype.
+        // Layout spaces are skipped — they're always visible and never animated.
+        function buildTimeline(slide, vis) {
+            const events = [];
+            let cursor = 0;
+
+            slide.lines.forEach(line => {
+                cursor += (line.startDelay || 0);
+                let t = cursor;
+                let charIdx = 0;
+                const layout = layoutSpaceSet(line.text);
+                let i = 0;
+                for (const ch of line.text) {
+                    if (ch !== '\n') {
+                        if (!layout.has(i)) {
+                            const idx = charIdx;
+                            const id  = line.id;
+                            const v   = vis;
+                            events.push({ time: t, fn: () => {
+                                document.getElementById(id).querySelectorAll('span')[idx].style.visibility = v;
+                            }});
+                            t += line.charDelay + (ch === ' ' ? (line.spaceExtra || 0) : 0);
+                        }
+                        charIdx++;
+                    }
+                    i++;
+                }
+                cursor = t + line.pauseAfter;
+            });
+
+            return { events, duration: cursor };
+        }
+
+        function runSlide(myRun, slideIdx) {
+            const slide   = slides[slideIdx];
+            const nextIdx = (slideIdx + 1) % slides.length;
+
+            // Reset this slide's spans before typing
+            slide.lines.forEach(l => initLineSpans(l));
+
+            // ── 1. Type ──
+            const { events: typeEvents, duration: typeDuration } = buildTimeline(slide, 'visible');
+            typeEvents.forEach(e => at(myRun, e.time, e.fn));
+
+            // ── 2. Brief pause, then untype ──
+            at(myRun, typeDuration + 300, () => {
+                const { events: unEvents, duration: unDuration } = buildTimeline(slide, 'hidden');
+                unEvents.forEach(e => at(myRun, e.time, e.fn));
+
+                // ── 3. Start next slide partway through untyping (overlap) ──
+                const overlap = slide.nextOverlap !== undefined ? slide.nextOverlap : -2000;
+                at(myRun, unDuration + overlap, () => runSlide(myRun, nextIdx));
+            });
+        }
+
+        // ── Controls ────────────────────────────────────────────────────
+        const btnStart = document.getElementById('btn-start');
+        btnStart.addEventListener('click', () => {
+            if (running) {
+                running = false;
+                runId++;
+                btnStart.textContent = 'start';
+            } else {
+                clearAll();
+                running = true;
+                const myRun = runId;
+                btnStart.textContent = 'stop';
+                runSlide(myRun, 0);
+            }
+        });
+
+        document.getElementById('btn-reset').addEventListener('click', clearAll);
+
+        let colorMode = false;
+        const btnColor = document.getElementById('btn-color');
+        btnColor.addEventListener('click', () => {
+            colorMode = !colorMode;
+            post.classList.toggle('color', colorMode);
+            btnColor.textContent = colorMode ? 'b&w' : 'color';
+        });
+
+        const selFont = document.getElementById('sel-font');
+        selFont.addEventListener('change', () => {
+            post.classList.remove('souvenir', 'bradford');
+            if (selFont.value !== 'quadrant') post.classList.add(selFont.value);
+        });
+    </script>
+</body>
+</html>
