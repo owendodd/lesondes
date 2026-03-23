@@ -251,7 +251,7 @@
 
     // Build sequential start times
     const startTimes = [];
-    let cursor = 0;
+    let cursor = 800; // initial delay before typing starts (ms)
 
     elements.forEach((el, i) => {
         startTimes.push(cursor);
