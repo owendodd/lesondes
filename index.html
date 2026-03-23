@@ -7,31 +7,39 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<svg style="display:none" aria-hidden="true">
+        <defs>
+            <filter id="roughen" x="-5%" y="-5%" width="100%" height="100%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="4" seed="8" result="noise"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <div class="nav-row">
+        <div class="nav-links">
+            <a href="#section-artists" data-en="Program" data-fr="Programme">Program</a>
+            <a href="#section-food" data-en="Dining" data-fr="Restauration">Dining</a>
+            <a href="#section-location" data-en="Location" data-fr="Lieu">Location</a>
+            <a href="#section-tickets" data-en="Tickets" data-fr="Billets">Tickets</a>
+        </div>
+        <div class="lang-row">
+            <p class="lang-option" data-lang="fr" id="lang-fr">FR</p>
+            <p class="lang-option" data-lang="en" id="lang-en">EN</p>
+        </div>
+    </div>
+
     <div id="content">
 
-        <!-- Nav + Title + Dates -->
+        <!-- Title + Dates -->
         <div class="header-block">
-            <div class="nav-row">
-                <div class="nav-links">
-                    <a href="#section-artists" data-en="Program" data-fr="Programme">Program</a>
-                    <a href="#section-food" data-en="Food &amp; Wine" data-fr="Restauration">Food &amp; Wine</a>
-                    <a href="#section-location" data-en="Location" data-fr="Lieu">Location</a>
-                    <a href="#section-tickets" data-en="Tickets" data-fr="Billets">Tickets</a>
-                </div>
-                <div class="lang-row">
-                    <p class="lang-option" data-lang="fr" id="lang-fr">FR</p>
-                    <p class="lang-option" data-lang="en" id="lang-en">EN</p>
-                </div>
-            </div>
             <div class="title-row">
-                <p data-en="LES ONDES" data-fr="LES ONDES">LES ONDES</p>
+                <p data-en="LES  " data-fr="LES  ">LES  </p>
+                <p data-en="ONDES  " data-fr="ONDES  ">ONDES  </p>
                 <p data-en="Cerbère" data-fr="Cerbère">Cerbère</p>
             </div>
             <div class="dates-row">
-                <p data-en="May" data-fr="Mai">May</p>
-                <p>29</p>
-                <p>30</p>
-                <p>31</p>
+                <p data-en="  May 29 30 31" data-fr="  29 30 31 Mai">  May 29 30 31</p>
             </div>
         </div>
 
@@ -40,75 +48,68 @@
             <p class="label" data-en="With music from" data-fr="Avec la musique de">With music from</p>
             <div class="section-content">
                 <p>Miriam Adefris</p>
-                <p>Pierre Bastien</p>
-                <p>Lukas de Clerck</p>
-                <p>Maya Dhondt</p>
-                <p>Mats Erlandsson</p>
+                <p>   Pierre Bastien</p>
+                <p>     Lukas de Clerck</p>
+                <p>   Maya Dhondt</p>
+                <p>      Mats Erlandsson</p>
                 <p>Alex Zhang Hungtai</p>
-                <p>Elisabeth Klinck</p>
-                <p>Louis Laurain</p>
-                <p>Lubomyr Melnyk</p>
-                <p>Chantal Michelle</p>
+                <p>  Elisabeth Klinck</p>
+                <p>    Louis Laurain</p>
+                <p> Lubomyr Melnyk</p>
+                <p>    Chantal Michelle</p>
                 <p>Mohammad Reza Mortazavi</p>
-                <p>Fredrik Rasten</p>
-                <p>Youmna Saba</p>
-                <p>TLF Trio</p>
+                <p>  Fredrik Rasten</p>
+                <p>     Youmna Saba</p>
+                <p>    TLF Trio</p>
             </div>
         </div>
 
         <!-- Food -->
         <div class="section" id="section-food">
-            <p class="label" data-en="Food provided by" data-fr="Restauration par">Food provided by</p>
+            <p class="label" data-en="   Food provided by" data-fr="   Restauration par">   Food provided by</p>
             <div class="section-content">
-                <p>Harry Lester (Comptoir Central des Bazars)</p>
+                <p>   Harry Lester (Comptoir Central des Bazars)</p>
             </div>
         </div>
 
         <!-- Wine -->
         <div class="section" id="section-wine">
-            <p class="label" data-en="Wine selections from" data-fr="Vins sélectionnés par">Wine selections from</p>
+            <p class="label" data-en=" Wine selections from" data-fr=" Vins sélectionnés par"> Wine selections from</p>
             <div class="section-content">
-                <p>Clara Blume &amp;</p>
-                <p>Zoe Boinet</p>
+                <p> Clara Blum</p>
             </div>
         </div>
 
         <!-- Location -->
         <div class="section" id="section-location">
-            <p class="label" data-en="Located at" data-fr="Lieu">Located at</p>
+            <p class="label" data-en="      Located at" data-fr="      Lieu">      Located at</p>
             <div class="section-content">
-                <p>L'Hôtel le Belvédère</p>
-                <p>du Rayon Vert</p>
+                <p>      L'Hôtel le Belvédère</p>
+                <p>   du Rayon Vert</p>
             </div>
         </div>
 
         <!-- Tickets -->
         <div class="section" id="section-tickets">
-            <p class="label" data-en="Buy tickets" data-fr="Acheter des billets">Buy tickets</p>
-            <div class="ticket-option">
-                <p class="large" data-en="Standard – €160" data-fr="Standard – 160€">Standard – €160</p>
-                <p class="label" data-en="3 day access to all concerts" data-fr="Accès 3 jours à tous les concerts">3 day access to all concerts</p>
-                <p class="label" data-en="Food and accommodation excluded" data-fr="Nourriture et hébergement non inclus">Food and accommodation excluded</p>
-            </div>
-            <div class="ticket-option">
-                <p class="large" data-en="Supporter – €280" data-fr="Supporter – 280€">Supporter – €280</p>
-                <p class="label">3 day access, a t-shirt, a personally engraved</p>
-                <p class="label">glass, and a thank in our printed program</p>
-                <p class="label" data-en="Food and accommodation excluded" data-fr="Nourriture et hébergement non inclus">Food and accommodation excluded</p>
+            <p class="label" data-en="Tickets and access" data-fr="Billets et accès">Tickets and access</p>
+            <div class="section-content ticket-links">
+                <a href="#">     Buy tickets</a>
+                <a href="#">  Reserve meals</a>
+                <a href="#">        Accommodation</a>
             </div>
         </div>
 
         <!-- Subscribe -->
         <div class="subscribe-section">
             <p class="label" data-en="Sign up for updates" data-fr="Restez informé">Sign up for updates</p>
-            <div class="email-row">
-                <p class="label" id="email-display" data-en="Your email" data-fr="Votre email">Your email</p>
-                <p class="label" id="subscribe-btn" data-en="Subscribe" data-fr="S'inscrire">Subscribe</p>
+            <div class="email-wrap">
+                <input type="email" class="large" id="email-input" autocomplete="email" aria-label="Email address">
+                <p class="large" id="email-display" aria-hidden="true" data-en="   Your email" data-fr="   Votre email">   Your email</p>
             </div>
+            <p class="large" id="subscribe-btn" data-en="        Subscribe" data-fr="        S'inscrire">        Subscribe</p>
         </div>
 
     </div>
-    <input type="email" id="email-input" autocomplete="email" aria-label="Email address">
 
     <!-- Hidden Brevo form — submitted to iframe to avoid page navigation -->
     <iframe name="brevo-target" style="display:none;" aria-hidden="true"></iframe>

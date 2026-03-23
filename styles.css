@@ -1,8 +1,7 @@
 @font-face {
-    font-family: 'ITCSouvenirMono';
-    src: url('fonts/ITCSouvenirMonospacedProBold.woff2') format('woff2'),
-         url('fonts/ITCSouvenirMonospacedProBold.woff') format('woff');
-    font-weight: 700;
+    font-family: 'Quadrant';
+    src: url('fonts/QuadrantTextMono-Regular.woff') format('woff');
+    font-weight: 400;
     font-style: normal;
     font-display: swap;
 }
@@ -14,14 +13,17 @@
 
 html {
     scroll-behavior: smooth;
+    /* overflow-x: hidden; */
 }
 
 body {
-    font-family: 'ITCSouvenirMono', 'Courier New', monospace;
-    font-weight: 700;
-    background: white;
-    color: black;
+    font-family: 'Quadrant', monospace;
+    font-weight: 400;
+    background: #f0ede8;
+    color: rgba(0, 0, 0, 0.85);
 }
+
+
 
 #content {
     display: flex;
@@ -30,6 +32,7 @@ body {
     box-sizing: border-box;
     padding: clamp(16px, 1.67vw, 24px);
     padding-top: clamp(36px, 3.5vw, 52px);
+    filter: url(#roughen);
 }
 
 /* ── Header block: nav + title + dates ── */
@@ -37,20 +40,21 @@ body {
 .header-block {
     display: flex;
     flex-direction: column;
-    gap: clamp(2px, 0.4vw, 6px);
+    gap: 16px;
 }
 
 .nav-row {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
+    width: 100%;
+    box-sizing: border-box;
     z-index: 100;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     font-size: clamp(14px, 1.5vw, 20px);
-    line-height: 1.1;
+    line-height: 1;
     padding: clamp(16px, 1.67vw, 24px);
 }
 
@@ -62,6 +66,13 @@ body {
 .nav-links a {
     color: inherit;
     text-decoration: none;
+    transition: opacity 0.15s;
+}
+
+.nav-links a:hover,
+.lang-option:hover,
+#subscribe-btn:hover {
+    color: #aaa;
 }
 
 .lang-row {
@@ -71,27 +82,28 @@ body {
 }
 
 .lang-option {
-    color: rgba(0, 0, 0, 0.4);
     cursor: pointer;
 }
 
 .lang-option.active {
-    color: black;
+    display: none;
 }
 
 .title-row {
     display: flex;
-    gap: clamp(24px, 4vw, 64px);
+    flex-wrap: wrap;
     align-items: baseline;
     font-size: clamp(36px, 7.5vw, 107px);
-    line-height: 1.1;
+    line-height: 1;
+}
+
+.title-row p {
+    white-space: pre;
 }
 
 .dates-row {
-    display: flex;
-    gap: clamp(24px, 4vw, 64px);
     font-size: clamp(36px, 7.5vw, 107px);
-    line-height: 0.9;
+    line-height: 1;
 }
 
 /* ── Content sections ── */
@@ -99,124 +111,109 @@ body {
 .section {
     display: flex;
     flex-direction: column;
-    gap: clamp(12px, 1.67vw, 24px);
+    gap: clamp(2px, 0.3vw, 4px);
 }
 
-#section-artists  { margin-left: 0; }
-#section-food     { margin-left: 15%; }
-#section-wine     { margin-left: 5%; }
-#section-location { margin-left: 28%; }
-#section-tickets  { margin-left: 10%; }
+#section-artists .section-content p { margin-bottom: 16px; }
 
 .label {
     font-size: clamp(14px, 1.5vw, 20px);
-    line-height: 1.1;
+    line-height: 1;
+    /* white-space: pre; */
 }
 
 .section-content {
     font-size: clamp(36px, 7.5vw, 107px);
-    line-height: 1.1;
+    line-height: 1;
+}
+
+.section-content p {
+    white-space: pre-wrap;
 }
 
 .large {
     font-size: clamp(36px, 7.5vw, 107px);
-    line-height: 1.1;
+    line-height: 1;
+    white-space: pre;
+}
+
+.dates-row p {
+    white-space: pre;
 }
 
 /* ── Tickets ── */
 
-#section-tickets .ticket-option:nth-child(3) { margin-left: 30%; }
-
-.ticket-option {
+.ticket-links {
     display: flex;
     flex-direction: column;
-    gap: clamp(4px, 0.56vw, 8px);
 }
 
-/* ── Concrete poetry: artist wave ── */
-/* Names stagger left→right, reset for long names — like sound rippling outward */
+.ticket-links a {
+    color: inherit;
+    text-decoration: none;
+    white-space: pre;
+    transition: opacity 0.15s;
+}
 
-#section-artists .label            { text-align: left; }
+.ticket-links a:hover {
+    color: #aaa;
+}
 
-#section-artists .section-content p:nth-child(1)  { padding-left: 0; }
-#section-artists .section-content p:nth-child(2)  { padding-left: 12%; }
-#section-artists .section-content p:nth-child(3)  { padding-left: 22%; }
-#section-artists .section-content p:nth-child(4)  { padding-left: 14%; }
-#section-artists .section-content p:nth-child(5)  { padding-left: 27%; }
-#section-artists .section-content p:nth-child(6)  { padding-left: 0; }
-#section-artists .section-content p:nth-child(7)  { padding-left: 10%; }
-#section-artists .section-content p:nth-child(8)  { padding-left: 20%; }
-#section-artists .section-content p:nth-child(9)  { padding-left: 6%; }
-#section-artists .section-content p:nth-child(10) { padding-left: 16%; }
-#section-artists .section-content p:nth-child(11) { padding-left: 0; }
-#section-artists .section-content p:nth-child(12) { padding-left: 10%; }
-#section-artists .section-content p:nth-child(13) { padding-left: 22%; }
-#section-artists .section-content p:nth-child(14) { padding-left: 35%; }
-
-/* ── Concrete poetry: wine — staggered left ── */
-
-#section-wine .section-content p:nth-child(2) { padding-left: 32%; }
-
-/* ── Concrete poetry: location — staggered left ── */
-
-#section-location .section-content p:nth-child(2) { padding-left: 22%; }
 
 /* ── Subscribe ── */
 
 .subscribe-section {
     display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: clamp(24px, 4vw, 64px);
-    align-items: baseline;
+    flex-direction: column;
+    gap: clamp(12px, 1.67vw, 24px);
     padding-bottom: clamp(12px, 1.5vw, 20px);
 }
 
-.email-row {
-    display: contents;
+
+@keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
 }
 
-@media (max-width: 768px) {
-    #section-food     { margin-left: 8%; }
-    #section-wine     { margin-left: 3%; }
-    #section-location { margin-left: 14%; }
-    #section-tickets  { margin-left: 5%; }
-
-    #section-artists .section-content p:nth-child(2)  { padding-left: 6%; }
-    #section-artists .section-content p:nth-child(3)  { padding-left: 11%; }
-    #section-artists .section-content p:nth-child(4)  { padding-left: 7%; }
-    #section-artists .section-content p:nth-child(5)  { padding-left: 14%; }
-    #section-artists .section-content p:nth-child(7)  { padding-left: 5%; }
-    #section-artists .section-content p:nth-child(8)  { padding-left: 10%; }
-    #section-artists .section-content p:nth-child(9)  { padding-left: 3%; }
-    #section-artists .section-content p:nth-child(10) { padding-left: 8%; }
-    #section-artists .section-content p:nth-child(12) { padding-left: 5%; }
-    #section-artists .section-content p:nth-child(13) { padding-left: 11%; }
-    #section-artists .section-content p:nth-child(14) { padding-left: 18%; }
-
-    #section-wine .section-content p:nth-child(2)     { padding-left: 18%; }
-    #section-location .section-content p:nth-child(2) { padding-left: 12%; }
-}
-
-#email-display {
-    color: rgba(0, 0, 0, 0.4);
-    cursor: text;
-}
-
-#email-display.has-value {
-    color: black;
-}
-
-#subscribe-btn {
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s;
+.email-wrap {
+    position: relative;
 }
 
 #email-input {
-    position: absolute;
-    left: -9999px;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    padding-left: 3ch;
+    width: 100%;
+    color: rgba(0, 0, 0, 0.85);
+    caret-color: rgba(0, 0, 0, 0.85);
+    font-family: inherit;
     opacity: 0;
+    transition: opacity 0.1s;
+}
+
+#email-input:focus,
+#email-input.has-value {
+    opacity: 1;
+}
+
+#email-display {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     pointer-events: none;
+    color: #aaa;
+    transition: opacity 0.1s;
+}
+
+#email-display.hidden {
+    opacity: 0;
+}
+
+
+#subscribe-btn {
+    cursor: pointer;
+    transition: opacity 0.15s;
 }
