@@ -263,7 +263,7 @@
     </div>
 
     <script>
-        // ── WebGL particle background ───────────────────────────────────
+        // ── WebGL particle background (static) ─────────────────────────
         (function () {
             const W = 1080, H = 1350;
             const canvas = document.createElement('canvas');
@@ -290,7 +290,7 @@
             const fs = `
                 precision mediump float;
                 void main() {
-                    float d = length(gl_PointCoord - vec2(0.5));
+                    float d = length(vec2(gl_PointCoord.x - 0.5, (gl_PointCoord.y - 0.5) * 2.0));
                     float a = 1.0 - smoothstep(0.3, 0.5, d);
                     if (a < 0.01) discard;
                     gl_FragColor = vec4(0.0, 0.0, 0.0, a);
@@ -319,61 +319,33 @@
             gl.enable(gl.BLEND);
             gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-            const px     = new Float32Array(COUNT);
-            const py     = new Float32Array(COUNT);
-            const pvx    = new Float32Array(COUNT);
-            const pvy    = new Float32Array(COUNT);
-            const pphase = new Float32Array(COUNT);
             const posData  = new Float32Array(COUNT * 2);
             const sizeData = new Float32Array(COUNT);
+
+            for (let i = 0; i < COUNT; i++) {
+                posData[i * 2]     = Math.random() * W;
+                posData[i * 2 + 1] = Math.random() * H;
+                const r = Math.random();
+                sizeData[i] = 1.8 + r * r * 3.2;
+            }
 
             const posBuf  = gl.createBuffer();
             const sizeBuf = gl.createBuffer();
 
-            for (let i = 0; i < COUNT; i++) {
-                px[i]     = Math.random() * W;
-                py[i]     = Math.random() * H;
-                const spd = 0.008 + Math.random() * 0.03;
-                const ang = Math.random() * Math.PI * 2;
-                pvx[i]    = Math.cos(ang) * spd;
-                pvy[i]    = Math.sin(ang) * spd;
-                const r   = Math.random();
-                sizeData[i] = 1.8 + r * r * 3.2;
-                pphase[i] = Math.random() * Math.PI * 2;
-            }
+            gl.clearColor(240 / 255, 237 / 255, 232 / 255, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+            gl.bufferData(gl.ARRAY_BUFFER, posData, gl.STATIC_DRAW);
+            gl.enableVertexAttribArray(aPos);
+            gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
             gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuf);
             gl.bufferData(gl.ARRAY_BUFFER, sizeData, gl.STATIC_DRAW);
+            gl.enableVertexAttribArray(aSize);
+            gl.vertexAttribPointer(aSize, 1, gl.FLOAT, false, 0, 0);
 
-            const BG = [240 / 255, 237 / 255, 232 / 255, 1.0];
-
-            let t = 0;
-            function frame() {
-                requestAnimationFrame(frame);
-                t += 0.004;
-                for (let i = 0; i < COUNT; i++) {
-                    const wx = Math.sin(t * 0.55 + py[i] * 0.009 + pphase[i]) * 0.12;
-                    const wy = Math.cos(t * 0.40 + px[i] * 0.008 + pphase[i] * 1.37) * 0.10;
-                    px[i] += pvx[i] + wx;
-                    py[i] += pvy[i] + wy;
-                    if (px[i] < -8)    px[i] += W + 16;
-                    if (px[i] > W + 8) px[i] -= W + 16;
-                    if (py[i] < -8)    py[i] += H + 16;
-                    if (py[i] > H + 8) py[i] -= H + 16;
-                    posData[i * 2]     = px[i];
-                    posData[i * 2 + 1] = py[i];
-                }
-                gl.clearColor(...BG);
-                gl.clear(gl.COLOR_BUFFER_BIT);
-                gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
-                gl.bufferData(gl.ARRAY_BUFFER, posData, gl.STREAM_DRAW);
-                gl.enableVertexAttribArray(aPos);
-                gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
-                gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuf);
-                gl.enableVertexAttribArray(aSize);
-                gl.vertexAttribPointer(aSize, 1, gl.FLOAT, false, 0, 0);
-                gl.drawArrays(gl.POINTS, 0, COUNT);
-            }
-            frame();
+            gl.drawArrays(gl.POINTS, 0, COUNT);
         })();
 
         // ── Scale post to fit viewport ──────────────────────────────────
