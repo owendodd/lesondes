@@ -320,9 +320,64 @@
         return 55; // default
     }
 
-    // TYPEWRITER DISABLED — reveal all content immediately
-    const elements = Array.from(document.querySelectorAll('.nav-row a, .nav-row .lang-option, #content p, #content a'));
-    // (animation code preserved below, re-enable by restoring the original block)
+    // Snapshot header elements only — everything else is already visible.
+    const elements = Array.from(document.querySelectorAll('.title-row p, .dates-row p'));
+    const texts = elements.map(el => el.textContent);
+    elements.forEach((el, i) => {
+        el.innerHTML = '';
+        const layout = layoutSpaceSet(texts[i]);
+        for (let k = 0; k < texts[i].length; k++) {
+            const sp = document.createElement('span');
+            sp.textContent = texts[i][k];
+            sp.style.visibility = layout.has(k) ? 'visible' : 'hidden';
+            el.appendChild(sp);
+        }
+    });
+
+    // Build sequential start times
+    const startTimes = [];
+    let cursor = 0;
+
+    elements.forEach((el, i) => {
+        startTimes.push(cursor);
+        const ctx   = getCtx(el);
+        const delay = charDelay(ctx);
+        const text  = texts[i];
+
+        const layout = layoutSpaceSet(text);
+        let duration = 0;
+        let k = 0;
+        for (const ch of text) {
+            if (!layout.has(k)) duration += delay + extraAfterChar(ch);
+            k++;
+        }
+
+        const nextCtx = elements[i + 1] ? getCtx(elements[i + 1]) : null;
+        cursor += duration + pauseAfter(ctx, nextCtx);
+    });
+
+    // Schedule typing for each element — reveal spans one by one
+    elements.forEach((el, i) => {
+        setTimeout(() => {
+            const text  = texts[i];
+            const ctx   = getCtx(el);
+            const delay = charDelay(ctx);
+            const spans = el.querySelectorAll('span');
+            let j = 0;
+
+            const layout = layoutSpaceSet(text);
+            function typeChar() {
+                while (j < text.length && layout.has(j)) j++;
+                if (j >= text.length) return;
+                const ch = text[j];
+                spans[j].style.visibility = 'visible';
+                j++;
+                setTimeout(typeChar, delay + extraAfterChar(ch));
+            }
+
+            typeChar();
+        }, startTimes[i]);
+    });
 
     // --- Email subscribe ---
     const emailDisplay = document.getElementById('email-display');
