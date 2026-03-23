@@ -1,15 +1,15 @@
 // LES ONDES — Lang switching, email subscribe & typewriter animation
 
-// --- WebGL particle background ---
+// --- WebGL particle background (static) ---
 (function () {
     const canvas = document.createElement('canvas');
-    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;';
+    canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;';
     document.body.prepend(canvas);
 
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
     if (!gl) return;
 
-    const COUNT = 220;
+    const COUNT = 600;
 
     const vs = `
         attribute vec2 a_pos;
@@ -25,7 +25,7 @@
     const fs = `
         precision mediump float;
         void main() {
-            float d = length(gl_PointCoord - vec2(0.5));
+            float d = length(vec2(gl_PointCoord.x - 0.5, (gl_PointCoord.y - 0.5) * 2.0));
             float a = 1.0 - smoothstep(0.3, 0.5, d);
             if (a < 0.01) discard;
             gl_FragColor = vec4(0.0, 0.0, 0.0, a);
@@ -52,128 +52,43 @@
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    const px     = new Float32Array(COUNT);
-    const py     = new Float32Array(COUNT);
-    const pvx    = new Float32Array(COUNT);
-    const pvy    = new Float32Array(COUNT);
-    const pphase = new Float32Array(COUNT);
-    // Mouse-ripple: each particle carries a velocity impulse that decays
-    const mrx    = new Float32Array(COUNT); // mouse ripple vx
-    const mry    = new Float32Array(COUNT); // mouse ripple vy
     const posData  = new Float32Array(COUNT * 2);
     const sizeData = new Float32Array(COUNT);
 
     const posBuf  = gl.createBuffer();
     const sizeBuf = gl.createBuffer();
 
-    // Mouse state
-    let mouseX = -9999, mouseY = -9999;
-    let prevMouseX = -9999, prevMouseY = -9999;
-    canvas.style.pointerEvents = 'none'; // canvas ignores events; track on window
-    window.addEventListener('mousemove', e => {
-        prevMouseX = mouseX;
-        prevMouseY = mouseY;
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
+    function draw() {
+        const w = canvas.width = window.innerWidth;
+        const h = canvas.height = document.body.scrollHeight;
+        gl.viewport(0, 0, w, h);
+        gl.uniform2f(uRes, w, h);
 
-    function resize() {
-        canvas.width  = window.innerWidth;
-        canvas.height = window.innerHeight;
-        gl.viewport(0, 0, canvas.width, canvas.height);
-        gl.uniform2f(uRes, canvas.width, canvas.height);
-    }
-
-    function init() {
-        const w = canvas.width, h = canvas.height;
         for (let i = 0; i < COUNT; i++) {
-            px[i]     = Math.random() * w;
-            py[i]     = Math.random() * h;
-            const spd = 0.008 + Math.random() * 0.03;
-            const ang = Math.random() * Math.PI * 2;
-            pvx[i]    = Math.cos(ang) * spd;
-            pvy[i]    = Math.sin(ang) * spd;
-            const r   = Math.random();
+            posData[i * 2]     = Math.random() * w;
+            posData[i * 2 + 1] = Math.random() * h;
+            const r = Math.random();
             sizeData[i] = 1.8 + r * r * 3.2;
-            pphase[i] = Math.random() * Math.PI * 2;
-            mrx[i] = 0;
-            mry[i] = 0;
-        }
-        gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuf);
-        gl.bufferData(gl.ARRAY_BUFFER, sizeData, gl.STATIC_DRAW);
-    }
-
-    resize();
-    init();
-    window.addEventListener('resize', resize);
-
-    // #f0ede8
-    const BG = [240 / 255, 237 / 255, 232 / 255, 1.0];
-
-    // Mouse ripple parameters
-    const MOUSE_RADIUS  = 120;  // influence radius in px
-    const MOUSE_STRENGTH = 2.2; // peak impulse magnitude
-    const RIPPLE_DECAY  = 0.88; // per-frame decay of impulse
-
-    let t = 0;
-    function frame() {
-        requestAnimationFrame(frame);
-        t += 0.004;
-        const w = canvas.width, h = canvas.height;
-
-        // Mouse velocity this frame (capped to avoid huge jumps)
-        const mdx = Math.max(-30, Math.min(30, mouseX - prevMouseX));
-        const mdy = Math.max(-30, Math.min(30, mouseY - prevMouseY));
-        prevMouseX = mouseX;
-        prevMouseY = mouseY;
-
-        for (let i = 0; i < COUNT; i++) {
-            // Mouse ripple: push particles away from cursor proportional to proximity & cursor velocity
-            const dx = px[i] - mouseX;
-            const dy = py[i] - mouseY;
-            const dist2 = dx * dx + dy * dy;
-            if (dist2 < MOUSE_RADIUS * MOUSE_RADIUS && dist2 > 0.01) {
-                const dist = Math.sqrt(dist2);
-                const falloff = 1.0 - dist / MOUSE_RADIUS;
-                // Radial push (displacement from cursor position) + drag from cursor motion
-                const radialStr = falloff * falloff * 0.6;
-                const dragStr   = falloff * falloff * MOUSE_STRENGTH;
-                mrx[i] += (dx / dist) * radialStr + mdx * dragStr * 0.015;
-                mry[i] += (dy / dist) * radialStr + mdy * dragStr * 0.015;
-            }
-            // Decay impulse (ripple trails away)
-            mrx[i] *= RIPPLE_DECAY;
-            mry[i] *= RIPPLE_DECAY;
-
-            // Ambient wave field
-            const wx = Math.sin(t * 0.55 + py[i] * 0.009 + pphase[i]) * 0.12;
-            const wy = Math.cos(t * 0.40 + px[i] * 0.008 + pphase[i] * 1.37) * 0.10;
-            px[i] += pvx[i] + wx + mrx[i];
-            py[i] += pvy[i] + wy + mry[i];
-            if (px[i] < -8)    px[i] += w + 16;
-            if (px[i] > w + 8) px[i] -= w + 16;
-            if (py[i] < -8)    py[i] += h + 16;
-            if (py[i] > h + 8) py[i] -= h + 16;
-            posData[i * 2]     = px[i];
-            posData[i * 2 + 1] = py[i];
         }
 
-        gl.clearColor(...BG);
+        gl.clearColor(240 / 255, 237 / 255, 232 / 255, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
-        gl.bufferData(gl.ARRAY_BUFFER, posData, gl.STREAM_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, posData, gl.STATIC_DRAW);
         gl.enableVertexAttribArray(aPos);
         gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuf);
+        gl.bufferData(gl.ARRAY_BUFFER, sizeData, gl.STATIC_DRAW);
         gl.enableVertexAttribArray(aSize);
         gl.vertexAttribPointer(aSize, 1, gl.FLOAT, false, 0, 0);
 
         gl.drawArrays(gl.POINTS, 0, COUNT);
     }
 
-    frame();
+    draw();
+    window.addEventListener('resize', draw);
 })();
 
 (function () {
