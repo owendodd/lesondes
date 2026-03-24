@@ -26,14 +26,18 @@ body {
 
 
 
-#content {
+#content,
+.nav-row {
     display: flex;
+    filter: url(#roughen);
+}
+
+#content {
     flex-direction: column;
     gap: clamp(40px, 6.67vw, 96px);
     box-sizing: border-box;
     padding: clamp(16px, 1.67vw, 24px);
     padding-top: clamp(40px, 3.5vw, 52px);
-    filter: url(#roughen);
 }
 
 /* ── Header block: nav + title + dates ── */
