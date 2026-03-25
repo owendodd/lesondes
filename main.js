@@ -2,6 +2,7 @@
 
 // --- WebGL particle background (static) ---
 (function () {
+    return; // hidden
     const canvas = document.createElement('canvas');
     canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;';
     document.body.prepend(canvas);
@@ -28,7 +29,7 @@
             float d = length(vec2(gl_PointCoord.x - 0.5, (gl_PointCoord.y - 0.5) * 2.0));
             float a = 1.0 - smoothstep(0.3, 0.5, d);
             if (a < 0.01) discard;
-            gl_FragColor = vec4(0.0, 0.0, 0.0, a);
+            gl_FragColor = vec4(1.0, 1.0, 1.0, a);
         }
     `;
 
@@ -71,7 +72,7 @@
             sizeData[i] = 1.8 + r * r * 3.2;
         }
 
-        gl.clearColor(240 / 255, 237 / 255, 232 / 255, 1.0);
+        gl.clearColor(0, 0, 0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
@@ -235,8 +236,10 @@
         return 55; // default
     }
 
-    // Snapshot header elements only — everything else is already visible.
-    const elements = Array.from(document.querySelectorAll('.title-row p, .dates-row p'));
+    // Snapshot nav + header elements only
+    const elements = Array.from(document.querySelectorAll(
+        '.nav-links a, .lang-option, .title-row p, .dates-row p'
+    ));
     const texts = elements.map(el => el.textContent);
     elements.forEach((el, i) => {
         el.innerHTML = '';

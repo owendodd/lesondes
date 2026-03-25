@@ -19,7 +19,7 @@ html {
 body {
     font-family: 'Quadrant', monospace;
     font-weight: 400;
-    background: #f0ede8;
+    background: #ffffff;
     color: rgba(0, 0, 0, 0.85);
     position: relative;
 }
@@ -58,7 +58,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    font-size: clamp(16px, 1.5vw, 20px);
+    font-size: clamp(14px, 1.3vw, 18px);
     line-height: 1;
     padding: clamp(16px, 1.67vw, 24px);
 }
@@ -99,7 +99,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    font-size: clamp(36px, 7.5vw, 107px);
+    font-size: clamp(32px, 6.5vw, 94px);
     line-height: 1;
 }
 
@@ -108,7 +108,7 @@ body {
 }
 
 .dates-row {
-    font-size: clamp(36px, 7.5vw, 107px);
+    font-size: clamp(32px, 6.5vw, 94px);
     line-height: 1;
 }
 
@@ -125,13 +125,13 @@ body {
 #section-artists .section-content p { margin-bottom: 16px; }
 
 .label {
-    font-size: clamp(16px, 1.5vw, 20px);
+    font-size: clamp(14px, 1.3vw, 18px);
     line-height: 1;
     /* white-space: pre; */
 }
 
 .section-content {
-    font-size: clamp(36px, 7.5vw, 107px);
+    font-size: clamp(32px, 6.5vw, 94px);
     line-height: 1;
 }
 
@@ -140,7 +140,7 @@ body {
 }
 
 .large {
-    font-size: clamp(36px, 7.5vw, 107px);
+    font-size: clamp(32px, 6.5vw, 94px);
     line-height: 1;
     white-space: pre;
 }
@@ -204,7 +204,7 @@ body {
     color: rgba(0, 0, 0, 0.85);
     caret-color: rgba(0, 0, 0, 0.85);
     font-family: inherit;
-    font-size: clamp(36px, 7.5vw, 107px);
+    font-size: clamp(32px, 6.5vw, 94px);
     line-height: 1;
     appearance: none;
     opacity: 0;
