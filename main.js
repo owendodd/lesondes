@@ -2,7 +2,6 @@
 
 // --- WebGL particle background (static) ---
 (function () {
-    return; // hidden
     const canvas = document.createElement('canvas');
     canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;';
     document.body.prepend(canvas);
@@ -29,7 +28,7 @@
             float d = length(vec2(gl_PointCoord.x - 0.5, (gl_PointCoord.y - 0.5) * 2.0));
             float a = 1.0 - smoothstep(0.3, 0.5, d);
             if (a < 0.01) discard;
-            gl_FragColor = vec4(1.0, 1.0, 1.0, a);
+            gl_FragColor = vec4(0.0, 0.0, 0.0, a);
         }
     `;
 
@@ -72,7 +71,7 @@
             sizeData[i] = 1.8 + r * r * 3.2;
         }
 
-        gl.clearColor(0, 0, 0, 1.0);
+        gl.clearColor(0.96, 0.96, 0.955, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
@@ -150,15 +149,15 @@
     // Base char delay per context (ms)
     function charDelay(ctx) {
         switch (ctx) {
-            case 'title':        return 65;
-            case 'ticket-price': return 30;
-            case 'dates':        return 28;
-            case 'section-label':return 20;
-            case 'nav':          return 16;
-            case 'lang':         return 16;
-            case 'artist':       return 22;
-            case 'ticket-desc':  return 13;
-            default:             return 18;
+            case 'title':        return 78;
+            case 'ticket-price': return 36;
+            case 'dates':        return 34;
+            case 'section-label':return 24;
+            case 'nav':          return 20;
+            case 'lang':         return 20;
+            case 'artist':       return 26;
+            case 'ticket-desc':  return 16;
+            default:             return 22;
         }
     }
 

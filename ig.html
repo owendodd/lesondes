@@ -45,7 +45,7 @@
         body {
             font-family: 'Quadrant', monospace;
             font-weight: 400;
-            background: #e8e8e8;
+            background: #ffffff;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -57,7 +57,7 @@
             position: relative;
             width: 1080px;
             height: 1350px;
-            background: #ffffff;
+            background: #f5f5f4; /* matched by canvas clearColor */
             transform-origin: center center;
             flex-shrink: 0;
             overflow: hidden;
@@ -124,8 +124,7 @@
         /* ── Color mode: slides 2 & 3 — alternating orange / purple ── */
         .post.color .slide-2 #a1,
         .post.color .slide-2 #a3,
-        .post.color .slide-2 #a5,
-        .post.color .slide-2 #a7 { color: #ff9b00; }
+        .post.color .slide-2 #a5 { color: #ff9b00; }
 
         .post.color .slide-2 #a2,
         .post.color .slide-2 #a4,
@@ -133,8 +132,7 @@
 
         .post.color .slide-3 #b1,
         .post.color .slide-3 #b3,
-        .post.color .slide-3 #b5,
-        .post.color .slide-3 #b7 { color: #ff9b00; }
+        .post.color .slide-3 #b5 { color: #ff9b00; }
 
         .post.color .slide-3 #b2,
         .post.color .slide-3 #b4,
@@ -179,17 +177,33 @@
             font-weight: 700;
             font-size: 13px;
             background: none;
-            border: 1px solid rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(0, 0, 0, 0.35);
             padding: 5px 16px;
             cursor: pointer;
-            color: white;
-            transition: background 0.1s, color 0.1s;
+            color: black;
+            transition: background 0.1s, color 0.1s, border-color 0.1s;
         }
 
         .controls button:hover {
+            background: black;
+            color: #f5f5f4;
+            border-color: black;
+        }
+
+        body.dark .controls button {
+            border-color: rgba(255, 255, 255, 0.35);
+            color: white;
+        }
+
+        body.dark .controls button:hover {
             background: white;
             color: #0f1217;
             border-color: white;
+        }
+
+        body.dark .controls select {
+            border-color: rgba(255, 255, 255, 0.35);
+            color: white;
         }
 
         .controls select {
@@ -197,10 +211,10 @@
             font-weight: 700;
             font-size: 13px;
             background: none;
-            border: 1px solid rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(0, 0, 0, 0.35);
             padding: 5px 16px;
             cursor: pointer;
-            color: white;
+            color: black;
             appearance: none;
         }
     </style>
@@ -237,8 +251,7 @@
                 <p class="l2" id="a3"></p>
                 <p class="l1" id="a4"></p>
                 <p class="l2" id="a5"></p>
-                <p class="l1" id="a6"></p>
-                <p class="l2" id="a7"></p>
+                <p class="l2" id="a6"></p>
             </div>
         </div>
 
@@ -251,7 +264,6 @@
                 <p class="l2" id="b4"></p>
                 <p class="l2" id="b5"></p>
                 <p class="l1" id="b6"></p>
-                <p class="l1" id="b7"></p>
             </div>
         </div>
 
@@ -271,7 +283,7 @@
 
     <script>
         // ── WebGL particle background (static) ─────────────────────────
-        (function () { return; // hidden
+        (function () {
             const W = 1080, H = 1350;
             const canvas = document.createElement('canvas');
             canvas.width  = W;
@@ -300,7 +312,7 @@
                     float d = length(vec2(gl_PointCoord.x - 0.5, (gl_PointCoord.y - 0.5) * 2.0));
                     float a = 1.0 - smoothstep(0.3, 0.5, d);
                     if (a < 0.01) discard;
-                    gl_FragColor = vec4(1.0, 1.0, 1.0, a);
+                    gl_FragColor = vec4(0.0, 0.0, 0.0, a);
                 }
             `;
 
@@ -339,7 +351,7 @@
             const posBuf  = gl.createBuffer();
             const sizeBuf = gl.createBuffer();
 
-            gl.clearColor(0, 0, 0, 1.0);
+            gl.clearColor(0.96, 0.96, 0.955, 1.0);
             gl.clear(gl.COLOR_BUFFER_BIT);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
@@ -395,8 +407,7 @@
                     { id: 'a3', text: '     Lukas de \n       Clerck',          charDelay: 30, pauseAfter: 50  },
                     { id: 'a4', text: '  Maya Dhondt',                          charDelay: 14, pauseAfter: 110 },
                     { id: 'a5', text: '       Mats     \n      Erlandsson',     charDelay: 24, pauseAfter: 70  },
-                    { id: 'a6', text: 'Alex Zhang Hungtai',                     charDelay: 18, pauseAfter: 80  },
-                    { id: 'a7', text: '  Elisabeth \n       Klinck',            charDelay: 28, pauseAfter: 0   },
+                    { id: 'a6', text: '  Elisabeth \n       Klinck',            charDelay: 28, pauseAfter: 0   },
                 ],
             },
             {
@@ -407,8 +418,7 @@
                     { id: 'b3', text: 'Chantal Michelle',                       charDelay: 26, pauseAfter: 90  },
                     { id: 'b4', text: ' Mohammad Reza    \n       Mortazavi',   charDelay: 17, pauseAfter: 65  },
                     { id: 'b5', text: '         Fredrik   \n      Rasten',      charDelay: 32, pauseAfter: 80  },
-                    { id: 'b6', text: '  Youmna Saba',                          charDelay: 13, pauseAfter: 95  },
-                    { id: 'b7', text: '        TLF Trio',                       charDelay: 25, pauseAfter: 0   },
+                    { id: 'b6', text: '  Youmna Saba',                          charDelay: 13, pauseAfter: 0   },
                 ],
             },
         ];
