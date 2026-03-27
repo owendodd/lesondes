@@ -5,33 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LES ONDES</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 </head>
 <body>
 <svg style="display:none" aria-hidden="true">
         <defs>
             <filter id="roughen" x="-5%" y="-5%" width="110%" height="110%">
                 <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="4" seed="8" result="noise"/>
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.3" xChannelSelector="R" yChannelSelector="G"/>
             </filter>
         </defs>
     </svg>
 
-    <div class="nav-row">
-        <div class="nav-links">
-            <a href="#section-artists" data-en="Program" data-fr="Programme">Program</a>
-            <a href="#section-food" data-en="Dining" data-fr="Restauration">Dining</a>
-            <a href="#section-location" data-en="Location" data-fr="Lieu">Location</a>
-            <a href="#section-tickets" data-en="Tickets" data-fr="Billets">Tickets</a>
-        </div>
-        <div class="lang-row">
-            <p class="lang-option" data-lang="fr" id="lang-fr">FR</p>
-            <p class="lang-option" data-lang="en" id="lang-en">EN</p>
-        </div>
-    </div>
-
-    <div id="content">
-
-        <!-- Title + Dates -->
+    <!-- Fixed left panel: title + nav -->
+    <div class="left-panel">
         <div class="header-block">
             <div class="title-row">
                 <p data-en="LES  " data-fr="LES  ">LES  </p>
@@ -42,6 +29,20 @@
                 <p data-en="  May 29 30 31" data-fr="  29 30 31 Mai">  May 29 30 31</p>
             </div>
         </div>
+        <nav class="nav-col">
+            <a href="#section-artists" data-en="Program" data-fr="Programme">Program</a>
+            <a href="#section-food" data-en="Dining" data-fr="Restauration">Dining</a>
+            <a href="#section-location" data-en="Location" data-fr="Lieu">Location</a>
+            <a href="#section-tickets" data-en="Tickets" data-fr="Billets">Tickets</a>
+        </nav>
+        <div class="lang-row">
+            <p class="lang-option" data-lang="fr" id="lang-fr">FR</p>
+            <p class="lang-option" data-lang="en" id="lang-en">EN</p>
+        </div>
+    </div>
+
+    <!-- Scrollable right panel: sections -->
+    <div id="content">
 
         <!-- Artists -->
         <div class="section" id="section-artists">

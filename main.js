@@ -3,13 +3,13 @@
 // --- WebGL particle background (static) ---
 (function () {
     const canvas = document.createElement('canvas');
-    canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;';
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;';
     document.body.prepend(canvas);
 
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
     if (!gl) return;
 
-    const COUNT = 600;
+    const COUNT = 250;
 
     const vs = `
         attribute vec2 a_pos;
@@ -129,7 +129,7 @@
 
     // Classify each element so we can give it a natural cadence
     function getCtx(el) {
-        if (el.closest('.nav-links'))        return 'nav';
+        if (el.closest('.nav-col'))          return 'nav';
         if (el.classList.contains('lang-option')) return 'lang';
         if (el.closest('.title-row'))        return 'title';
         if (el.closest('.dates-row'))        return 'dates';
@@ -208,6 +208,9 @@
         // Dates
         if (ctx === 'dates' && nextCtx === 'dates') return 120;
 
+        // Pause after dates before nav types in
+        if (ctx === 'dates' && nextCtx === 'nav') return 480;
+
         // Long pause after header
         if (ctx === 'dates' && nextCtx === 'section-label') return 680;
 
@@ -237,7 +240,7 @@
 
     // Snapshot nav + header elements only
     const elements = Array.from(document.querySelectorAll(
-        '.nav-links a, .lang-option, .title-row p, .dates-row p'
+        '.title-row p, .dates-row p, .nav-col a, .lang-option'
     ));
     const texts = elements.map(el => el.textContent);
     elements.forEach((el, i) => {
