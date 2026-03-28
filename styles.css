@@ -1,234 +1,165 @@
+/* ── Fonts ── */
+
 @font-face {
-    font-family: 'Quadrant';
-    src: url('fonts/QuadrantTextMono-Regular.woff') format('woff');
+    font-family: 'ROM';
+    src: url('fonts/ABCROMCondensed-Heavy-Trial.woff2') format('woff2'),
+         url('fonts/ABCROMCondensed-Heavy-Trial.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ROM';
+    src: url('fonts/ABCROM-Book-Trial.woff2') format('woff2'),
+         url('fonts/ABCROM-Book-Trial.woff') format('woff');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
 }
 
+/* ── Reset ── */
+
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
-    /* overflow-x: hidden; */
+html, body {
+    height: 100%;
 }
 
 body {
-    font-family: 'Quadrant', monospace;
+    font-family: 'ROM', sans-serif;
     font-weight: 400;
-    background: #ffffff;
-    color: rgba(0, 0, 0, 0.85);
-    position: relative;
+    background: #fff;
+    color: #000;
 }
 
+/* ── Page ── */
 
-
-#content,
-.nav-row {
+.page {
+    padding: 24px;
+    min-height: 100vh;
     display: flex;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+/* ── Left section ── */
+
+.left-section {
+    flex: 1;
+    min-height: calc(100vh - 48px);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Header ── */
+
+.site-header {
+    display: flex;
+    align-items: baseline;
+    gap: 64px;
+    font-size: 80px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
     filter: url(#roughen);
 }
 
-#content {
-    flex-direction: column;
-    gap: clamp(40px, 6.67vw, 96px);
-    box-sizing: border-box;
-    padding: clamp(16px, 1.67vw, 24px);
-    padding-top: clamp(40px, 3.5vw, 52px);
+#header-location {
+    text-transform: none;
 }
 
-/* ── Header block: nav + title + dates ── */
+/* ── Left column ── */
 
-.header-block {
+.left-col {
+    width: 280px;
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 48px;
+    font-size: 20px;
+    line-height: 1.1;
+    letter-spacing: 2px;
+    margin-top: 48px;
+    filter: url(#roughen);
 }
 
-.nav-row {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 100;
+.dates-links {
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    font-size: clamp(14px, 1.3vw, 18px);
-    line-height: 1;
-    padding: clamp(16px, 1.67vw, 24px);
+    flex-direction: column;
+    gap: 18px;
 }
 
-.nav-links {
+.info-links {
     display: flex;
-    gap: clamp(16px, 2.78vw, 40px);
+    flex-direction: column;
+    gap: 8px;
 }
 
-.nav-links a {
+.info-links a {
     color: inherit;
-    text-decoration: none;
-    transition: opacity 0.15s;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.15s;
 }
 
-.nav-links a:hover,
-.lang-option:hover,
-#subscribe-btn:hover {
-    color: #aaa;
+.info-links a:hover {
+    color: #888;
 }
+
+.col-artists {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.bottom-info {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding-bottom: 0;
+}
+
+/* ── Lang switcher ── */
 
 .lang-row {
     display: flex;
-    flex-shrink: 0;
-    gap: clamp(8px, 1.11vw, 16px);
+    gap: 12px;
     cursor: pointer;
 }
 
 .lang-option {
     cursor: pointer;
+    transition: color 0.15s;
+}
+
+.lang-option:hover {
+    color: #888;
 }
 
 .lang-option.active {
-    display: none;
+    text-decoration: underline;
+    text-underline-offset: 2px;
 }
 
-.title-row {
+/* ── Right column / video ── */
+
+.right-col {
+    flex: 1;
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    font-size: clamp(32px, 6.5vw, 94px);
-    line-height: 1;
+    justify-content: flex-end;
+    align-items: flex-start;
 }
 
-.title-row p {
-    white-space: pre;
-}
-
-.dates-row {
-    font-size: clamp(32px, 6.5vw, 94px);
-    line-height: 1;
-}
-
-/* ── Content sections ── */
-
-.section {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(6px, 0.3vw, 6px);
-    padding-top: 64px;
-    margin-bottom: 0;
-}
-
-#section-artists .section-content p { margin-bottom: 16px; }
-
-.label {
-    font-size: clamp(14px, 1.3vw, 18px);
-    line-height: 1;
-    /* white-space: pre; */
-}
-
-.section-content {
-    font-size: clamp(32px, 6.5vw, 94px);
-    line-height: 1;
-}
-
-.section-content p {
-    white-space: pre-wrap;
-}
-
-.large {
-    font-size: clamp(32px, 6.5vw, 94px);
-    line-height: 1;
-    white-space: pre;
-}
-
-.dates-row p {
-    white-space: pre;
-}
-
-/* ── Tickets ── */
-
-.ticket-links {
-    display: flex;
-    flex-direction: column;
-}
-
-.ticket-links a {
-    color: inherit;
-    text-decoration: none;
-    white-space: pre;
-    transition: opacity 0.15s;
-}
-
-.ticket-links a:hover {
-    color: #aaa;
-}
-
-
-/* ── Subscribe ── */
-
-.subscribe-section {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(2px, 0.3vw, 4px);
-    padding-bottom: clamp(12px, 1.5vw, 20px);
-}
-
-
-
-@keyframes cursor-blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0; }
-}
-
-.email-wrap {
-    display: grid;
-}
-
-#email-input,
-#email-display {
-    grid-area: 1 / 1;
-}
-
-#email-input {
+.right-col video {
+    width: 680px;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
     display: block;
-    background: transparent;
-    border: none;
-    outline: none;
-    padding: 0;
-    padding-left: 3ch;
-    width: 100%;
-    color: rgba(0, 0, 0, 0.85);
-    caret-color: rgba(0, 0, 0, 0.85);
-    font-family: inherit;
-    font-size: clamp(32px, 6.5vw, 94px);
-    line-height: 1;
-    appearance: none;
-    opacity: 0;
-    transition: opacity 0.1s;
-}
-
-#email-input:focus,
-#email-input.has-value {
-    opacity: 1;
-}
-
-#email-display {
-    pointer-events: none;
-    color: #aaa;
-    transition: opacity 0.1s;
-    align-self: end;
-}
-
-#email-display.hidden {
-    opacity: 0;
-}
-
-#subscribe-btn {
-    margin-top: 16px;
-    cursor: pointer;
-    transition: opacity 0.15s;
 }

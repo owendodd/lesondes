@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<svg style="display:none" aria-hidden="true">
+
+    <svg style="display:none" aria-hidden="true">
         <defs>
             <filter id="roughen" x="-5%" y="-5%" width="110%" height="110%">
                 <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="4" seed="8" result="noise"/>
@@ -16,110 +17,76 @@
         </defs>
     </svg>
 
-    <div class="nav-row">
-        <div class="nav-links">
-            <a href="#section-artists" data-en="Program" data-fr="Programme">Program</a>
-            <a href="#section-food" data-en="Dining" data-fr="Restauration">Dining</a>
-            <a href="#section-location" data-en="Location" data-fr="Lieu">Location</a>
-            <a href="#section-tickets" data-en="Tickets" data-fr="Billets">Tickets</a>
-        </div>
-        <div class="lang-row">
-            <p class="lang-option" data-lang="fr" id="lang-fr">FR</p>
-            <p class="lang-option" data-lang="en" id="lang-en">EN</p>
-        </div>
-    </div>
+    <div class="page">
 
-    <div id="content">
+        <div class="left-section">
 
-        <!-- Title + Dates -->
-        <div class="header-block">
-            <div class="title-row">
-                <p data-en="LES  " data-fr="LES  ">LES  </p>
-                <p data-en="ONDES  " data-fr="ONDES  ">ONDES  </p>
-                <p data-en="Cerbère" data-fr="Cerbère">Cerbère</p>
-            </div>
-            <div class="dates-row">
-                <p data-en="  May 29 30 31" data-fr="  29 30 31 Mai">  May 29 30 31</p>
-            </div>
-        </div>
+            <header class="site-header">
+                <p id="header-les" data-en="Les" data-fr="Les">Les</p>
+                <p id="header-ondes" data-en="Ondes" data-fr="Ondes">Ondes</p>
+                <p id="header-location" data-en="Cerbère" data-fr="Cerbère">Cerbère</p>
+            </header>
 
-        <!-- Artists -->
-        <div class="section" id="section-artists">
-            <p class="label" data-en="With music from" data-fr="Avec la musique de">With music from</p>
-            <div class="section-content">
-                <p>Miriam Adefris</p>
-                <p>   Pierre Bastien</p>
-                <p>     Lukas de Clerck</p>
-                <p>   Maya Dhondt</p>
-                <p>      Mats Erlandsson</p>
-                <p>  Elisabeth Klinck</p>
-                <p>    Louis Laurain</p>
-                <p> Lubomyr Melnyk</p>
-                <p>    Chantal Michelle</p>
-                <p>Mohammad Reza Mortazavi</p>
-                <p>  Fredrik Rasten</p>
-                <p>     Youmna Saba</p>
-            </div>
-        </div>
+            <div class="left-col">
 
-        <!-- Food -->
-        <div class="section" id="section-food">
-            <p class="label" data-en="   Food provided by" data-fr="   Restauration par">   Food provided by</p>
-            <div class="section-content">
-                <p>   Harry Lester (Comptoir Central des Bazars)</p>
+                <div class="dates-links">
+                    <p data-en="May 29 30 31" data-fr="29 30 31 Mai">May 29 30 31</p>
+                    <div class="info-links">
+                        <a href="#">Tickets</a>
+                        <a href="#">Accommodation</a>
+                        <a href="#subscribe" data-en="Newsletter" data-fr="Newsletter">Newsletter</a>
+                    </div>
+                </div>
+
+                <div class="col-artists">
+                    <p>Miriam Adefris</p>
+                    <p>Pierre Bastien</p>
+                    <p>Lukas de Clerck</p>
+                    <p>Maya Dhondt</p>
+                    <p>Mats Erlandsson</p>
+                    <p>Elisabeth Klinck</p>
+                    <p>Louis Laurain</p>
+                    <p>Lubomyr Melnyk</p>
+                    <p>Chantal Michelle</p>
+                    <p>Mohammad Reza Mortazavi</p>
+                    <p>Fredrik Rasten</p>
+                    <p>Youmna Saba</p>
+                </div>
+
+                <div class="bottom-info">
+                    <p>L'Hôtel le Belvédère<br>du Rayon Vert</p>
+                    <p><span data-en="Food from" data-fr="Restauration par">Food from</span><br><span data-en="Harry Lester of Comptoir Central des Bazars" data-fr="Harry Lester du Comptoir Central des Bazars">Harry Lester of Comptoir Central des Bazars</span></p>
+                    <p><span data-en="Wine selections by" data-fr="Vins sélectionnés par">Wine selections by</span><br><span data-en="Clara Blum" data-fr="Clara Blum">Clara Blum</span></p>
+                    <div class="lang-row">
+                        <p class="lang-option" data-lang="en" id="lang-en">EN</p>
+                        <p class="lang-option" data-lang="fr" id="lang-fr">FR</p>
+                    </div>
+                </div>
+
             </div>
+
         </div>
 
-        <!-- Wine -->
-        <div class="section" id="section-wine">
-            <p class="label" data-en=" Wine selections from" data-fr=" Vins sélectionnés par"> Wine selections from</p>
-            <div class="section-content">
-                <p> Clara Blum</p>
-            </div>
-        </div>
-
-        <!-- Location -->
-        <div class="section" id="section-location">
-            <p class="label" data-en="      Located at" data-fr="      Lieu">      Located at</p>
-            <div class="section-content">
-                <p>      L'Hôtel le Belvédère</p>
-                <p>   du Rayon Vert</p>
-            </div>
-        </div>
-
-        <!-- Tickets -->
-        <div class="section" id="section-tickets">
-            <p class="label" data-en="Tickets and access" data-fr="Billets et accès">Tickets and access</p>
-            <div class="section-content ticket-links">
-                <a href="#" data-en="     Buy tickets" data-fr="     Billetterie">     Buy tickets</a>
-                <a href="#" data-en="  Reserve meals" data-fr="  Réservation repas">  Reserve meals</a>
-                <a href="#" data-en="   Accommodation" data-fr="   Hébergement">   Accommodation</a>
-            </div>
-        </div>
-
-        <!-- Subscribe -->
-        <div class="subscribe-section">
-            <p class="label" data-en="Sign up for updates" data-fr="Restez informé">Sign up for updates</p>
-            <div class="email-wrap">
-                <input type="email" class="large" id="email-input" autocomplete="email" aria-label="Email address">
-                <p class="large" id="email-display" aria-hidden="true" data-en=" Enter email..." data-fr=" Entrez email..."> Enter email...</p>
-            </div>
-            <p class="large" id="subscribe-btn" data-en="        Subscribe" data-fr="        S'inscrire">        Subscribe</p>
+        <div class="right-col">
+            <video autoplay muted loop playsinline>
+                <source src="img/BG3_slow.mp4" type="video/mp4">
+            </video>
         </div>
 
     </div>
 
-    <!-- Hidden Brevo form — submitted to iframe to avoid page navigation -->
-    <iframe name="brevo-target" style="display:none;" aria-hidden="true"></iframe>
-    <form id="brevo-form" method="POST"
-          action="https://abd5fd25.sibforms.com/serve/MUIFAG8i_gtTVlsPfTO3iFE1Lb00fwt8g9jB8hRS9qx2f9-eH08PvA7aD6JDewUtEGiI0u-ljxed7KLYrRgegt8nb536wy8Cusouw4hEMDcp91HuUtQ4N5l870UhwLJhrp9CzoYoBLgqdL1hhhFBujcqxsVEaamfkd0GMmBtjLeB03GTKTrbErK6p8CHoKUe7PTyj96ex-VftRbYTg=="
-          target="brevo-target"
-          style="display:none;" aria-hidden="true">
-        <input type="text" name="EMAIL" id="brevo-email">
-        <input type="text" name="email_address_check" value="">
-        <input type="hidden" name="locale" value="en">
-        <input type="hidden" name="html_type" value="simple">
-    </form>
+    <!-- Hidden subscribe section -->
+    <div id="subscribe" style="display:none;">
+        <iframe name="brevo-target" aria-hidden="true"></iframe>
+        <form id="brevo-form" method="POST"
+              action="https://abd5fd25.sibforms.com/serve/MUIFAG8i_gtTVlsPfTO3iFE1Lb00fwt8g9jB8hRS9qx2f9-eH08PvA7aD6JDewUtEGiI0u-ljxed7KLYrRgegt8nb536wy8Cusouw4hEMDcp91HuUtQ4N5l870UhwLJhrp9CzoYoBLgqdL1hhhFBujcqxsVEaamfkd0GMmBtjLeB03GTKTrbErK6p8CHoKUe7PTyj96ex-VftRbYTg=="
+              target="brevo-target">
+            <input type="text" name="EMAIL" id="brevo-email">
+            <input type="text" name="email_address_check" value="">
+            <input type="hidden" name="locale" value="en">
+            <input type="hidden" name="html_type" value="simple">
+        </form>
+    </div>
 
     <script src="main.js"></script>
 </body>
