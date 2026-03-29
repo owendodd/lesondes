@@ -40,7 +40,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    z-index: -10;
+    z-index: 1;
     display: flex;
     align-items: baseline;
     justify-content: center;
@@ -88,6 +88,9 @@ body {
     display: flex;
     flex-direction: column;
     gap: 120px;
+    position: relative;
+    z-index: 2;
+    background: #fff;
 }
 
 /* ── Two column grid ── */
