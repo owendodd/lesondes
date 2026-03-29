@@ -1,5 +1,16 @@
 // LES ONDES — Lang switching
 
+// Offset page content below fixed header
+(function () {
+    function setHeaderOffset() {
+        const header = document.querySelector('.site-header');
+        if (!header) return;
+        document.body.style.paddingTop = header.offsetHeight + 'px';
+    }
+    setHeaderOffset();
+    window.addEventListener('resize', setHeaderOffset);
+})();
+
 (function () {
     let currentLang = localStorage.getItem('lang') || 'en';
 
@@ -11,6 +22,11 @@
             const text = lang === 'fr' && el.dataset.fr ? el.dataset.fr : el.dataset.en;
             if (text !== undefined) el.textContent = text;
         });
+
+        const input = document.getElementById('newsletter-email-input');
+        if (input) {
+            input.placeholder = lang === 'fr' ? input.dataset.frPlaceholder : input.dataset.enPlaceholder;
+        }
 
         document.getElementById('lang-en').classList.toggle('active', lang === 'en');
         document.getElementById('lang-fr').classList.toggle('active', lang === 'fr');
