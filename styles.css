@@ -199,7 +199,7 @@ body {
     font-size: 18px;
     line-height: 1.1;
     letter-spacing: 0.08em;
-    color: rgba(0, 0, 0, 0.2);
+    color: #000;
 }
 
 .credits-col {
@@ -220,7 +220,7 @@ body {
     font-size: 18px;
     line-height: 1.1;
     letter-spacing: 0.08em;
-    color: rgba(0, 0, 0, 0.2);
+    color: #000;
 }
 
 .credits-email a {
