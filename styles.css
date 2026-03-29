@@ -1,18 +1,18 @@
 /* ── Fonts ── */
 
 @font-face {
-    font-family: 'ROM';
-    src: url('fonts/ABCROMCondensed-Heavy-Trial.woff2') format('woff2'),
-         url('fonts/ABCROMCondensed-Heavy-Trial.woff') format('woff');
+    font-family: 'Diatype';
+    src: url('fonts/ABCDiatype-Heavy-Trial.woff2') format('woff2'),
+         url('fonts/ABCDiatype-Heavy-Trial.woff') format('woff');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
 }
 
 @font-face {
-    font-family: 'ROM';
-    src: url('fonts/ABCROM-Book-Trial.woff2') format('woff2'),
-         url('fonts/ABCROM-Book-Trial.woff') format('woff');
+    font-family: 'Diatype';
+    src: url('fonts/ABCDiatype-Medium-Trial.woff2') format('woff2'),
+         url('fonts/ABCDiatype-Medium-Trial.woff') format('woff');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -26,34 +26,11 @@
     box-sizing: border-box;
 }
 
-html, body {
-    height: 100%;
-}
-
 body {
-    font-family: 'ROM', sans-serif;
+    font-family: 'Diatype', sans-serif;
     font-weight: 400;
     background: #fff;
     color: #000;
-}
-
-/* ── Page ── */
-
-.page {
-    padding: 24px;
-    min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    gap: 24px;
-}
-
-/* ── Left section ── */
-
-.left-section {
-    flex: 1;
-    min-height: calc(100vh - 48px);
-    display: flex;
-    flex-direction: column;
 }
 
 /* ── Header ── */
@@ -61,44 +38,76 @@ body {
 .site-header {
     display: flex;
     align-items: baseline;
-    gap: 64px;
-    font-size: 80px;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
-    filter: url(#roughen);
-}
-
-#header-location {
-    text-transform: none;
-}
-
-/* ── Left column ── */
-
-.left-col {
-    width: 280px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 48px;
-    font-size: 20px;
+    justify-content: center;
+    gap: 80px;
+    font-size: 68px;
+    font-weight: 400;
     line-height: 1.1;
-    letter-spacing: 2px;
-    margin-top: 48px;
+    letter-spacing: -0.02em;
+    padding: 120px 24px 120px;
     filter: url(#roughen);
 }
 
-.dates-links {
+/* ── Video ── */
+
+.hero {
+    display: flex;
+    justify-content: center;
+    padding: 0 24px 0;
+}
+
+.hero video {
+    width: 720px;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    display: block;
+}
+
+/* ── Page ── */
+
+.page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 120px 24px 120px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 120px;
+}
+
+/* ── Two column grid ── */
+
+.two-col {
+    display: grid;
+    grid-template-columns: 320px 320px;
+    gap: 80px;
+    justify-content: center;
+    align-items: stretch;
+    filter: url(#roughen);
+    font-size: 24px;
+    line-height: 1.1;
+    letter-spacing: 0.08em;
+}
+
+/* ── Info column ── */
+
+.col-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 40px;
+    text-align: center;
+}
+
+.info-top {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .info-links {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 16px;
 }
 
 .info-links a {
@@ -112,25 +121,28 @@ body {
     color: #888;
 }
 
+.info-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+}
+
+/* ── Artists column ── */
+
 .col-artists {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-}
-
-.bottom-info {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    padding-bottom: 0;
+    gap: 12px;
+    text-align: center;
 }
 
 /* ── Lang switcher ── */
 
 .lang-row {
     display: flex;
-    gap: 12px;
+    justify-content: center;
+    gap: 16px;
     cursor: pointer;
 }
 
@@ -148,18 +160,28 @@ body {
     text-underline-offset: 2px;
 }
 
-/* ── Right column / video ── */
+/* ── Credits ── */
 
-.right-col {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-start;
+.credits {
+    display: grid;
+    grid-template-columns: 320px 320px;
+    gap: 80px;
+    justify-content: center;
+    font-size: 16px;
+    line-height: 1.1;
+    letter-spacing: 0.08em;
+    color: rgba(0, 0, 0, 0.2);
 }
 
-.right-col video {
-    width: 680px;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
-    display: block;
+.credits-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+}
+
+.credits a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
 }
