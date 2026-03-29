@@ -14,7 +14,7 @@
             flex-direction: column;
             gap: 24px;
             filter: url(#roughen);
-            font-size: clamp(40px, 5.4vw, 96px);
+            font-size: clamp(40px, 5.4vw, 68px);
             font-weight: 400;
             line-height: 1.1;
             letter-spacing: -0.02em;
@@ -152,64 +152,5 @@
     </p>
 
     <script src="main.js"></script>
-    <script>
-        (function () {
-            const emailInput = document.getElementById('newsletter-email-input');
-            const errorEl = document.getElementById('newsletter-error');
-            const submitBtn = document.getElementById('newsletter-submit');
-            const brevoEmail = document.getElementById('brevo-email');
-            const brevoForm = document.getElementById('brevo-form');
-
-            const messages = {
-                empty: { en: 'Please enter your email address.', fr: 'Veuillez entrer votre adresse email.' },
-                invalid: { en: 'Please enter a valid email address.', fr: 'Veuillez entrer une adresse email valide.' },
-                success: { en: 'Thank you for subscribing!', fr: 'Merci pour votre inscription\u00a0!' },
-            };
-
-            function getLang() {
-                return localStorage.getItem('lang') || 'en';
-            }
-
-            function isValidEmail(email) {
-                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-            }
-
-            function showError(key) {
-                const lang = getLang();
-                errorEl.textContent = messages[key][lang];
-            }
-
-            function clearError() {
-                errorEl.textContent = '';
-            }
-
-            emailInput.addEventListener('input', clearError);
-
-            submitBtn.addEventListener('click', function () {
-                const email = emailInput.value.trim();
-
-                if (!email) {
-                    showError('empty');
-                    emailInput.focus();
-                    return;
-                }
-
-                if (!isValidEmail(email)) {
-                    showError('invalid');
-                    emailInput.focus();
-                    return;
-                }
-
-                brevoEmail.value = email;
-                brevoForm.submit();
-
-                emailInput.value = '';
-                clearError();
-                const lang = getLang();
-                emailInput.placeholder = messages.success[lang];
-                submitBtn.style.display = 'none';
-            });
-        })();
-    </script>
 </body>
 </html>

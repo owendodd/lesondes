@@ -1,4 +1,4 @@
-// LES ONDES — Lang switching
+// LES ONDES — main.js
 
 // Offset page content below fixed header
 (function () {
@@ -11,8 +11,65 @@
     window.addEventListener('resize', setHeaderOffset);
 })();
 
+// Lang switching
 (function () {
     let currentLang = localStorage.getItem('lang') || 'en';
+
+    function initNewsletter() {
+        const newsletterInput = document.getElementById('newsletter-email-input');
+        const newsletterSubmit = document.getElementById('newsletter-submit');
+        const brevoEmail = document.getElementById('brevo-email');
+        const brevoForm = document.getElementById('brevo-form');
+
+        if (!newsletterSubmit) return;
+
+        const messages = {
+            empty:   { en: 'Add your email', fr: 'Ajoutez votre email' },
+            invalid: { en: 'Invalid email', fr: 'Email invalide' },
+            success: { en: 'Thank you!', fr: 'Merci\u00a0!' },
+        };
+        const submitDefault = { en: 'Subscribe', fr: "S'inscrire" };
+        let errorTimer = null;
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function flashError(key) {
+            const lang = currentLang;
+            newsletterSubmit.textContent = messages[key][lang];
+            newsletterSubmit.style.textDecoration = 'none';
+            clearTimeout(errorTimer);
+            errorTimer = setTimeout(() => {
+                newsletterSubmit.textContent = submitDefault[lang];
+                newsletterSubmit.style.textDecoration = '';
+            }, 3000);
+        }
+
+        newsletterInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') newsletterSubmit.click();
+        });
+
+        newsletterSubmit.addEventListener('click', () => {
+            const email = newsletterInput.value.trim();
+            const lang = currentLang;
+
+            if (!email) { flashError('empty'); newsletterInput.focus(); return; }
+            if (!isValidEmail(email)) { flashError('invalid'); newsletterInput.focus(); return; }
+
+            brevoEmail.value = email;
+            brevoForm.submit();
+
+            newsletterInput.value = '';
+            newsletterInput.placeholder = messages.success[lang];
+            newsletterInput.dataset.subscribed = 'true';
+            newsletterInput.blur();
+            newsletterInput.disabled = true;
+            newsletterSubmit.disabled = true;
+            newsletterSubmit.style.opacity = '0';
+            newsletterSubmit.style.pointerEvents = 'none';
+        });
+    }
 
     function applyLang(lang) {
         currentLang = lang;
@@ -24,7 +81,7 @@
         });
 
         const input = document.getElementById('newsletter-email-input');
-        if (input) {
+        if (input && !input.dataset.subscribed) {
             input.placeholder = lang === 'fr' ? input.dataset.frPlaceholder : input.dataset.enPlaceholder;
         }
 
@@ -37,6 +94,8 @@
     });
 
     applyLang(currentLang);
+
+    initNewsletter();
 
     // --- Typewriter animation on header ---
 

@@ -1,1 +1,13 @@
 .vercel
+node_modules
+
+# Next.js
+web/.next
+web/node_modules
+
+# Sanity Studio
+studio-lesondes/node_modules
+studio-lesondes/.sanity
+
+# Env
+web/.env.local

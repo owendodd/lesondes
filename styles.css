@@ -57,7 +57,7 @@ body {
     display: flex;
     align-items: baseline;
     justify-content: center;
-    gap: clamp(40px, 4.85vw, 80px);
+    gap: clamp(40px, 4.85vw, 68px);
     color: inherit;
     text-decoration: none;
     cursor: pointer;
@@ -90,7 +90,6 @@ body {
     gap: 120px;
     position: relative;
     z-index: 2;
-    background: #fff;
 }
 
 /* ── Two column grid ── */
@@ -185,28 +184,87 @@ body {
 /* ── Fluid header scaling ── */
 
 .site-header {
-    font-size: clamp(40px, 5.4vw, 96px);
-    gap: clamp(40px, 4.85vw, 80px);
+    font-size: clamp(40px, 5.4vw, 68px);
+    gap: clamp(40px, 4.85vw, 68px);
+}
+
+/* ── Newsletter inline ── */
+
+.newsletter-inline {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+    font-size: 24px;
+    line-height: 1.1;
+    letter-spacing: 0.08em;
+    filter: url(#roughen);
+}
+
+.newsletter-inline-input {
+    font-family: 'Diatype', sans-serif;
+    font-weight: 400;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.2);
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 0;
+}
+
+.newsletter-inline-input::placeholder {
+    color: rgba(0, 0, 0, 0.2);
+}
+
+.newsletter-inline-input:focus {
+    color: #000;
+}
+
+.newsletter-inline-input:focus::placeholder {
+    color: transparent;
+}
+
+.newsletter-inline-title {
+    color: #000;
+}
+
+.newsletter-inline-submit {
+    font-family: 'Diatype', sans-serif;
+    font-weight: 400;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    text-align: center;
+    color: #000;
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    padding: 0;
 }
 
 /* ── Credits ── */
 
 .credits {
-    display: grid;
-    grid-template-columns: 320px 320px;
-    gap: 80px;
-    justify-content: center;
-    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: -60px;
+    text-align: center;
+    font-size: 24px;
     line-height: 1.1;
     letter-spacing: 0.08em;
     color: #000;
 }
 
 .credits-col {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    text-align: center;
+    display: contents;
 }
 
 .credits a {
@@ -216,8 +274,9 @@ body {
 }
 
 .credits-email {
+    margin-top: -60px;
     text-align: center;
-    font-size: 18px;
+    font-size: 24px;
     line-height: 1.1;
     letter-spacing: 0.08em;
     color: #000;
@@ -262,9 +321,12 @@ body {
         row-gap: 48px;
     }
 
-    .credits {
-        grid-template-columns: 1fr;
-        gap: 16px;
-        text-align: center;
+    .credits-email {
+        margin-top: -4px;
     }
+
+    .credits {
+        margin-top: -4px;
+    }
+
 }

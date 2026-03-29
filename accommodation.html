@@ -20,7 +20,7 @@
         }
 
         .accom-title {
-            font-size: clamp(40px, 5.4vw, 96px);
+            font-size: clamp(40px, 5.4vw, 68px);
             font-weight: 400;
             line-height: 1.1;
             letter-spacing: -0.02em;
@@ -58,9 +58,12 @@
             color: #888;
         }
 
+        .accom-page .newsletter-inline {
+            margin-top: calc(120px - 32px);
+        }
+
         .accom-email {
-            padding-top: 40px;
-            font-size: 16px;
+            font-size: 24px;
             line-height: 1.1;
             letter-spacing: 0.08em;
             color: #000;
@@ -109,7 +112,6 @@
 
     <div class="accom-page">
 
-        <p class="accom-title" data-en="Accommodation" data-fr="Hébergement">Accommodation</p>
 
 
         <p class="accom-intro" data-en="Cerbère and its neighbouring towns, Portbou and Banyuls-sur-mer, offer nearby and affordable accommodation for the duration of Les Ondes. Travel is served by regional TER train or by foot. Taxis services are available for evening return journeys to Banyuls-sur-mer and Portbou." data-fr="Cerbère et ses villes voisines, Portbou et Banyuls-sur-mer, offrent des hébergements proches et abordables pour la durée des Ondes. Les déplacements sont assurés par train TER régional ou à pied. Des services de taxi sont disponibles pour les retours en soirée vers Banyuls-sur-mer et Portbou.">Cerbère and its neighbouring towns, Portbou and Banyuls-sur-mer, offer nearby and affordable accommodation for the duration of Les Ondes. Travel is served by regional TER train or by foot. Taxis services are available for evening return journeys to Banyuls-sur-mer and Portbou.</p>
@@ -134,11 +136,28 @@
 
         </div>
 
+        <div class="newsletter-inline">
+            <p class="newsletter-inline-title" data-en="Newsletter" data-fr="Infolettre">Newsletter</p>
+            <input class="newsletter-inline-input" type="email" id="newsletter-email-input" placeholder="Enter your email..." data-en-placeholder="Enter your email..." data-fr-placeholder="Entrez votre email...">
+            <button class="newsletter-inline-submit" id="newsletter-submit" data-en="Subscribe" data-fr="S'inscrire">Subscribe</button>
+        </div>
+
         <div class="accom-email">
-            <a href="mailto:poste@les-ondes.fr">poste@les-ondes.fr</a>
+            <span data-en="Contact us at " data-fr="Contactez-nous à ">Contact us at </span><a href="mailto:poste@les-ondes.fr">poste@les-ondes.fr</a>
         </div>
 
     </div>
+
+    <iframe name="brevo-target" style="display:none;" aria-hidden="true"></iframe>
+    <form id="brevo-form" method="POST"
+          action="https://abd5fd25.sibforms.com/serve/MUIFAG8i_gtTVlsPfTO3iFE1Lb00fwt8g9jB8hRS9qx2f9-eH08PvA7aD6JDewUtEGiI0u-ljxed7KLYrRgegt8nb536wy8Cusouw4hEMDcp91HuUtQ4N5l870UhwLJhrp9CzoYoBLgqdL1hhhFBujcqxsVEaamfkd0GMmBtjLeB03GTKTrbErK6p8CHoKUe7PTyj96ex-VftRbYTg=="
+          target="brevo-target"
+          style="display:none;" aria-hidden="true">
+        <input type="text" name="EMAIL" id="brevo-email">
+        <input type="text" name="email_address_check" value="">
+        <input type="hidden" name="locale" value="en">
+        <input type="hidden" name="html_type" value="simple">
+    </form>
 
     <script src="main.js"></script>
 </body>

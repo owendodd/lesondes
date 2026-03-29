@@ -6,161 +6,112 @@
     <title>Les Ondes Cerbère</title>
     <style>
         @font-face {
-            font-family: 'ITCSouvenirMono';
-            src: url('fonts/ITCSouvenirMonospacedProBold.woff2') format('woff2'),
-                 url('fonts/ITCSouvenirMonospacedProBold.woff') format('woff');
+            font-family: 'Diatype';
+            src: url('fonts/ABCDiatype-Heavy-Trial.woff2') format('woff2'),
+                 url('fonts/ABCDiatype-Heavy-Trial.woff') format('woff');
             font-weight: 700;
             font-style: normal;
             font-display: swap;
         }
 
         @font-face {
-            font-family: 'Bradford';
-            src: url('fonts/BradfordMono_8-3-Regular.woff') format('woff');
+            font-family: 'Diatype';
+            src: url('fonts/ABCDiatype-Medium-Trial.woff2') format('woff2'),
+                 url('fonts/ABCDiatype-Medium-Trial.woff') format('woff');
             font-weight: 400;
             font-style: normal;
             font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'Quadrant';
-            src: url('fonts/QuadrantTextMono-Regular.woff') format('woff');
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        .post.souvenir {
-            font-family: 'ITCSouvenirMono', monospace;
-            font-weight: 700;
-        }
-
-        .post.bradford {
-            font-family: 'Bradford', monospace;
-            font-weight: 400;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Quadrant', monospace;
+            font-family: 'Diatype', sans-serif;
             font-weight: 400;
-            background: #ffffff;
+            background: #e8e8e8;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* ── 1080×1350 canvas, scaled to fit viewport ── */
+        /* ── 1080×1350 canvas ── */
         .post {
-            position: relative;
             width: 1080px;
             height: 1350px;
-            background: #f5f5f4; /* matched by canvas clearColor */
+            background: #fff;
             transform-origin: center center;
             flex-shrink: 0;
             overflow: hidden;
-            filter: url(#roughen);
+            display: flex;
+            flex-direction: column;
+            padding: 48px;
+            gap: 48px;
         }
 
+        /* ── Two sections: text top, video bottom ── */
+        .section-text {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+
+        .section-video {
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* ── Video fills its section ── */
         .post-video {
-            position: absolute;
-            inset: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 0;
+            display: block;
         }
 
-        /* ── Slides ── */
+        /* ── Slides: fill the text section, stacked ── */
         .slide {
             position: absolute;
             inset: 0;
-            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: url(#roughen);
         }
 
-        /* ── Slide 1: title / dates / location ── */
-        .slide-1 p {
-            position: absolute;
-            font-size: 80px;
+        /* ── Shared text style ── */
+        .slide p {
+            font-size: 100px;
             line-height: 1.1;
-            color: rgba(0, 0, 0, 0.85);
+            letter-spacing: -0.02em;
+            color: #000;
             white-space: pre;
+            text-align: center;
         }
 
-        #t-les     { top: 40px;    left: 40px; }
-        #t-ondes   { top: 40px;    left: 280px; }
-        #t-cerbere { top: 40px;    left: 640px; }
-
-        #dates {
-            top: 128px;
-            left: 40px;
-            line-height: 0.9;
+        /* ── Slide 1: stacked column, centered ── */
+        .slide-1 {
+            flex-direction: column;
+            gap: 48px;
         }
 
-        #loc-at    { top: 966px;  left: 40px; }
-        #loc-hotel { top: 1054px; left: 40px; }
-        #loc-belv  { top: 1142px; left: 40px; }
-        #loc-rayon { top: 1230px; left: 40px; }
-
-        /* ── Dark bg mode ── */
-        body.dark { background: #0f1217; }
-        .post.dark { background: #000000; }
-        .post.dark .slide-1 p,
-        .post.dark .names-grid p { color: rgba(255, 255, 255, 1); }
-
-        /* ── Color mode (slide 1 only) ── */
-        .post.color .slide-1 #t-les,
-        .post.color .slide-1 #t-ondes,
-        .post.color .slide-1 #t-cerbere,
-        .post.color .slide-1 #loc-at,
-        .post.color .slide-1 #loc-hotel,
-        .post.color .slide-1 #loc-belv,
-        .post.color .slide-1 #loc-rayon { color: #ff9b00; }
-
-        .post.color .slide-1 #dates { color: #d70dff; }
-
-        /* ── Color mode: slides 2 & 3 — alternating orange / purple ── */
-        .post.color .slide-2 #a1,
-        .post.color .slide-2 #a3,
-        .post.color .slide-2 #a5 { color: #ff9b00; }
-
-        .post.color .slide-2 #a2,
-        .post.color .slide-2 #a4,
-        .post.color .slide-2 #a6 { color: #d70dff; }
-
-        .post.color .slide-3 #b1,
-        .post.color .slide-3 #b3,
-        .post.color .slide-3 #b5 { color: #ff9b00; }
-
-        .post.color .slide-3 #b2,
-        .post.color .slide-3 #b4,
-        .post.color .slide-3 #b6 { color: #d70dff; }
-
-        /* ── Slides 2 & 3: artist names, spread full height ── */
+        /* ── Slides 2 & 3: artist names ── */
         .names-grid {
-            position: absolute;
-            top: 40px;
-            left: 40px;
-            width: 1000px;
-            height: 1270px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            width: 100%;
         }
 
         .names-grid p {
-            font-size: 80px;
-            line-height: 1.1;
-            color: rgba(0, 0, 0, 0.85);
-            white-space: pre;
-            overflow: visible;
+            font-size: 52px;
+            letter-spacing: 4.16px;
+            text-align: center;
+            width: 100%;
         }
-
-        /* Fixed heights prevent flex reflow while typing */
-        .names-grid .l1 { height: 88px; }   /* single line */
-        .names-grid .l2 { height: 176px; }  /* two lines   */
 
         /* ── Controls: upper left, fixed ── */
         .controls {
@@ -173,9 +124,10 @@
         }
 
         .controls button {
-            font-family: 'ITCSouvenirMono', 'Courier New', monospace;
-            font-weight: 700;
+            font-family: 'Diatype', sans-serif;
+            font-weight: 400;
             font-size: 13px;
+            letter-spacing: 0.08em;
             background: none;
             border: 1px solid rgba(0, 0, 0, 0.35);
             padding: 5px 16px;
@@ -186,36 +138,8 @@
 
         .controls button:hover {
             background: black;
-            color: #f5f5f4;
+            color: #fff;
             border-color: black;
-        }
-
-        body.dark .controls button {
-            border-color: rgba(255, 255, 255, 0.35);
-            color: white;
-        }
-
-        body.dark .controls button:hover {
-            background: white;
-            color: #0f1217;
-            border-color: white;
-        }
-
-        body.dark .controls select {
-            border-color: rgba(255, 255, 255, 0.35);
-            color: white;
-        }
-
-        .controls select {
-            font-family: 'ITCSouvenirMono', 'Courier New', monospace;
-            font-weight: 700;
-            font-size: 13px;
-            background: none;
-            border: 1px solid rgba(0, 0, 0, 0.35);
-            padding: 5px 16px;
-            cursor: pointer;
-            color: black;
-            appearance: none;
         }
     </style>
 </head>
@@ -223,48 +147,51 @@
     <svg style="display:none" aria-hidden="true">
         <defs>
             <filter id="roughen" x="-5%" y="-5%" width="110%" height="110%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.35" numOctaves="4" seed="8" result="noise"/>
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+                <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="4" seed="8" result="noise"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
             </filter>
         </defs>
     </svg>
 
     <div class="post" id="post">
 
-        <!-- Slide 1: LES ONDES / dates / location -->
-        <div class="slide slide-1 active" id="slide-1">
-            <p id="t-les"></p>
-            <p id="t-ondes"></p>
-            <p id="t-cerbere"></p>
-            <p id="dates"></p>
-            <p id="loc-at"></p>
-            <p id="loc-hotel"></p>
-            <p id="loc-belv"></p>
-            <p id="loc-rayon"></p>
-        </div>
+        <div class="section-text">
+            <!-- Slide 1: LES ONDES / Cerbère / dates -->
+            <div class="slide slide-1" id="slide-1">
+                <p id="t-title"></p>
+                <p id="t-cerbere"></p>
+                <p id="dates"></p>
+            </div>
 
-        <!-- Slide 2: Miriam → Elisabeth -->
-        <div class="slide slide-2" id="slide-2">
-            <div class="names-grid">
-                <p class="l1" id="a1"></p>
-                <p class="l1" id="a2"></p>
-                <p class="l2" id="a3"></p>
-                <p class="l1" id="a4"></p>
-                <p class="l2" id="a5"></p>
-                <p class="l2" id="a6"></p>
+            <!-- Slide 2: Miriam → Elisabeth -->
+            <div class="slide slide-2" id="slide-2">
+                <div class="names-grid">
+                    <p id="a1"></p>
+                    <p id="a2"></p>
+                    <p id="a3"></p>
+                    <p id="a4"></p>
+                    <p id="a5"></p>
+                    <p id="a6"></p>
+                </div>
+            </div>
+
+            <!-- Slide 3: Louis → Youmna -->
+            <div class="slide slide-3" id="slide-3">
+                <div class="names-grid">
+                    <p id="b1"></p>
+                    <p id="b2"></p>
+                    <p id="b3"></p>
+                    <p id="b4"></p>
+                    <p id="b5"></p>
+                    <p id="b6"></p>
+                </div>
             </div>
         </div>
 
-        <!-- Slide 3: Louis → TLF Trio -->
-        <div class="slide slide-3" id="slide-3">
-            <div class="names-grid">
-                <p class="l1" id="b1"></p>
-                <p class="l1" id="b2"></p>
-                <p class="l1" id="b3"></p>
-                <p class="l2" id="b4"></p>
-                <p class="l2" id="b5"></p>
-                <p class="l1" id="b6"></p>
-            </div>
+        <div class="section-video">
+            <video class="post-video" autoplay muted loop playsinline>
+                <source src="img/BG3_slow.mp4" type="video/mp4">
+            </video>
         </div>
 
     </div>
@@ -272,101 +199,9 @@
     <div class="controls">
         <button id="btn-start">start</button>
         <button id="btn-reset">reset</button>
-        <button id="btn-bg">black</button>
-        <button id="btn-color">color</button>
-        <select id="sel-font">
-            <option value="quadrant">quadrant</option>
-            <option value="bradford">bradford</option>
-            <option value="souvenir">souvenir</option>
-        </select>
     </div>
 
     <script>
-        // ── WebGL particle background (static) ─────────────────────────
-        (function () {
-            const W = 1080, H = 1350;
-            const canvas = document.createElement('canvas');
-            canvas.width  = W;
-            canvas.height = H;
-            canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
-            document.getElementById('post').prepend(canvas);
-
-            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            if (!gl) return;
-
-            const COUNT = 220;
-
-            const vs = `
-                attribute vec2 a_pos;
-                attribute float a_size;
-                uniform vec2 u_res;
-                void main() {
-                    vec2 clip = (a_pos / u_res) * 2.0 - 1.0;
-                    gl_Position = vec4(clip.x, -clip.y, 0.0, 1.0);
-                    gl_PointSize = a_size;
-                }
-            `;
-            const fs = `
-                precision mediump float;
-                void main() {
-                    float d = length(vec2(gl_PointCoord.x - 0.5, (gl_PointCoord.y - 0.5) * 2.0));
-                    float a = 1.0 - smoothstep(0.3, 0.5, d);
-                    if (a < 0.01) discard;
-                    gl_FragColor = vec4(0.0, 0.0, 0.0, a);
-                }
-            `;
-
-            function mkShader(type, src) {
-                const s = gl.createShader(type);
-                gl.shaderSource(s, src);
-                gl.compileShader(s);
-                return s;
-            }
-
-            const prog = gl.createProgram();
-            gl.attachShader(prog, mkShader(gl.VERTEX_SHADER, vs));
-            gl.attachShader(prog, mkShader(gl.FRAGMENT_SHADER, fs));
-            gl.linkProgram(prog);
-            gl.useProgram(prog);
-
-            const aPos  = gl.getAttribLocation(prog, 'a_pos');
-            const aSize = gl.getAttribLocation(prog, 'a_size');
-            const uRes  = gl.getUniformLocation(prog, 'u_res');
-
-            gl.uniform2f(uRes, W, H);
-            gl.viewport(0, 0, W, H);
-            gl.enable(gl.BLEND);
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-
-            const posData  = new Float32Array(COUNT * 2);
-            const sizeData = new Float32Array(COUNT);
-
-            for (let i = 0; i < COUNT; i++) {
-                posData[i * 2]     = Math.random() * W;
-                posData[i * 2 + 1] = Math.random() * H;
-                const r = Math.random();
-                sizeData[i] = 1.8 + r * r * 3.2;
-            }
-
-            const posBuf  = gl.createBuffer();
-            const sizeBuf = gl.createBuffer();
-
-            gl.clearColor(0.96, 0.96, 0.955, 1.0);
-            gl.clear(gl.COLOR_BUFFER_BIT);
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
-            gl.bufferData(gl.ARRAY_BUFFER, posData, gl.STATIC_DRAW);
-            gl.enableVertexAttribArray(aPos);
-            gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuf);
-            gl.bufferData(gl.ARRAY_BUFFER, sizeData, gl.STATIC_DRAW);
-            gl.enableVertexAttribArray(aSize);
-            gl.vertexAttribPointer(aSize, 1, gl.FLOAT, false, 0, 0);
-
-            gl.drawArrays(gl.POINTS, 0, COUNT);
-        })();
-
         // ── Scale post to fit viewport ──────────────────────────────────
         const post = document.getElementById('post');
 
@@ -382,72 +217,57 @@
         window.addEventListener('resize', scalePost);
 
         // ── Slide definitions ───────────────────────────────────────────
-        // spaceExtra: extra ms added after each space character
-        // startDelay: ms gap before this line begins (within a slide)
         const slides = [
             {
                 el: document.getElementById('slide-1'),
-                nextOverlap: -1200,
+                nextOverlap: -600,
                 lines: [
-                    { id: 't-les',     text: 'LES',                charDelay: 65,  pauseAfter: 30  },
-                    { id: 't-ondes',   text: 'ONDES',              charDelay: 45,  pauseAfter: 30  },
-                    { id: 't-cerbere', text: 'Cerb\u00e8re',       charDelay: 35,  pauseAfter: 280 },
-                    { id: 'dates',     text: '  May 29 30 31',     charDelay: 28,  spaceExtra: 40, pauseAfter: 0 },
-                    { id: 'loc-at',    text: '  at',               charDelay: 55,  pauseAfter: 15, startDelay: 500 },
-                    { id: 'loc-hotel', text: 'L\u2019H\u00f4tel le', charDelay: 22, pauseAfter: 15 },
-                    { id: 'loc-belv',  text: 'Belv\u00e9d\u00e8re', charDelay: 28, pauseAfter: 15 },
-                    { id: 'loc-rayon', text: '    du Rayon Vert',  charDelay: 18,  pauseAfter: 0  },
+                    { id: 't-title',   text: 'LES ONDES',        charDelay: 80,  pauseAfter: 60  },
+                    { id: 't-cerbere', text: 'Cerb\u00e8re',     charDelay: 60,  pauseAfter: 60  },
+                    { id: 'dates',     text: 'May 29 30 31',     charDelay: 50,  spaceExtra: 60, pauseAfter: 0 },
                 ],
             },
             {
                 el: document.getElementById('slide-2'),
+                nextOverlap: -600,
                 lines: [
-                    { id: 'a1', text: '   Miriam  Adefris',                    charDelay: 22, pauseAfter: 60  },
-                    { id: 'a2', text: ' Pierre Bastien',                        charDelay: 16, pauseAfter: 90  },
-                    { id: 'a3', text: '     Lukas de \n       Clerck',          charDelay: 30, pauseAfter: 50  },
-                    { id: 'a4', text: '  Maya Dhondt',                          charDelay: 14, pauseAfter: 110 },
-                    { id: 'a5', text: '       Mats     \n      Erlandsson',     charDelay: 24, pauseAfter: 70  },
-                    { id: 'a6', text: '  Elisabeth \n       Klinck',            charDelay: 28, pauseAfter: 0   },
+                    { id: 'a1', text: 'Miriam Adefris',   charDelay: 40, pauseAfter: 80  },
+                    { id: 'a2', text: 'Pierre Bastien',   charDelay: 35, pauseAfter: 100 },
+                    { id: 'a3', text: 'Lukas de Clerck',  charDelay: 45, pauseAfter: 70  },
+                    { id: 'a4', text: 'Maya Dhondt',      charDelay: 32, pauseAfter: 120 },
+                    { id: 'a5', text: 'Mats Erlandsson',  charDelay: 42, pauseAfter: 90  },
+                    { id: 'a6', text: 'Elisabeth Klinck', charDelay: 45, pauseAfter: 0   },
                 ],
             },
             {
                 el: document.getElementById('slide-3'),
+                nextOverlap: -200,
                 lines: [
-                    { id: 'b1', text: ' Louis Laurain',                         charDelay: 20, pauseAfter: 75  },
-                    { id: 'b2', text: '    Lubomyr Melnyk',                     charDelay: 15, pauseAfter: 55  },
-                    { id: 'b3', text: 'Chantal Michelle',                       charDelay: 26, pauseAfter: 90  },
-                    { id: 'b4', text: ' Mohammad Reza    \n       Mortazavi',   charDelay: 17, pauseAfter: 65  },
-                    { id: 'b5', text: '         Fredrik   \n      Rasten',      charDelay: 32, pauseAfter: 80  },
-                    { id: 'b6', text: '  Youmna Saba',                          charDelay: 13, pauseAfter: 0   },
+                    { id: 'b1', text: 'Louis Laurain',           charDelay: 38, pauseAfter: 90  },
+                    { id: 'b2', text: 'Lubomyr Melnyk',          charDelay: 32, pauseAfter: 70  },
+                    { id: 'b3', text: 'Chantal Michelle',        charDelay: 44, pauseAfter: 100 },
+                    { id: 'b4', text: 'Mohammad Reza Mortazavi', charDelay: 30, pauseAfter: 80  },
+                    { id: 'b5', text: 'Fredrik Rasten',          charDelay: 50, pauseAfter: 90  },
+                    { id: 'b6', text: 'Youmna Saba',             charDelay: 28, pauseAfter: 0   },
                 ],
             },
         ];
 
         // ── Animation engine ────────────────────────────────────────────
-        // Each character is a pre-rendered invisible <span>. Typing/untyping
-        // toggles visibility so characters never shift position.
-        // All slides are always display:block; empty = all spans hidden.
-
         let runId   = 0;
         let running = false;
 
-        // Returns a Set of character indices that are layout-only spaces:
-        // leading spaces, trailing spaces, spaces before \n, spaces after \n.
         function layoutSpaceSet(text) {
             const s = new Set();
             let i;
-            // leading
             i = 0;
             while (i < text.length && text[i] === ' ') s.add(i++);
-            // trailing
             i = text.length - 1;
             while (i >= 0 && text[i] === ' ') s.add(i--);
             for (let j = 0; j < text.length; j++) {
                 if (text[j] === '\n') {
-                    // spaces before \n
                     let k = j - 1;
                     while (k >= 0 && text[k] === ' ') s.add(k--);
-                    // spaces after \n
                     k = j + 1;
                     while (k < text.length && text[k] === ' ') s.add(k++);
                 }
@@ -455,9 +275,6 @@
             return s;
         }
 
-        // Pre-populate an element with spans, one per character.
-        // Layout spaces are pre-revealed (always visible); content chars start hidden.
-        // \n becomes a <br> (structural, always present, not toggled).
         function initLineSpans(line) {
             const el = document.getElementById(line.id);
             el.innerHTML = '';
@@ -483,14 +300,10 @@
             document.getElementById('btn-start').textContent = 'start';
         }
 
-        // Schedule a single guarded timeout
         function at(myRun, ms, fn) {
             setTimeout(() => { if (runId === myRun && running) fn(); }, ms);
         }
 
-        // Build timeline events that show (type) or hide (untype) spans left→right.
-        // vis: 'visible' to type, 'hidden' to untype.
-        // Layout spaces are skipped — they're always visible and never animated.
         function buildTimeline(slide, vis) {
             const events = [];
             let cursor = 0;
@@ -526,19 +339,15 @@
             const slide   = slides[slideIdx];
             const nextIdx = (slideIdx + 1) % slides.length;
 
-            // Reset this slide's spans before typing
             slide.lines.forEach(l => initLineSpans(l));
 
-            // ── 1. Type ──
             const { events: typeEvents, duration: typeDuration } = buildTimeline(slide, 'visible');
             typeEvents.forEach(e => at(myRun, e.time, e.fn));
 
-            // ── 2. Brief pause, then untype ──
             at(myRun, typeDuration + 300, () => {
                 const { events: unEvents, duration: unDuration } = buildTimeline(slide, 'hidden');
                 unEvents.forEach(e => at(myRun, e.time, e.fn));
 
-                // ── 3. Start next slide partway through untyping (overlap) ──
                 const overlap = slide.nextOverlap !== undefined ? slide.nextOverlap : -2000;
                 at(myRun, unDuration + overlap, () => runSlide(myRun, nextIdx));
             });
@@ -561,29 +370,6 @@
         });
 
         document.getElementById('btn-reset').addEventListener('click', clearAll);
-
-        let darkMode = false;
-        const btnBg = document.getElementById('btn-bg');
-        btnBg.addEventListener('click', () => {
-            darkMode = !darkMode;
-            document.body.classList.toggle('dark', darkMode);
-            post.classList.toggle('dark', darkMode);
-            btnBg.textContent = darkMode ? 'white' : 'black';
-        });
-
-        let colorMode = false;
-        const btnColor = document.getElementById('btn-color');
-        btnColor.addEventListener('click', () => {
-            colorMode = !colorMode;
-            post.classList.toggle('color', colorMode);
-            btnColor.textContent = colorMode ? 'b&w' : 'color';
-        });
-
-        const selFont = document.getElementById('sel-font');
-        selFont.addEventListener('change', () => {
-            post.classList.remove('souvenir', 'bradford');
-            if (selFont.value !== 'quadrant') post.classList.add(selFont.value);
-        });
     </script>
 </body>
 </html>
