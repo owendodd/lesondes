@@ -1,11 +1,12 @@
 'use client'
 
 import { useLang } from '@/hooks/useLang'
+import { siteBodyTextClass, siteContainerClass } from '@/lib/siteSpacing'
 import type { Accommodation } from '@/lib/types'
 import type { ReactNode } from 'react'
 
 const pageClass =
-  'mx-auto flex max-w-[720px] flex-col gap-8 px-6 pb-[120px] text-[24px] leading-[1.1] tracking-[0.08em] filter-[url(#roughen)] max-[740px]:px-5 max-[740px]:pb-16 max-[740px]:text-[20px]'
+  `${siteContainerClass} flex flex-col gap-[60px] pb-[120px] max-[740px]:pb-16 ${siteBodyTextClass}`
 
 export function AccommodationContent({
   data,
@@ -20,7 +21,7 @@ export function AccommodationContent({
     <div className={pageClass}>
       <p className="leading-[1.1]">{lang === 'fr' ? data.introFr : data.introEn}</p>
 
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-[60px]">
         {data.locations.map(loc => (
           <div key={loc.name} className="flex flex-col gap-4">
             <p className="text-center uppercase">{loc.name}</p>
@@ -28,11 +29,11 @@ export function AccommodationContent({
               <p key={hotel.hotelName}>
                 <a
                   href={hotel.url || '#'}
-                  className="text-inherit underline decoration-[2px] underline-offset-2 hover:text-[#888]"
+                  className="text-inherit underline decoration-2 underline-offset-2 hover:text-[#888]"
                 >
                   {hotel.hotelName}
                 </a>
-                : {hotel.description}
+                : {lang === 'fr' ? (hotel.descriptionFr || hotel.description) : hotel.description}
               </p>
             ))}
           </div>

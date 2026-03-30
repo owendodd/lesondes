@@ -32,7 +32,7 @@ export const ACCOMMODATION_QUERY = `{
     introEn, introFr,
     locations[] {
       name,
-      hotels[] { hotelName, url, description }
+      hotels[] { hotelName, url, description, descriptionFr }
     }
   }
 }`

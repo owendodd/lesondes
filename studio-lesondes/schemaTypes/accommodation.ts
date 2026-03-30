@@ -24,9 +24,10 @@ export const accommodation = defineType({
                 defineArrayMember({
                   type: 'object',
                   fields: [
-                    defineField({ name: 'hotelName',   title: 'Hotel name',   type: 'string' }),
-                    defineField({ name: 'url',         title: 'URL',          type: 'url' }),
-                    defineField({ name: 'description', title: 'Description',  type: 'text' }),
+                    defineField({ name: 'hotelName',      title: 'Hotel name',        type: 'string' }),
+                    defineField({ name: 'url',            title: 'URL',               type: 'url' }),
+                    defineField({ name: 'description',    title: 'Description (EN)',   type: 'text' }),
+                    defineField({ name: 'descriptionFr',  title: 'Description (FR)',   type: 'text' }),
                   ],
                   preview: { select: { title: 'hotelName' } },
                 }),

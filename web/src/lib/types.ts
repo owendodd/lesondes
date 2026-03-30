@@ -45,6 +45,7 @@ export interface Hotel {
   hotelName: string
   url: string
   description: string
+  descriptionFr: string
 }
 
 export interface Location {

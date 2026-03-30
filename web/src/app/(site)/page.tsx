@@ -6,13 +6,20 @@ import { ArtistList } from '@/components/ArtistList'
 import { InfoBottom } from '@/components/InfoBottom'
 import { NewsletterContact } from '@/components/NewsletterContact'
 import { Credits } from '@/components/Credits'
+import { LangSwitcher } from '@/components/LangSwitcher'
+import {
+  siteBodyTextClass,
+  siteBottomFullWidthStackClass,
+  siteContainerClass,
+  sitePageGapClass,
+  sitePagePaddingYClass,
+  sitePageStackClass,
+} from '@/lib/siteSpacing'
 import type { SiteConfig, Artist, InfoLink, InfoBottom as InfoBottomType, Credit } from '@/lib/types'
 
-const pageClass =
-  'relative z-[2] mx-auto flex max-w-[800px] flex-col gap-[120px] px-6 py-[120px] max-[740px]:gap-16 max-[740px]:px-5 max-[740px]:py-16'
+const pageClass = `relative z-[2] ${siteContainerClass} ${sitePageStackClass} ${sitePageGapClass} ${sitePagePaddingYClass}`
 
-const twoColClass =
-  'home-content-grid text-[24px] leading-[1.1] tracking-[0.08em] filter-[url(#roughen)]'
+const twoColClass = `home-content-grid ${siteBodyTextClass}`
 
 interface HomeData {
   siteConfig: SiteConfig
@@ -47,8 +54,13 @@ export default async function Home() {
           <InfoBottom data={data.infoBottom} />
         </div>
 
-        <NewsletterContact brevoFormAction={data.siteConfig.brevoFormAction} email={data.siteConfig.contactEmail} />
-        <Credits credits={data.credits} />
+        <div className={siteBottomFullWidthStackClass}>
+          <NewsletterContact brevoFormAction={data.siteConfig.brevoFormAction} email={data.siteConfig.contactEmail} />
+          <Credits credits={data.credits} />
+          <div className={siteBodyTextClass}>
+            <LangSwitcher />
+          </div>
+        </div>
       </div>
     </>
   )

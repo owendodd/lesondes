@@ -1,4 +1,5 @@
 import { LangProvider } from '@/components/LangProvider'
+import { LangSwitcher } from '@/components/LangSwitcher'
 import { SvgFilter } from '@/components/SvgFilter'
 import { SiteHeader } from '@/components/SiteHeader'
 import { getSiteConfig } from '@/lib/sanity'

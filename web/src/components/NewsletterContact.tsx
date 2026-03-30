@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { type KeyboardEvent, useRef, useState } from 'react'
 import { useLang } from '@/hooks/useLang'
 
 const messages = {
@@ -21,7 +21,7 @@ const inputClass =
   'w-full border-0 bg-transparent p-0 text-center font-sans text-[inherit] leading-[inherit] tracking-[inherit] text-black/20 outline-none placeholder:text-black/20 focus:text-black focus:placeholder:text-transparent'
 
 const submitClass =
-  'cursor-pointer border-0 bg-transparent p-0 text-center font-sans text-[inherit] leading-[inherit] tracking-[inherit] text-black underline decoration-[2px] underline-offset-2 outline-none'
+  'cursor-pointer border-0 bg-transparent p-0 text-center font-sans text-[inherit] leading-[inherit] tracking-[inherit] text-black underline decoration-2 underline-offset-2 outline-none'
 
 export function NewsletterContact({
   brevoFormAction,
@@ -42,11 +42,13 @@ export function NewsletterContact({
   const brevoEmailRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
+  const langKey: keyof (typeof messages)['submit'] = lang === 'fr' ? 'fr' : 'en'
+
   const currentPlaceholder = placeholder ?? (lang === 'fr' ? 'Entrez votre email...' : 'Enter your email...')
-  const currentButton = buttonText ?? messages.submit[lang]
+  const currentButton = buttonText ?? messages.submit[langKey]
 
   function flashError(key: 'empty' | 'invalid') {
-    setButtonText(messages[key][lang])
+    setButtonText(messages[key][langKey])
     if (timerRef.current) clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => setButtonText(null), 3000)
   }
@@ -60,12 +62,12 @@ export function NewsletterContact({
     formRef.current?.submit()
 
     setEmailVal('')
-    setPlaceholder(messages.success[lang])
+    setPlaceholder(messages.success[langKey])
     setSubmitted(true)
     inputRef.current?.blur()
   }
 
-  function handleKeyDown(e: React.KeyboardEvent) {
+  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') handleSubmit()
   }
 
@@ -73,12 +75,12 @@ export function NewsletterContact({
     <div
       className={
         variant === 'accommodation'
-          ? `${rootBase} mt-[calc(120px-32px)] text-inherit max-[740px]:text-[inherit]`
+          ? `${rootBase} text-inherit max-[740px]:text-inherit`
           : rootBase
       }
     >
       <div className="flex flex-col gap-3">
-        <p className="text-black">{lang === 'fr' ? 'Infolettre' : 'Newsletter'}</p>
+        <p className="text-black uppercase">{lang === 'fr' ? 'Newsletter' : 'Newsletter'}</p>
 
         <input
           ref={inputRef}
@@ -102,9 +104,9 @@ export function NewsletterContact({
         </button>
       </div>
 
-      <div className="text-center text-inherit leading-[1.1] tracking-[0.08em] text-black">
+      <div className="text-center leading-[1.1] tracking-[0.08em]">
         <span>{lang === 'fr' ? 'Contactez-nous à ' : 'Contact us at '}</span>
-        <a href={`mailto:${email}`} className="text-inherit underline decoration-[2px] underline-offset-2">
+        <a href={`mailto:${email}`} className="text-inherit underline decoration-2 underline-offset-2">
           {email}
         </a>
       </div>

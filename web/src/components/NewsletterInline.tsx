@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { type KeyboardEvent, useRef, useState } from 'react'
 import { useLang } from '../hooks/useLang'
 
 const messages = {
@@ -48,7 +48,7 @@ export function NewsletterInline({ brevoFormAction }: { brevoFormAction: string 
     inputRef.current?.blur()
   }
 
-  function handleKeyDown(e: React.KeyboardEvent) {
+  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') handleSubmit()
   }
 

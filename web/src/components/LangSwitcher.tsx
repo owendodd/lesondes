@@ -10,13 +10,13 @@ export function LangSwitcher() {
   return (
     <div className="flex cursor-pointer justify-center gap-4">
       <p
-        className={`${optionBase} ${lang === 'fr' ? 'underline decoration-[2px] underline-offset-2' : ''}`}
+        className={`${optionBase} ${lang === 'fr' ? 'underline decoration-2 underline-offset-2' : ''}`}
         onClick={() => setLang('fr')}
       >
         FR
       </p>
       <p
-        className={`${optionBase} ${lang === 'en' ? 'underline decoration-[2px] underline-offset-2' : ''}`}
+        className={`${optionBase} ${lang === 'en' ? 'underline decoration-2 underline-offset-2' : ''}`}
         onClick={() => setLang('en')}
       >
         EN

@@ -30,9 +30,11 @@ export function SiteHeader({ config }: { config: SiteConfig }) {
     return () => window.removeEventListener('resize', setOffset)
   }, [])
 
+  const dates = lang === 'fr' ? config.datesFr : config.datesEn
+
   // Typewriter animation
   useEffect(() => {
-    const texts = [config.title, config.location, config.datesEn]
+    const texts = [config.title, config.location, dates]
     const els = [titleRef.current, locationRef.current, datesRef.current]
     const charDelay = 60
     const pauseAfter = [280, 180]
@@ -70,9 +72,7 @@ export function SiteHeader({ config }: { config: SiteConfig }) {
         typeChar()
       }, startTimes[i])
     })
-  }, [config.title, config.location, config.datesEn])
-
-  const dates = lang === 'fr' ? config.datesFr : config.datesEn
+  }, [config.title, config.location, dates])
 
   return (
     <header className={headerClass} ref={headerRef}>
