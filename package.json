@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/owendodd/lesondes#readme",
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "tailwindcss": "^4.2.2"
   }
 }

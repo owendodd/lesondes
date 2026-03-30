@@ -15,10 +15,10 @@ function isValidEmail(email: string) {
 }
 
 const rootBase =
-  'flex flex-col gap-[60px] text-center text-[24px] leading-[1.1] tracking-[0.08em] filter-[url(#roughen)]'
+  'flex flex-col gap-[60px] text-center text-[24px] leading-[1.1] tracking-[0.08em] filter-[url(#roughen)] max-[740px]:text-[20px]'
 
 const inputClass =
-  'w-full border-0 bg-transparent p-0 text-center font-sans text-[inherit] leading-[inherit] tracking-[inherit] text-black/20 outline-none placeholder:text-black/20 focus:text-black focus:placeholder:text-transparent'
+  'w-full border-0 bg-transparent p-0 text-center font-sans text-[inherit] leading-[inherit] tracking-[inherit] text-black/20 outline-none placeholder:text-black focus:text-black focus:placeholder:text-transparent'
 
 const submitClass =
   'cursor-pointer border-0 bg-transparent p-0 text-center font-sans text-[inherit] leading-[inherit] tracking-[inherit] text-black underline decoration-2 underline-offset-2 outline-none'
@@ -106,7 +106,7 @@ export function NewsletterContact({
 
       <div className="text-center leading-[1.1] tracking-[0.08em]">
         <span>{lang === 'fr' ? 'Contactez-nous à ' : 'Contact us at '}</span>
-        <a href={`mailto:${email}`} className="text-inherit underline decoration-2 underline-offset-2">
+        <a href={`mailto:${email}`} className="text-inherit underline decoration-2 underline-offset-2 max-[740px]:block">
           {email}
         </a>
       </div>
