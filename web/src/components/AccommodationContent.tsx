@@ -6,7 +6,7 @@ import type { Accommodation } from '@/lib/types'
 import type { ReactNode } from 'react'
 
 const pageClass =
-  `${siteContainerClass} flex flex-col gap-[60px] pb-[120px] max-[740px]:pb-16 ${siteBodyTextClass}`
+  `${siteContainerClass} flex flex-col gap-[120px] pb-[120px] max-[740px]:pb-16 ${siteBodyTextClass}`
 
 export function AccommodationContent({
   data,
@@ -19,9 +19,8 @@ export function AccommodationContent({
 
   return (
     <div className={pageClass}>
-      <p className="leading-[1.1]">{lang === 'fr' ? data.introFr : data.introEn}</p>
-
       <div className="flex flex-col gap-[60px]">
+      <p className="leading-[1.1]">{lang === 'fr' ? data.introFr : data.introEn}</p>
         {data.locations.map(loc => (
           <div key={loc.name} className="flex flex-col gap-4">
             <p className="text-center uppercase">{loc.name}</p>
