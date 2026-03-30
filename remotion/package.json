@@ -1,0 +1,20 @@
+{
+  "name": "les-ondes-remotion",
+  "version": "1.0.0",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render IgAnimation ../web/recordings/les-ondes-ig.mp4 --codec=h264 --crf=15",
+    "render:loops": "remotion render IgAnimation ../web/recordings/les-ondes-ig.mp4 --codec=h264 --crf=15 --props='{\"loops\":3}'"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "typescript": "^5.0.0"
+  }
+}
