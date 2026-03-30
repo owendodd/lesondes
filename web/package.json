@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "record-ig": "node scripts/record-ig.mjs"
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.0",
@@ -26,6 +27,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
+    "playwright": "^1.58.2",
     "typescript": "^5"
   }
 }
