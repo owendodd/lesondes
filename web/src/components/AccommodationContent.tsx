@@ -1,12 +1,12 @@
 'use client'
 
 import { useLang } from '@/hooks/useLang'
-import { siteBodyTextClass, siteContainerClass } from '@/lib/siteSpacing'
+import { siteBodyTextClass, siteContainerClass, sitePageGapClass } from '@/lib/siteSpacing'
 import type { Accommodation } from '@/lib/types'
 import type { ReactNode } from 'react'
 
 const pageClass =
-  `${siteContainerClass} flex flex-col gap-[120px] pb-[120px] max-[740px]:pb-16 ${siteBodyTextClass}`
+  `${siteContainerClass} flex flex-col ${sitePageGapClass} pt-0 pb-[120px] max-[740px]:pb-16 ${siteBodyTextClass}`
 
 export function AccommodationContent({
   data,
