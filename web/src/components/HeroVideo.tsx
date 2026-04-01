@@ -9,9 +9,12 @@ export function HeroVideo() {
     const video = ref.current
     if (!video) return
     video.muted = true
-    video.load()
     const tryPlay = () => { video.play().catch(() => {}) }
-    video.addEventListener('canplay', tryPlay, { once: true })
+    if (video.readyState >= 3) {
+      tryPlay()
+    } else {
+      video.addEventListener('canplay', tryPlay, { once: true })
+    }
     return () => video.removeEventListener('canplay', tryPlay)
   }, [])
 
