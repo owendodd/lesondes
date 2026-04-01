@@ -10,6 +10,7 @@ export default function TicketsPage() {
 
   useEffect(() => {
     function handleMessage(e: MessageEvent) {
+      if (e.origin !== 'https://www.helloasso.com') return
       const dataHeight = e.data?.height
       const iframe = iframeRef.current
       if (dataHeight && iframe && dataHeight > parseFloat(iframe.style.height || '0')) {

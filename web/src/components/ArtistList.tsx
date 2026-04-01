@@ -5,14 +5,14 @@ export function ArtistList({ artists }: { artists: Artist[] }) {
     <div className="[grid-area:artists] flex flex-col gap-3 text-center">
       {artists.map(artist => (
         <p key={artist._id}>
-          {artist.lineBreak ? (
+          {artist.lineBreak && artist.firstName ? (
             <>
-              {artist.name.split(' ').slice(0, 2).join(' ')}
+              {artist.firstName}
               <br />
-              {artist.name.split(' ').slice(2).join(' ')}
+              {artist.lastName}
             </>
           ) : (
-            artist.name
+            artist.firstName ? `${artist.firstName} ${artist.lastName}` : artist.lastName
           )}
         </p>
       ))}

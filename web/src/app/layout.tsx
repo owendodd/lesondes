@@ -4,8 +4,8 @@ import './globals.css'
 
 const diatype = localFont({
   src: [
-    { path: '../../public/fonts/ABCDiatype-Medium-Trial.woff2', weight: '400', style: 'normal' },
-    { path: '../../public/fonts/ABCDiatype-Heavy-Trial.woff2', weight: '700', style: 'normal' },
+    { path: '../../public/fonts/ABCDiatype-Medium.woff2', weight: '400', style: 'normal' },
+    { path: '../../public/fonts/ABCDiatype-Medium.woff', weight: '400', style: 'normal' },
   ],
   variable: '--font-diatype',
   display: 'swap',

@@ -9,7 +9,11 @@ export function InfoBottom({ data }: { data: InfoBottomType }) {
   return (
     <div className="[grid-area:info-bottom] flex flex-col gap-4 self-end text-center">
       <p>{data.hotelName}</p>
-      <p>{lang === 'fr' ? data.foodCreditFr : data.foodCreditEn}</p>
+      <p>
+        {lang === 'fr' ? data.foodCreditPrefixFr : data.foodCreditPrefixEn}
+        <br />
+        {data.foodPerson}
+      </p>
       <p>
         {lang === 'fr' ? data.wineCreditPrefixFr : data.wineCreditPrefixEn}
         <br />

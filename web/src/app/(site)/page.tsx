@@ -40,7 +40,7 @@ export default async function Home() {
     siteConfig: rawConfig ?? { title: 'LES ONDES', location: 'Cerbère', datesEn: 'May 29 30 31', datesFr: '29 30 31 Mai', contactEmail: 'poste@les-ondes.fr', ticketUrl: '#', brevoFormAction: '' },
     artists: raw?.artists ?? [],
     infoLinks: raw?.infoLinks ?? [],
-    infoBottom: raw?.infoBottom ?? { hotelName: '', foodCreditEn: '', foodCreditFr: '', wineCreditPrefixEn: '', wineCreditPrefixFr: '', winePerson: '' },
+    infoBottom: raw?.infoBottom ?? { hotelName: '', foodCreditPrefixEn: '', foodCreditPrefixFr: '', foodPerson: '', wineCreditPrefixEn: '', wineCreditPrefixFr: '', winePerson: '' },
     credits: raw?.credits ?? [],
   }
 

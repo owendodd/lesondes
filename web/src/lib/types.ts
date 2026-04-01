@@ -10,8 +10,8 @@ export interface SiteConfig {
 
 export interface Artist {
   _id: string
-  name: string
-  order: number
+  firstName?: string
+  lastName: string
   lineBreak: boolean
 }
 
@@ -25,8 +25,9 @@ export interface InfoLink {
 
 export interface InfoBottom {
   hotelName: string
-  foodCreditEn: string
-  foodCreditFr: string
+  foodCreditPrefixEn: string
+  foodCreditPrefixFr: string
+  foodPerson: string
   wineCreditPrefixEn: string
   wineCreditPrefixFr: string
   winePerson: string
