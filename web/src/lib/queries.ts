@@ -1,6 +1,7 @@
 export const SITE_CONFIG_QUERY = `*[_type == "siteConfig"][0]{
   title,
   location,
+  locationUrl,
   datesEn,
   datesFr,
   contactEmail,

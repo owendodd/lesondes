@@ -1,6 +1,7 @@
 export interface SiteConfig {
   title: string
   location: string
+  locationUrl?: string
   datesEn: string
   datesFr: string
   contactEmail: string

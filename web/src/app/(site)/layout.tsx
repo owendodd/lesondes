@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/next'
 import { LangProvider } from '@/components/LangProvider'
 import { LangSwitcher } from '@/components/LangSwitcher'
 import { SvgFilter } from '@/components/SvgFilter'
@@ -17,12 +18,15 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   }
 
   return (
-    <LangProvider>
-      <SvgFilter />
-      <SiteHeader config={config} />
-      <div className="pt-[clamp(284px,calc(240px+5.94vw),315px)] max-[740px]:pt-[clamp(127px,calc(96px+9.9vw),149px)]">
-        {children}
-      </div>
-    </LangProvider>
+    <>
+      <LangProvider>
+        <SvgFilter />
+        <SiteHeader config={config} />
+        <div className="pt-[clamp(284px,calc(240px+5.94vw),315px)] max-[740px]:pt-[clamp(127px,calc(96px+9.9vw),149px)]">
+          {children}
+        </div>
+      </LangProvider>
+      <Analytics />
+    </>
   )
 }

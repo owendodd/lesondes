@@ -7,6 +7,7 @@ export const siteConfig = defineType({
   fields: [
     defineField({ name: 'title',           title: 'Title',                type: 'string', initialValue: 'LES ONDES' }),
     defineField({ name: 'location',        title: 'Location',             type: 'string', initialValue: 'Cerbère' }),
+    defineField({ name: 'locationUrl',     title: 'Location URL',         type: 'url' }),
     defineField({ name: 'datesEn',         title: 'Dates (EN)',           type: 'string', initialValue: 'May 29 30 31' }),
     defineField({ name: 'datesFr',         title: 'Dates (FR)',           type: 'string', initialValue: '29 30 31 Mai' }),
     defineField({ name: 'contactEmail',    title: 'Contact Email',        type: 'string', initialValue: 'poste@les-ondes.fr' }),
