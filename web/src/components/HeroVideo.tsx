@@ -31,7 +31,7 @@ export function HeroVideo() {
         // @ts-ignore — webkit-specific attribute for older iOS Safari
         webkit-playsinline="true"
       >
-        <source src="/video/BG3_crop.mp4" type="video/mp4" />
+        <source src="/video/WebBg.webm" type="video/webm" />
       </video>
     </div>
   )

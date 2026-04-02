@@ -13,7 +13,6 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
     datesEn: 'May 29 30 31',
     datesFr: '29 30 31 Mai',
     contactEmail: 'poste@les-ondes.fr',
-    ticketUrl: '#',
     brevoFormAction: '',
   }
 
@@ -21,7 +20,9 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
     <LangProvider>
       <SvgFilter />
       <SiteHeader config={config} />
-      {children}
+      <div className="pt-[clamp(284px,calc(240px+5.94vw),315px)] max-[740px]:pt-[clamp(127px,calc(96px+9.9vw),149px)]">
+        {children}
+      </div>
     </LangProvider>
   )
 }

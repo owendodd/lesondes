@@ -4,7 +4,6 @@ export interface SiteConfig {
   datesEn: string
   datesFr: string
   contactEmail: string
-  ticketUrl: string
   brevoFormAction: string
 }
 
@@ -25,6 +24,7 @@ export interface InfoLink {
 
 export interface InfoBottom {
   hotelName: string
+  hotelNameFr?: string
   foodCreditPrefixEn: string
   foodCreditPrefixFr: string
   foodPerson: string

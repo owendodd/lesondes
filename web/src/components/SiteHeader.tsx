@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+
 import { useLang } from '@/hooks/useLang'
 import type { SiteConfig } from '@/lib/types'
 
@@ -13,29 +15,25 @@ const linkClass =
 
 export function SiteHeader({ config }: { config: SiteConfig }) {
   const { lang } = useLang()
-  const headerRef = useRef<HTMLElement>(null)
+  const pathname = usePathname()
+  const isHome = pathname === '/'
   const titleRef = useRef<HTMLParagraphElement>(null)
   const locationRef = useRef<HTMLParagraphElement>(null)
   const datesRef = useRef<HTMLParagraphElement>(null)
 
-  // Offset page content below fixed header
-  useEffect(() => {
-    function setOffset() {
-      if (headerRef.current) {
-        document.body.style.paddingTop = headerRef.current.offsetHeight + 'px'
-      }
-    }
-    setOffset()
-    window.addEventListener('resize', setOffset)
-    return () => window.removeEventListener('resize', setOffset)
-  }, [])
-
   const dates = lang === 'fr' ? config.datesFr : config.datesEn
 
-  // Typewriter animation
+  // Typewriter animation (home page only)
   useEffect(() => {
     const texts = [config.title, config.location, dates]
     const els = [titleRef.current, locationRef.current, datesRef.current]
+
+    if (!isHome) {
+      // Restore plain text in case we navigated away from home mid-animation
+      els.forEach((el, i) => { if (el) el.textContent = texts[i] })
+      return
+    }
+
     const charDelay = 60
     const pauseAfter = [280, 180]
 
@@ -57,8 +55,10 @@ export function SiteHeader({ config }: { config: SiteConfig }) {
       cursor += text.length * charDelay + (pauseAfter[i] || 0)
     })
 
+    const timeouts: ReturnType<typeof setTimeout>[] = []
+
     els.forEach((el, i) => {
-      setTimeout(() => {
+      const t = setTimeout(() => {
         const spans = el?.querySelectorAll('span')
         if (!spans || spans.length === 0) return
         const spanList = spans
@@ -67,15 +67,18 @@ export function SiteHeader({ config }: { config: SiteConfig }) {
           if (j >= spanList.length) return
           spanList[j].style.visibility = 'visible'
           j++
-          setTimeout(typeChar, charDelay)
+          timeouts.push(setTimeout(typeChar, charDelay))
         }
         typeChar()
       }, startTimes[i])
+      timeouts.push(t)
     })
-  }, [config.title, config.location, dates])
+
+    return () => timeouts.forEach(clearTimeout)
+  }, [isHome, config.title, config.location, dates])
 
   return (
-    <header className={headerClass} ref={headerRef}>
+    <header className={headerClass}>
       <Link href="/" className={linkClass}>
         <p ref={titleRef}>{config.title}</p>
         <p ref={locationRef}>{config.location}</p>

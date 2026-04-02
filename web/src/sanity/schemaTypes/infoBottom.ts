@@ -5,7 +5,8 @@ export const infoBottom = defineType({
   title: 'Info Bottom',
   type: 'document',
   fields: [
-    defineField({ name: 'hotelName',          title: 'Hotel name',              type: 'string' }),
+    defineField({ name: 'hotelName',          title: 'Hotel name (EN)',          type: 'string' }),
+    defineField({ name: 'hotelNameFr',        title: 'Hotel name (FR)',          type: 'string' }),
     defineField({ name: 'foodCreditPrefixEn', title: 'Food credit prefix (EN)', type: 'string' }),
     defineField({ name: 'foodCreditPrefixFr', title: 'Food credit prefix (FR)', type: 'string' }),
     defineField({ name: 'foodPerson',         title: 'Food person',             type: 'string' }),
