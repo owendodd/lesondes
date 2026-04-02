@@ -5,6 +5,7 @@ export interface SiteConfig {
   datesEn: string
   datesFr: string
   contactEmail: string
+  ticketUrl?: string
   brevoFormAction: string
 }
 

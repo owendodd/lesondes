@@ -5,6 +5,7 @@ export const SITE_CONFIG_QUERY = `*[_type == "siteConfig"][0]{
   datesEn,
   datesFr,
   contactEmail,
+  ticketUrl,
   brevoFormAction
 }`
 
