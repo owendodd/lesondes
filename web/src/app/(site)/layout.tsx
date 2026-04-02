@@ -22,7 +22,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <LangProvider>
         <SvgFilter />
         <SiteHeader config={config} />
-        <div className="pt-[clamp(284px,calc(240px+5.94vw),315px)] max-[740px]:pt-[clamp(127px,calc(96px+9.9vw),149px)]">
+        <div className="pt-[clamp(284px,calc(240px+5.94vw),315px)] max-[740px]:pt-[clamp(167px,calc(136px+9.9vw),189px)]">
           {children}
         </div>
       </LangProvider>
