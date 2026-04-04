@@ -11,8 +11,8 @@ import {
 } from '@/lib/siteSpacing'
 import type { InfoPage, Accommodation, SiteConfig, Credit } from '@/lib/types'
 
-const pageClass = `${siteContainerClass} flex flex-col ${sitePageGapClass} pt-0 pb-[120px] max-[740px]:pb-16`
-const sectionClass = `flex flex-col gap-[60px] ${siteBodyTextClass}`
+const pageClass = `${siteContainerClass} flex flex-col gap-[60px] max-[740px]:gap-10 pt-0 pb-[80px] max-[740px]:pb-12`
+const sectionClass = `flex flex-col gap-[30px] ${siteBodyTextClass}`
 const linkClass = 'text-inherit underline decoration-2 underline-offset-2 hover:text-[#888] transition-colors duration-150'
 
 export function InfoContent({
@@ -61,7 +61,7 @@ export function InfoContent({
             : `${accommodation.introEn} ${d.accommodationNoteEn}`}
         </p>
         {accommodation.locations?.map(loc => (
-          <div key={loc.name} className="flex flex-col gap-4">
+          <div key={loc.name} className="flex flex-col gap-2">
             <p className="text-center uppercase">{loc.name}</p>
             {loc.hotels.map(hotel => (
               <p key={hotel.hotelName}>
