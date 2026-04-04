@@ -29,15 +29,22 @@ export const INFO_PAGE_QUERY = `{
   "infoPage": *[_type == "infoPage"][0]{
     overviewEn, overviewFr,
     musicIntroEn, musicIntroFr,
-    schedule[] { dayEn, dayFr, detailEn, detailFr },
+    musicEthosEn, musicEthosFr,
     diningEn, diningFr,
     accommodationNoteEn, accommodationNoteEr
   },
   "accommodation": *[_type == "accommodation"][0]{
+    introEn, introFr,
     locations[] {
       name,
       hotels[] { hotelName, url, description, descriptionFr }
     }
+  },
+  "siteConfig": *[_type == "siteConfig"][0]{
+    contactEmail, brevoFormAction
+  },
+  "credits": *[_type == "credit"] | order(order asc) {
+    _id, roleEn, roleFr, personName, url
   }
 }`
 

@@ -74,7 +74,8 @@ export interface InfoPage {
   overviewFr: string
   musicIntroEn: string
   musicIntroFr: string
-  schedule: ScheduleItem[]
+  musicEthosEn: string
+  musicEthosFr: string
   diningEn: string
   diningFr: string
   accommodationNoteEn: string

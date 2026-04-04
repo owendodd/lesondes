@@ -12,6 +12,8 @@ export const infoPage = defineType({
     // Music
     defineField({ name: 'musicIntroEn', title: 'Music intro (EN)', type: 'text' }),
     defineField({ name: 'musicIntroFr', title: 'Music intro (FR)', type: 'text' }),
+    defineField({ name: 'musicEthosEn', title: 'Music ethos (EN)', type: 'text' }),
+    defineField({ name: 'musicEthosFr', title: 'Music ethos (FR)', type: 'text' }),
     defineField({
       name: 'schedule',
       title: 'Schedule',
