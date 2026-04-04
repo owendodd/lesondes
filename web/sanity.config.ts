@@ -9,12 +9,37 @@ import { credit } from './src/sanity/schemaTypes/credit'
 import { accommodation } from './src/sanity/schemaTypes/accommodation'
 import { infoPage } from './src/sanity/schemaTypes/infoPage'
 
+const singletons = new Set(['siteConfig', 'infoBottom', 'infoPage', 'accommodation'])
+
 export default defineConfig({
   name: 'default',
   title: 'lesondes',
   projectId: '0116525h',
   dataset: 'production',
-  plugins: [structureTool(), visionTool()],
+  plugins: [
+    structureTool({
+      structure: (S) =>
+        S.list()
+          .title('Content')
+          .items([
+            ...S.documentTypeListItems().filter(
+              (item) => !singletons.has(item.getId() ?? '')
+            ),
+            S.divider(),
+            ...Array.from(singletons).map((typeName) =>
+              S.listItem()
+                .title(S.documentTypeList(typeName).getTitle() ?? typeName)
+                .id(typeName)
+                .child(
+                  S.document()
+                    .schemaType(typeName)
+                    .documentId(typeName)
+                )
+            ),
+          ]),
+    }),
+    visionTool(),
+  ],
   schema: {
     types: [siteConfig, artist, infoLink, infoBottom, credit, accommodation, infoPage],
   },
