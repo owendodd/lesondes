@@ -11,8 +11,7 @@ import {
 } from '@/lib/siteSpacing'
 import type { InfoPage, Accommodation, SiteConfig, Credit } from '@/lib/types'
 
-const pageClass = `${siteContainerClass} flex flex-col gap-[60px] max-[740px]:gap-10 pt-0 pb-[80px] max-[740px]:pb-12`
-const sectionClass = `flex flex-col gap-[30px] ${siteBodyTextClass}`
+const pageClass = `${siteContainerClass} flex flex-col ${sitePageGapClass} pt-0 pb-[120px] max-[740px]:pb-16`
 const linkClass = 'text-inherit underline decoration-2 underline-offset-2 hover:text-[#888] transition-colors duration-150'
 
 export function InfoContent({
@@ -31,29 +30,23 @@ export function InfoContent({
 
   return (
     <div className={pageClass}>
+      <div className={`flex flex-col ${sitePageGapClass} ${siteBodyTextClass}`}>
 
-      {/* Overview */}
-      <div className={sectionClass}>
+        {/* Overview */}
         <p className="leading-[1.1]">{isFr ? d.overviewFr : d.overviewEn}</p>
-      </div>
 
-      {/* Music */}
-      <div className={sectionClass}>
+        {/* Music */}
         <p className="text-center uppercase">{isFr ? 'Musique' : 'Music'}</p>
         <p>{isFr ? d.musicIntroFr : d.musicIntroEn}</p>
         {(isFr ? d.musicEthosFr : d.musicEthosEn) && (
           <p>{isFr ? d.musicEthosFr : d.musicEthosEn}</p>
         )}
-      </div>
 
-      {/* Dining & Bar */}
-      <div className={sectionClass}>
+        {/* Dining & Bar */}
         <p className="text-center uppercase">{isFr ? 'Repas & Bar' : 'Dining & Bar'}</p>
         <p>{isFr ? d.diningFr : d.diningEn}</p>
-      </div>
 
-      {/* Accommodation */}
-      <div className={sectionClass}>
+        {/* Accommodation */}
         <p className="text-center uppercase">{isFr ? 'Hébergement' : 'Accommodation'}</p>
         <p>
           {isFr
@@ -61,7 +54,7 @@ export function InfoContent({
             : `${accommodation.introEn} ${d.accommodationNoteEn}`}
         </p>
         {accommodation.locations?.map(loc => (
-          <div key={loc.name} className="flex flex-col gap-2">
+          <div key={loc.name} className="flex flex-col gap-4">
             <p className="text-center uppercase">{loc.name}</p>
             {loc.hotels.map(hotel => (
               <p key={hotel.hotelName}>
@@ -73,9 +66,10 @@ export function InfoContent({
             ))}
           </div>
         ))}
+
       </div>
 
-      {/* Footer: newsletter, credits, lang */}
+      {/* Footer */}
       <div className={siteBottomFullWidthStackClass}>
         <NewsletterContact
           brevoFormAction={siteConfig.brevoFormAction}
