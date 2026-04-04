@@ -66,7 +66,7 @@ export function IgFinalD({ loops = 1 }: IgFinalDProps) {
     Promise.all([medium.load(), heavy.load()]).then(() => {
       document.fonts.add(medium);
       document.fonts.add(heavy);
-      continueRender(fontHandle);
+      requestAnimationFrame(() => continueRender(fontHandle));
     }).catch(() => continueRender(fontHandle));
   }, [fontHandle]);
 

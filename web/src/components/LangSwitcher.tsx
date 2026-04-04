@@ -8,7 +8,7 @@ export function LangSwitcher() {
   const { lang, setLang } = useLang()
 
   return (
-    <div className="flex cursor-pointer justify-center gap-4">
+    <div className="flex cursor-pointer justify-center gap-4 filter-[url(#roughen)]">
       <p
         className={`${optionBase} ${lang === 'fr' ? 'underline decoration-2 underline-offset-2' : ''}`}
         onClick={() => setLang('fr')}

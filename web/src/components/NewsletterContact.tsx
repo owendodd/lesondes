@@ -2,6 +2,7 @@
 
 import { type KeyboardEvent, useRef, useState } from 'react'
 import { useLang } from '@/hooks/useLang'
+import { siteBodyTextClass } from '@/lib/siteSpacing'
 
 const messages = {
   empty:   { en: 'Add your email',  fr: 'Ajoutez votre email' },
@@ -14,8 +15,7 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
-const rootBase =
-  'flex flex-col gap-[60px] text-center text-[24px] leading-[1.1] tracking-[0.08em] filter-[url(#roughen)] max-[740px]:text-[20px]'
+const rootBase = `flex flex-col gap-[60px] text-center ${siteBodyTextClass}`
 
 const inputClass =
   'w-full border-0 bg-transparent p-0 text-center font-sans text-[inherit] leading-[inherit] tracking-[inherit] text-black/20 outline-none placeholder:text-black focus:text-black focus:placeholder:text-transparent'

@@ -8,7 +8,7 @@ import { useLang } from '@/hooks/useLang'
 import type { SiteConfig } from '@/lib/types'
 
 const headerClass =
-  'fixed top-0 right-0 left-0 z-[1] flex items-baseline justify-center gap-[clamp(40px,4.85vw,68px)] px-6 pt-[120px] pb-[120px] text-[clamp(40px,5.4vw,68px)] font-normal leading-[1.1] tracking-[-0.02em] filter-[url(#roughen)] max-[740px]:px-5 max-[740px]:py-12 max-[740px]:text-[clamp(28px,9vw,48px)]'
+  'fixed top-0 right-0 left-0 z-[1] flex items-baseline justify-center gap-[clamp(40px,4.85vw,68px)] px-6 pt-[120px] pb-[120px] text-[clamp(40px,5.4vw,72px)] font-normal leading-[1.1] tracking-[-0.02em] filter-[url(#roughen-header)] max-[740px]:px-5 max-[740px]:py-12 max-[740px]:text-[clamp(28px,9vw,48px)]'
 
 const wrapClass =
   'flex w-full items-baseline justify-center gap-[clamp(40px,4.85vw,68px)] max-[740px]:flex-wrap max-[740px]:gap-[clamp(12px,4vw,32px)]'
@@ -84,10 +84,7 @@ export function SiteHeader({ config }: { config: SiteConfig }) {
     <header className={headerClass}>
       <div className={wrapClass}>
         <Link href="/" className={homeLinkClass}><p ref={titleRef}>{config.title}</p></Link>
-        {config.locationUrl
-          ? <a href={config.locationUrl} target="_blank" rel="noopener noreferrer" className={locationLinkClass}><p ref={locationRef}>{config.location}</p></a>
-          : <p ref={locationRef}>{config.location}</p>
-        }
+        <Link href="/" className={locationLinkClass}><p ref={locationRef}>{config.location}</p></Link>
         <Link href="/" className={homeLinkClass}><p ref={datesRef}>{dates}</p></Link>
       </div>
     </header>

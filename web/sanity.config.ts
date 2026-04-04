@@ -6,10 +6,14 @@ import { artist } from './src/sanity/schemaTypes/artist'
 import { infoLink } from './src/sanity/schemaTypes/infoLink'
 import { infoBottom } from './src/sanity/schemaTypes/infoBottom'
 import { credit } from './src/sanity/schemaTypes/credit'
-import { accommodation } from './src/sanity/schemaTypes/accommodation'
 import { infoPage } from './src/sanity/schemaTypes/infoPage'
 
-const singletons = new Set(['siteConfig', 'infoBottom', 'infoPage', 'accommodation'])
+const singletons = new Set(['siteConfig', 'infoBottom', 'infoPage'])
+
+// Maps type names to their actual document IDs (some were auto-generated rather than using the type name)
+const singletonDocIds: Record<string, string> = {
+  infoPage: 'b0e897fb-a27d-4a0d-ba12-5d3f9876026c',
+}
 
 export default defineConfig({
   name: 'default',
@@ -33,7 +37,7 @@ export default defineConfig({
                 .child(
                   S.document()
                     .schemaType(typeName)
-                    .documentId(typeName)
+                    .documentId(singletonDocIds[typeName] ?? typeName)
                 )
             ),
           ]),
@@ -41,6 +45,6 @@ export default defineConfig({
     visionTool(),
   ],
   schema: {
-    types: [siteConfig, artist, infoLink, infoBottom, credit, accommodation, infoPage],
+    types: [siteConfig, artist, infoLink, infoBottom, credit, infoPage],
   },
 })

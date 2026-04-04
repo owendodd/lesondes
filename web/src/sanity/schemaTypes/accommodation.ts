@@ -1,3 +1,5 @@
+// This file is kept for reference but the accommodation schema has been
+// merged into infoPage. Remove this import from sanity.config.ts.
 import { defineType, defineField, defineArrayMember } from 'sanity'
 
 export const accommodation = defineType({

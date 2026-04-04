@@ -1,684 +1,362 @@
 'use client'
 
-import { useEffect, useRef, useCallback, useState } from 'react'
-
-// ── Recording helpers ────────────────────────────────────────────────────────
-
-function getSupportedMimeType() {
-  const types = ['video/mp4', 'video/webm;codecs=vp9', 'video/webm']
-  return types.find(t => MediaRecorder.isTypeSupported(t)) ?? ''
-}
-
-function mimeToExt(mime: string) {
-  if (mime.startsWith('video/mp4')) return 'mp4'
-  return 'webm'
-}
-
-// ── Slide data ──────────────────────────────────────────────────────────────
-
-interface LineDef {
-  id: string
-  text: string
-  charDelay: number
-  spaceExtra?: number
-  pauseAfter: number
-  startDelay?: number
-}
-
-interface SlideDef {
-  id: string
-  lines: LineDef[]
-  nextOverlap: number
-}
-
-const SLIDES: SlideDef[] = [
-  {
-    id: 'slide-1',
-    nextOverlap: -600,
-    lines: [
-      { id: 't-title',   text: 'LES ONDES',    charDelay: 80, pauseAfter: 60 },
-      { id: 't-cerbere', text: 'Cerbère',       charDelay: 60, pauseAfter: 60 },
-      { id: 'dates',     text: 'May 29 30 31',  charDelay: 50, spaceExtra: 60, pauseAfter: 0 },
-    ],
-  },
-  {
-    id: 'slide-2',
-    nextOverlap: -600,
-    lines: [
-      { id: 'a1', text: 'Miriam Adefris',   charDelay: 40, pauseAfter: 80  },
-      { id: 'a2', text: 'Pierre Bastien',   charDelay: 35, pauseAfter: 100 },
-      { id: 'a3', text: 'Lukas de Clerck',  charDelay: 45, pauseAfter: 70  },
-      { id: 'a4', text: 'Maya Dhondt',      charDelay: 32, pauseAfter: 120 },
-      { id: 'a5', text: 'Mats Erlandsson',  charDelay: 42, pauseAfter: 90  },
-      { id: 'a6', text: 'Elisabeth Klinck', charDelay: 45, pauseAfter: 0   },
-    ],
-  },
-  {
-    id: 'slide-3',
-    nextOverlap: -200,
-    lines: [
-      { id: 'b1', text: 'Louis Laurain',           charDelay: 38, pauseAfter: 90  },
-      { id: 'b2', text: 'Lubomyr Melnyk',          charDelay: 32, pauseAfter: 70  },
-      { id: 'b3', text: 'Chantal Michelle',        charDelay: 44, pauseAfter: 100 },
-      { id: 'b4', text: 'Mohammad Reza Mortazavi', charDelay: 30, pauseAfter: 80  },
-      { id: 'b5', text: 'Fredrik Rasten',          charDelay: 50, pauseAfter: 90  },
-      { id: 'b6', text: 'Youmna Saba',             charDelay: 28, pauseAfter: 0   },
-    ],
-  },
-]
-
-// ── Animation helpers ────────────────────────────────────────────────────────
-
-function layoutSpaceSet(text: string): Set<number> {
-  const s = new Set<number>()
-  let i = 0
-  while (i < text.length && text[i] === ' ') s.add(i++)
-  i = text.length - 1
-  while (i >= 0 && text[i] === ' ') s.add(i--)
-  for (let j = 0; j < text.length; j++) {
-    if (text[j] === '\n') {
-      let k = j - 1
-      while (k >= 0 && text[k] === ' ') s.add(k--)
-      k = j + 1
-      while (k < text.length && text[k] === ' ') s.add(k++)
-    }
-  }
-  return s
-}
-
-function initLineSpans(lineId: string, text: string) {
-  const el = document.getElementById(lineId)
-  if (!el) return
-  el.innerHTML = ''
-  const layout = layoutSpaceSet(text)
-  let i = 0
-  for (const ch of text) {
-    if (ch === '\n') {
-      el.appendChild(document.createElement('br'))
-    } else {
-      const sp = document.createElement('span')
-      sp.textContent = ch
-      sp.style.visibility = layout.has(i) ? 'visible' : 'hidden'
-      el.appendChild(sp)
-    }
-    i++
-  }
-}
-
-interface AnimEvent { time: number; fn: () => void }
-
-function buildTimeline(slide: SlideDef, vis: 'visible' | 'hidden'): { events: AnimEvent[]; duration: number } {
-  const events: AnimEvent[] = []
-  let cursor = 0
-
-  for (const line of slide.lines) {
-    cursor += line.startDelay ?? 0
-    let t = cursor
-    let charIdx = 0
-    const layout = layoutSpaceSet(line.text)
-    let i = 0
-    for (const ch of line.text) {
-      if (ch !== '\n') {
-        if (!layout.has(i)) {
-          const idx = charIdx
-          const id = line.id
-          events.push({
-            time: t,
-            fn: () => {
-              const spans = document.getElementById(id)?.querySelectorAll('span')
-              if (spans?.[idx]) spans[idx].style.visibility = vis
-            },
-          })
-          t += line.charDelay + (ch === ' ' ? (line.spaceExtra ?? 0) : 0)
-        }
-        charIdx++
-      }
-      i++
-    }
-    cursor = t + line.pauseAfter
-  }
-
-  return { events, duration: cursor }
-}
+import { useEffect, useRef, useState, useCallback } from 'react'
 
 // ── Asset helpers ────────────────────────────────────────────────────────────
 
-function escapeXml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
+function toBase64(buf: ArrayBuffer): string {
+  let binary = ''
+  const bytes = new Uint8Array(buf)
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i])
+  return btoa(binary)
 }
 
-interface AssetOpts {
-  text: string
-  fontSize: number
-  fontWeight: 400 | 700
-  letterSpacingEm: number
-  textColor: string
-  filterEnabled: boolean
-  filterScale: number
-  width: number
-  height: number
+function escapeXml(s: string) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
-// Build an SVG string with fonts embedded as base64 — used as an intermediate
-// for canvas rendering so the browser can apply the font and filter correctly.
-async function buildSvgForRender(opts: AssetOpts): Promise<string> {
-  const { text, fontSize, fontWeight, letterSpacingEm, textColor, filterEnabled, filterScale, width, height } = opts
+async function fetchImageB64(src: string): Promise<string> {
+  const blob = await fetch(src).then(r => r.blob())
+  return new Promise(res => {
+    const fr = new FileReader()
+    fr.onload = () => res(fr.result as string)
+    fr.readAsDataURL(blob)
+  })
+}
 
-  const [mediumBuf, heavyBuf] = await Promise.all([
+// ── IG Post shared save logic ─────────────────────────────────────────────────
+
+const IG_POST_ARTISTS = [
+  'Miriam Adefris', 'Pierre Bastien', 'Lukas de Clerck', 'Maya Dhondt',
+  'Mats Erlandsson', 'Elisabeth Klinck', 'Louis Laurain', 'Lubomyr Melnyk',
+  'Chantal Michelle', 'Mohammad Reza\nMortazavi', 'Fredrik Rasten', 'Youmna Saba',
+]
+
+async function saveIgPost(imageSrc: string, filename: string) {
+  const W = 1080, H = 1350, S = 2
+  const cW = W * S, cH = H * S
+  const photoH = 675 * S
+  const pad = 48 * S
+  const titleSize = 60 * S
+  const titleLS = -1.2 * S
+  const bodySize = 26 * S
+  const bodyLS = 0.08 * bodySize
+  const contentW = 984 * S
+  const contentX = (cW - contentW) / 2
+  const upperH = photoH - pad * 2
+  const titleCenterY = pad + upperH / 2 + titleSize * 0.35
+  const artistsTop = photoH + pad
+  const artistGap = 16 * S
+
+  const [medBuf, heavyBuf] = await Promise.all([
     fetch('/fonts/ABCDiatype-Medium-Trial.woff2').then(r => r.arrayBuffer()),
     fetch('/fonts/ABCDiatype-Heavy-Trial.woff2').then(r => r.arrayBuffer()),
   ])
-
-  const toBase64 = (buf: ArrayBuffer) => {
-    let binary = ''
-    const bytes = new Uint8Array(buf)
-    for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i])
-    return btoa(binary)
-  }
-
-  const mediumB64 = toBase64(mediumBuf)
+  const medB64 = toBase64(medBuf)
   const heavyB64 = toBase64(heavyBuf)
+  const photoB64 = await fetchImageB64(imageSrc)
 
-  const lines = text.split('\n')
-  const lineHeight = fontSize * 1.2
-  const totalGroupHeight = (lines.length - 1) * lineHeight
-  const startY = height / 2 - totalGroupHeight / 2
+  let artistEls = ''
+  let yTop = artistsTop
+  IG_POST_ARTISTS.forEach((artist) => {
+    const lines = artist.split('\n')
+    lines.forEach((line, li) => {
+      const y = yTop + li * bodySize + bodySize / 2
+      artistEls += `<text x="${contentX}" y="${y}" font-family="ABCDiatype, sans-serif" font-size="${bodySize}" letter-spacing="${bodyLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">${escapeXml(line)}</text>\n`
+    })
+    yTop += lines.length * bodySize + artistGap
+  })
 
-  const filterDef = filterEnabled ? `
-    <filter id="roughen" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="4" seed="8" result="noise"/>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="${filterScale}" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>` : ''
-
-  const filterAttr = filterEnabled ? ' filter="url(#roughen)"' : ''
-  const lsPx = letterSpacingEm * fontSize
-
-  const textEls = lines.map((line, i) =>
-    `  <text x="${width / 2}" y="${startY + i * lineHeight}" font-family="ABCDiatype, sans-serif" font-size="${fontSize}" font-weight="${fontWeight}" letter-spacing="${lsPx}" fill="${escapeXml(textColor)}" text-anchor="middle" dominant-baseline="middle"${filterAttr}>${escapeXml(line)}</text>`
-  ).join('\n')
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${cW}" height="${cH}">
   <defs>
     <style>
-      @font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64,${mediumB64}') format('woff2'); font-weight: 400; }
+      @font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64,${medB64}') format('woff2'); font-weight: 400; }
       @font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64,${heavyB64}') format('woff2'); font-weight: 700; }
-    </style>${filterDef}
+    </style>
+    <filter id="r" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="1" numOctaves="4" seed="8" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.6" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
   </defs>
-  ${textEls}
+  <image href="${photoB64}" x="0" y="0" width="${cW}" height="${photoH}" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="0" y="${photoH}" width="${cW}" height="${cH - photoH}" fill="#ffffff"/>
+  <text x="${cW / 2}" y="${titleCenterY}" text-anchor="middle" font-family="ABCDiatype, sans-serif" font-size="${titleSize}" letter-spacing="${titleLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">LES ONDES<tspan dx="${48 * S}">Cerb\u00e8re</tspan></text>
+  ${artistEls}
+  <text x="${contentX + contentW}" y="${artistsTop + bodySize / 2}" text-anchor="end" font-family="ABCDiatype, sans-serif" font-size="${bodySize}" letter-spacing="${bodyLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">May 29 30 31</text>
 </svg>`
-}
 
-// Render the SVG via canvas — this bakes in the font and filter as pixels,
-// giving correct output regardless of the viewer's font/filter support.
-async function renderToPng(opts: AssetOpts): Promise<Blob> {
-  const svgStr = await buildSvgForRender(opts)
-  const blob = new Blob([svgStr], { type: 'image/svg+xml' })
+  const blob = new Blob([svg], { type: 'image/svg+xml' })
   const url = URL.createObjectURL(blob)
-
-  return new Promise((resolve, reject) => {
+  await new Promise<void>((resolve, reject) => {
     const img = new Image()
     img.onload = () => {
       const canvas = document.createElement('canvas')
-      canvas.width = opts.width * 4
-      canvas.height = opts.height * 4
-      const ctx = canvas.getContext('2d')!
-      ctx.drawImage(img, 0, 0, opts.width * 4, opts.height * 4)
+      canvas.width = cW; canvas.height = cH
+      canvas.getContext('2d')!.drawImage(img, 0, 0)
       URL.revokeObjectURL(url)
       canvas.toBlob(png => {
-        if (png) resolve(png)
-        else reject(new Error('canvas export failed'))
+        if (!png) { reject(new Error('export failed')); return }
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(png)
+        a.download = filename
+        a.click()
+        resolve()
       }, 'image/png')
     }
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('svg render failed')) }
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('svg load failed')) }
     img.src = url
   })
 }
 
-// ── Canvas size presets ──────────────────────────────────────────────────────
+// ── IG Title-only save logic ──────────────────────────────────────────────────
 
-const CANVAS_PRESETS = [
-  { label: '1:1 post',  w: 1080, h: 1080 },
-  { label: '4:5 post',  w: 1080, h: 1350 },
-  { label: '9:16 story', w: 1080, h: 1920 },
+async function saveIgTitle(imageSrc: string, filename: string) {
+  const W = 1080, H = 1350, S = 2
+  const cW = W * S, cH = H * S
+  const titleSize = 60 * S
+  const titleLS = -1.2 * S
+  const titleCenterY = cH / 2 + titleSize * 0.35
+
+  const [medBuf, heavyBuf] = await Promise.all([
+    fetch('/fonts/ABCDiatype-Medium-Trial.woff2').then(r => r.arrayBuffer()),
+    fetch('/fonts/ABCDiatype-Heavy-Trial.woff2').then(r => r.arrayBuffer()),
+  ])
+  const medB64 = toBase64(medBuf)
+  const heavyB64 = toBase64(heavyBuf)
+  const photoB64 = await fetchImageB64(imageSrc)
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${cW}" height="${cH}">
+  <defs>
+    <style>
+      @font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64,${medB64}') format('woff2'); font-weight: 400; }
+      @font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64,${heavyB64}') format('woff2'); font-weight: 700; }
+    </style>
+    <filter id="r" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="1" numOctaves="4" seed="8" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.6" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+  <image href="${photoB64}" x="0" y="0" width="${cW}" height="${cH}" preserveAspectRatio="xMidYMid slice"/>
+  <text x="${cW / 2}" y="${titleCenterY}" text-anchor="middle" font-family="ABCDiatype, sans-serif" font-size="${titleSize}" letter-spacing="${titleLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">LES ONDES<tspan dx="${48 * S}">Cerb\u00e8re</tspan></text>
+</svg>`
+
+  const blob = new Blob([svg], { type: 'image/svg+xml' })
+  const url = URL.createObjectURL(blob)
+  await new Promise<void>((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = cW; canvas.height = cH
+      canvas.getContext('2d')!.drawImage(img, 0, 0)
+      URL.revokeObjectURL(url)
+      canvas.toBlob(png => {
+        if (!png) { reject(new Error('export failed')); return }
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(png)
+        a.download = filename
+        a.click()
+        resolve()
+      }, 'image/png')
+    }
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('svg load failed')) }
+    img.src = url
+  })
+}
+
+// ── Header Banner save logic ──────────────────────────────────────────────────
+
+async function saveHeaderBanner() {
+  const W = 1920, H = 300, S = 2
+  const cW = W * S, cH = H * S
+  const fontSize = 100 * S
+  const ls = -fontSize * 0.02
+  const centerY = cH / 2
+
+  const [medBuf, heavyBuf] = await Promise.all([
+    fetch('/fonts/ABCDiatype-Medium-Trial.woff2').then(r => r.arrayBuffer()),
+    fetch('/fonts/ABCDiatype-Heavy-Trial.woff2').then(r => r.arrayBuffer()),
+  ])
+  const medB64 = toBase64(medBuf)
+  const heavyB64 = toBase64(heavyBuf)
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${cW}" height="${cH}">
+  <defs>
+    <style>
+      @font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64,${medB64}') format('woff2'); font-weight: 400; }
+      @font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64,${heavyB64}') format('woff2'); font-weight: 700; }
+    </style>
+    <filter id="r" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="1" numOctaves="4" seed="8" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.6" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+  <rect width="${cW}" height="${cH}" fill="#ffffff"/>
+  <text x="${cW / 2}" y="${centerY}" text-anchor="middle" font-family="ABCDiatype, sans-serif" font-size="${fontSize}" letter-spacing="${ls}" fill="#000" dominant-baseline="middle" filter="url(#r)">LES ONDES<tspan dx="${80 * S}">Cerb\u00e8re</tspan><tspan dx="${80 * S}">May 29 30 31</tspan></text>
+</svg>`
+
+  const blob = new Blob([svg], { type: 'image/svg+xml' })
+  const url = URL.createObjectURL(blob)
+  await new Promise<void>((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = cW; canvas.height = cH
+      canvas.getContext('2d')!.drawImage(img, 0, 0)
+      URL.revokeObjectURL(url)
+      canvas.toBlob(png => {
+        if (!png) { reject(new Error('export failed')); return }
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(png)
+        a.download = 'header-banner.png'
+        a.click()
+        resolve()
+      }, 'image/png')
+    }
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('svg load failed')) }
+    img.src = url
+  })
+}
+
+// ── Asset registry ────────────────────────────────────────────────────────────
+
+interface AssetDef {
+  id: string
+  name: string
+  width: number
+  height: number
+  image?: string
+  variant: 'post' | 'title' | 'banner'
+  save: () => Promise<void>
+}
+
+const ASSETS: AssetDef[] = [
+  { id: 'ig-pat1',  name: 'IgPat1',  width: 1080, height: 1350, image: '/images/Pat1.jpg', variant: 'post',  save: () => saveIgPost('/images/Pat1.jpg', 'ig-pat1.png') },
+  { id: 'ig-pat2',  name: 'IgPat2',  width: 1080, height: 1350, image: '/images/Pat2.jpg', variant: 'post',  save: () => saveIgPost('/images/Pat2.jpg', 'ig-pat2.png') },
+  { id: 'ig-pat3',  name: 'IgPat3',  width: 1080, height: 1350, image: '/images/Pat3.jpg', variant: 'post',  save: () => saveIgPost('/images/Pat3.jpg', 'ig-pat3.png') },
+  { id: 'ig-pat1t', name: 'IgPat1T', width: 1080, height: 1350, image: '/images/Pat1.jpg', variant: 'title', save: () => saveIgTitle('/images/Pat1.jpg', 'ig-pat1t.png') },
+  { id: 'ig-pat2t', name: 'IgPat2T', width: 1080, height: 1350, image: '/images/Pat2.jpg', variant: 'title', save: () => saveIgTitle('/images/Pat2.jpg', 'ig-pat2t.png') },
+  { id: 'ig-pat3t', name: 'IgPat3T', width: 1080, height: 1350, image: '/images/Pat3.jpg', variant: 'title', save: () => saveIgTitle('/images/Pat3.jpg', 'ig-pat3t.png') },
+  { id: 'header-banner', name: 'HeaderBanner', width: 1920, height: 300, variant: 'banner', save: saveHeaderBanner },
 ]
 
-// ── Component ────────────────────────────────────────────────────────────────
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export default function IgPage() {
-  // ── Animation state ──────────────────────────────────────────────────────
-  const postRef = useRef<HTMLDivElement>(null)
-  const runIdRef = useRef(0)
-  const runningRef = useRef(false)
-  const [isRunning, setIsRunning] = useState(false)
-  const recorderRef = useRef<MediaRecorder | null>(null)
-  const chunksRef = useRef<Blob[]>([])
-  const [isRecording, setIsRecording] = useState(false)
+  const [activeId, setActiveId] = useState(ASSETS[0].id)
+  const [saving, setSaving] = useState(false)
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const [scale, setScale] = useState(1)
 
-  // ── Tab state ────────────────────────────────────────────────────────────
-  const [activeTab, setActiveTab] = useState<'animation' | 'assets'>('animation')
-
-  // ── Asset state ──────────────────────────────────────────────────────────
-  const assetRef = useRef<HTMLDivElement>(null)
-  const [assetText, setAssetText] = useState('LES ONDES')
-  const [fontSize, setFontSize] = useState(100)
-  const [fontWeight, setFontWeight] = useState<400 | 700>(400)
-  const [letterSpacingEm, setLetterSpacingEm] = useState(-0.02)
-  const [textColor, setTextColor] = useState('#000000')
-  const [filterEnabled, setFilterEnabled] = useState(true)
-  const [filterScale, setFilterScale] = useState(2.4)
-  const [canvasW, setCanvasW] = useState(1080)
-  const [canvasH, setCanvasH] = useState(1080)
-  const [exporting, setExporting] = useState(false)
-
-  // ── Scale animation canvas ────────────────────────────────────────────────
-  useEffect(() => {
-    function scalePost() {
-      if (!postRef.current || activeTab !== 'animation') return
-      const scale = Math.min(
-        (window.innerWidth  * 0.9) / 1080,
-        (window.innerHeight * 0.9) / 1350,
-      )
-      postRef.current.style.transform = `scale(${scale})`
-      document.body.style.height = `${1350 * scale + 80}px`
-    }
-    scalePost()
-    window.addEventListener('resize', scalePost)
-    return () => window.removeEventListener('resize', scalePost)
-  }, [activeTab])
-
-  // ── Scale asset canvas ────────────────────────────────────────────────────
-  useEffect(() => {
-    function scaleAsset() {
-      if (!assetRef.current || activeTab !== 'assets') return
-      const scale = Math.min(
-        (window.innerWidth  * 0.9) / canvasW,
-        (window.innerHeight * 0.9) / canvasH,
-      )
-      assetRef.current.style.transform = `scale(${scale})`
-      document.body.style.height = `${canvasH * scale + 80}px`
-    }
-    scaleAsset()
-    window.addEventListener('resize', scaleAsset)
-    return () => window.removeEventListener('resize', scaleAsset)
-  }, [activeTab, canvasW, canvasH])
-
-  // ── Animation logic ───────────────────────────────────────────────────────
-  const clearAll = useCallback(() => {
-    runningRef.current = false
-    runIdRef.current++
-    setIsRunning(false)
-    SLIDES.forEach(s => s.lines.forEach(l => initLineSpans(l.id, l.text)))
-  }, [])
+  const asset = ASSETS.find(a => a.id === activeId)!
 
   useEffect(() => {
-    SLIDES.forEach(s => s.lines.forEach(l => initLineSpans(l.id, l.text)))
-  }, [])
-
-  const runSlide = useCallback((myRun: number, slideIdx: number) => {
-    const slide = SLIDES[slideIdx]
-    const nextIdx = (slideIdx + 1) % SLIDES.length
-    slide.lines.forEach(l => initLineSpans(l.id, l.text))
-    const { events: typeEvents, duration: typeDuration } = buildTimeline(slide, 'visible')
-    typeEvents.forEach(e =>
-      setTimeout(() => { if (runIdRef.current === myRun && runningRef.current) e.fn() }, e.time)
-    )
-    setTimeout(() => {
-      if (runIdRef.current !== myRun || !runningRef.current) return
-      const { events: unEvents, duration: unDuration } = buildTimeline(slide, 'hidden')
-      unEvents.forEach(e =>
-        setTimeout(() => { if (runIdRef.current === myRun && runningRef.current) e.fn() }, e.time)
-      )
-      const overlap = slide.nextOverlap ?? -2000
-      setTimeout(() => {
-        if (runIdRef.current === myRun && runningRef.current) runSlide(myRun, nextIdx)
-      }, unDuration + overlap)
-    }, typeDuration + 300)
-  }, [])
-
-  const handleStart = useCallback(() => {
-    if (runningRef.current) {
-      runningRef.current = false
-      runIdRef.current++
-      setIsRunning(false)
-    } else {
-      clearAll()
-      runningRef.current = true
-      setIsRunning(true)
-      const myRun = runIdRef.current
-      runSlide(myRun, 0)
+    function updateScale() {
+      setScale(Math.min(
+        (window.innerWidth  * 0.88) / asset.width,
+        (window.innerHeight * 0.88) / asset.height,
+      ))
     }
-  }, [clearAll, runSlide])
+    updateScale()
+    window.addEventListener('resize', updateScale)
+    return () => window.removeEventListener('resize', updateScale)
+  }, [asset.width, asset.height])
 
-  const handleRecord = useCallback(async () => {
-    if (isRecording) {
-      recorderRef.current?.stop()
-      return
-    }
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { frameRate: 30 } as MediaTrackConstraints,
-        audio: false,
-      })
-      const mimeType = getSupportedMimeType()
-      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined)
-      recorderRef.current = recorder
-      chunksRef.current = []
-      recorder.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data) }
-      recorder.onstop = () => {
-        stream.getTracks().forEach(t => t.stop())
-        const blob = new Blob(chunksRef.current, { type: mimeType || 'video/webm' })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `les-ondes-ig.${mimeToExt(mimeType)}`
-        a.click()
-        URL.revokeObjectURL(url)
-        setIsRecording(false)
-      }
-      stream.getVideoTracks()[0].addEventListener('ended', () => recorderRef.current?.stop(), { once: true })
-      recorder.start()
-      setIsRecording(true)
-      if (!runningRef.current) {
-        clearAll()
-        runningRef.current = true
-        setIsRunning(true)
-        const myRun = runIdRef.current
-        runSlide(myRun, 0)
-      }
-    } catch {
-      // user cancelled dialog
-    }
-  }, [isRecording, clearAll, runSlide])
-
-  // ── Asset export ──────────────────────────────────────────────────────────
-  const handleExport = useCallback(async () => {
-    setExporting(true)
-    try {
-      const png = await renderToPng({
-        text: assetText,
-        fontSize,
-        fontWeight,
-        letterSpacingEm,
-        textColor,
-        filterEnabled,
-        filterScale,
-        width: canvasW,
-        height: canvasH,
-      })
-      const url = URL.createObjectURL(png)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'les-ondes-asset.png'
-      a.click()
-      URL.revokeObjectURL(url)
-    } finally {
-      setExporting(false)
-    }
-  }, [assetText, fontSize, fontWeight, letterSpacingEm, textColor, filterEnabled, filterScale, canvasW, canvasH])
-
-  // ── Asset preview geometry ────────────────────────────────────────────────
-  const lines = assetText.split('\n')
-  const lineHeight = fontSize * 1.2
-  const totalGroupHeight = (lines.length - 1) * lineHeight
-  const startY = canvasH / 2 - totalGroupHeight / 2
-  const lsPx = letterSpacingEm * fontSize
+  const handleSave = useCallback(async () => {
+    if (saving) return
+    setSaving(true)
+    try { await asset.save() } finally { setSaving(false) }
+  }, [saving, asset])
 
   return (
     <>
       <svg style={{ display: 'none' }} aria-hidden="true">
         <defs>
           <filter id="roughen" x="-5%" y="-5%" width="110%" height="110%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves={4} seed={8} result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={2.4} xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-          <filter id="roughen-asset" x="-5%" y="-5%" width="110%" height="110%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves={4} seed={8} result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={filterScale} xChannelSelector="R" yChannelSelector="G" />
+            <feTurbulence type="fractalNoise" baseFrequency="1" numOctaves={4} seed={8} result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale={1.6} xChannelSelector="R" yChannelSelector="G" />
           </filter>
         </defs>
       </svg>
 
-      {/* Tab bar + controls */}
-      <div style={{
-        position: 'fixed', top: 'clamp(14px, 2vh, 28px)', left: 'clamp(14px, 2vw, 28px)',
-        zIndex: 10, display: 'flex', flexDirection: 'column', gap: 10,
-      }}>
-        {/* Tabs */}
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button
-            onClick={() => setActiveTab('animation')}
-            style={{ ...btnStyle, ...(activeTab === 'animation' ? activeBtnStyle : {}) }}
-          >
-            animation
+      {/* Asset list — upper left */}
+      <div style={{ position: 'fixed', top: 'clamp(14px, 2vh, 28px)', left: 'clamp(14px, 2vw, 28px)', zIndex: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {ASSETS.map(a => (
+          <button key={a.id} onClick={() => setActiveId(a.id)} style={{ ...btnStyle, ...(a.id === activeId ? activeBtnStyle : {}) }}>
+            {a.name}
           </button>
-          <button
-            onClick={() => setActiveTab('assets')}
-            style={{ ...btnStyle, ...(activeTab === 'assets' ? activeBtnStyle : {}) }}
-          >
-            assets
-          </button>
-        </div>
-
-        {/* Animation controls */}
-        {activeTab === 'animation' && (
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={handleStart} style={btnStyle}>{isRunning ? 'stop' : 'start'}</button>
-            <button onClick={clearAll}    style={btnStyle}>reset</button>
-            <button onClick={handleRecord} style={{ ...btnStyle, ...(isRecording ? { borderColor: 'red', color: 'red' } : {}) }}>
-              {isRecording ? 'stop rec' : 'record'}
-            </button>
-          </div>
-        )}
-
-        {/* Asset controls */}
-        {activeTab === 'assets' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 'calc(100vh - 80px)', overflowY: 'auto' }}>
-            <textarea
-              value={assetText}
-              onChange={e => setAssetText(e.target.value)}
-              rows={3}
-              style={{ ...inputStyle, resize: 'vertical', minHeight: 60 }}
-            />
-
-            {/* Font weight */}
-            <div style={{ display: 'flex', gap: 6 }}>
-              <button onClick={() => setFontWeight(400)} style={{ ...btnStyle, ...(fontWeight === 400 ? activeBtnStyle : {}) }}>medium</button>
-              <button onClick={() => setFontWeight(700)} style={{ ...btnStyle, ...(fontWeight === 700 ? activeBtnStyle : {}) }}>heavy</button>
-            </div>
-
-            <label style={labelStyle}>
-              size
-              <input
-                type="number" value={fontSize} min={8} max={400} step={1}
-                onChange={e => setFontSize(Number(e.target.value))}
-                style={inputStyle}
-              />
-            </label>
-
-            <label style={labelStyle}>
-              spacing
-              <input
-                type="number" value={letterSpacingEm} min={-0.1} max={0.5} step={0.01}
-                onChange={e => setLetterSpacingEm(Number(e.target.value))}
-                style={inputStyle}
-              />
-            </label>
-
-            <label style={labelStyle}>
-              color
-              <input type="color" value={textColor} onChange={e => setTextColor(e.target.value)} style={colorInputStyle} />
-            </label>
-
-            <label style={{ ...labelStyle, cursor: 'pointer' }}>
-              filter
-              <input
-                type="checkbox" checked={filterEnabled}
-                onChange={e => setFilterEnabled(e.target.checked)}
-                style={{ accentColor: 'black' }}
-              />
-            </label>
-
-            {filterEnabled && (
-              <label style={labelStyle}>
-                roughness
-                <input
-                  type="number" value={filterScale} min={0} max={20} step={0.1}
-                  onChange={e => setFilterScale(Number(e.target.value))}
-                  style={inputStyle}
-                />
-              </label>
-            )}
-
-            {/* Canvas size */}
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-              {CANVAS_PRESETS.map(p => (
-                <button
-                  key={p.label}
-                  onClick={() => { setCanvasW(p.w); setCanvasH(p.h) }}
-                  style={{ ...btnStyle, ...(canvasW === p.w && canvasH === p.h ? activeBtnStyle : {}) }}
-                >
-                  {p.label}
-                </button>
-              ))}
-            </div>
-
-            <button onClick={handleExport} disabled={exporting} style={{ ...btnStyle, marginTop: 4 }}>
-              {exporting ? 'exporting…' : 'export png'}
-            </button>
-          </div>
-        )}
+        ))}
       </div>
 
-      {/* Main content */}
-      <div style={{
-        fontFamily: 'var(--font-diatype), sans-serif',
-        fontWeight: 400,
-        background: '#e8e8e8',
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
+      {/* Save — upper right */}
+      <button onClick={handleSave} disabled={saving} style={{ ...btnStyle, position: 'fixed', top: 'clamp(14px, 2vh, 28px)', right: 'clamp(14px, 2vw, 28px)', zIndex: 10 }}>
+        {saving ? 'saving…' : 'save'}
+      </button>
 
-        {/* Animation canvas */}
-        {activeTab === 'animation' && (
-          <div ref={postRef} style={{
-            width: 1080,
-            height: 1350,
-            background: '#fff',
-            transformOrigin: 'center center',
-            flexShrink: 0,
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-            padding: 48,
-            gap: 48,
-          }}>
-            <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
-              <div id="slide-1" style={{
-                position: 'absolute', inset: 0,
-                display: 'flex', flexDirection: 'column',
-                alignItems: 'center', justifyContent: 'center',
-                gap: 48,
-                filter: 'url(#roughen)',
-              }}>
-                <p id="t-title"   style={titleStyle} />
-                <p id="t-cerbere" style={titleStyle} />
-                <p id="dates"     style={titleStyle} />
-              </div>
-
-              <div id="slide-2" style={slideWrapStyle}>
-                <div style={namesGridStyle}>
-                  {['a1','a2','a3','a4','a5','a6'].map(id => (
-                    <p key={id} id={id} style={nameStyle} />
-                  ))}
-                </div>
-              </div>
-
-              <div id="slide-3" style={slideWrapStyle}>
-                <div style={namesGridStyle}>
-                  {['b1','b2','b3','b4','b5','b6'].map(id => (
-                    <p key={id} id={id} style={nameStyle} />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
-              <video style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                autoPlay muted loop playsInline>
-                <source src="/video/SamFinal_web.mp4" type="video/mp4" />
-              </video>
-            </div>
-          </div>
-        )}
-
-        {/* Asset preview */}
-        {activeTab === 'assets' && (
-          <div ref={assetRef} style={{
-            transformOrigin: 'center center', flexShrink: 0,
-            backgroundImage: 'repeating-conic-gradient(#ccc 0% 25%, #e8e8e8 0% 50%)',
-            backgroundSize: '20px 20px',
-          }}>
-            <svg
-              width={canvasW}
-              height={canvasH}
-              viewBox={`0 0 ${canvasW} ${canvasH}`}
-              style={{ display: 'block' }}
-            >
-              {lines.map((line, i) => (
-                <text
-                  key={i}
-                  x={canvasW / 2}
-                  y={startY + i * lineHeight}
-                  fontFamily="var(--font-diatype), sans-serif"
-                  fontSize={fontSize}
-                  fontWeight={fontWeight}
-                  letterSpacing={lsPx}
-                  fill={textColor}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  filter={filterEnabled ? 'url(#roughen-asset)' : undefined}
-                >
-                  {line}
-                </text>
-              ))}
-            </svg>
-          </div>
-        )}
+      {/* Canvas */}
+      <div style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#e8e8e8', fontFamily: 'var(--font-diatype), sans-serif', fontWeight: 400 }}>
+        <div ref={wrapRef} style={{ width: asset.width, height: asset.height, transform: `scale(${scale})`, transformOrigin: 'center center', flexShrink: 0 }}>
+          {asset.variant === 'post'   && <IgPostPreview image={asset.image!} />}
+          {asset.variant === 'title'  && <IgTitlePreview image={asset.image!} />}
+          {asset.variant === 'banner' && <HeaderBannerPreview />}
+        </div>
       </div>
     </>
   )
 }
 
-// ── Inline style constants ────────────────────────────────────────────────────
+// ── Asset preview ─────────────────────────────────────────────────────────────
+
+function IgPostPreview({ image }: { image: string }) {
+  return (
+    <div style={{ width: 1080, height: 1350, background: '#fff', position: 'relative', overflow: 'hidden' }}>
+      {/* Upper half — image background, title centered */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 675, backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 48, boxSizing: 'border-box', gap: 48 }}>
+        <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>LES ONDES</p>
+        <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>Cerbère</p>
+      </div>
+
+      {/* Lower half — artists + date */}
+      <div style={{ position: 'absolute', top: 675, left: 0, right: 0, height: 675, padding: 48, boxSizing: 'border-box', display: 'flex', gap: 48, alignItems: 'flex-start' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {IG_POST_ARTISTS.map((name, i) => (
+            <p key={i} style={{ ...textStyle, filter: 'url(#roughen)' }}>{name}</p>
+          ))}
+        </div>
+        <p style={{ ...textStyle, flex: 1, textAlign: 'right', filter: 'url(#roughen)' }}>May 29 30 31</p>
+      </div>
+    </div>
+  )
+}
+
+function HeaderBannerPreview() {
+  return (
+    <div style={{ width: 1920, height: 300, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 80 }}>
+      <p style={{ ...titleStyle, fontSize: 100, filter: 'url(#roughen)' }}>LES ONDES</p>
+      <p style={{ ...titleStyle, fontSize: 100, filter: 'url(#roughen)' }}>Cerbère</p>
+      <p style={{ ...titleStyle, fontSize: 100, filter: 'url(#roughen)' }}>May 29 30 31</p>
+    </div>
+  )
+}
+
+function IgTitlePreview({ image }: { image: string }) {
+  return (
+    <div style={{ width: 1080, height: 1350, position: 'relative', overflow: 'hidden', backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 48 }}>
+      <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>LES ONDES</p>
+      <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>Cerbère</p>
+    </div>
+  )
+}
+
+// ── Styles ────────────────────────────────────────────────────────────────────
 
 const titleStyle: React.CSSProperties = {
-  fontSize: 100, lineHeight: 1.1, letterSpacing: '-0.02em',
-  color: '#000', whiteSpace: 'pre', textAlign: 'center',
-  margin: 0,
+  fontSize: 60, lineHeight: 1.1, letterSpacing: '-0.02em',
+  margin: 0, color: '#000', whiteSpace: 'nowrap', textAlign: 'center',
 }
 
-const slideWrapStyle: React.CSSProperties = {
-  position: 'absolute', inset: 0,
-  display: 'flex', alignItems: 'center', justifyContent: 'center',
-  filter: 'url(#roughen)',
-}
-
-const namesGridStyle: React.CSSProperties = {
-  display: 'flex', flexDirection: 'column',
-  alignItems: 'center', justifyContent: 'center',
-  gap: 24, width: '100%',
-}
-
-const nameStyle: React.CSSProperties = {
-  fontSize: 52, letterSpacing: '4.16px',
-  textAlign: 'center', width: '100%',
-  margin: 0,
+const textStyle: React.CSSProperties = {
+  fontSize: 26, lineHeight: 1, letterSpacing: '0.08em',
+  margin: 0, color: '#000', whiteSpace: 'pre',
 }
 
 const btnStyle: React.CSSProperties = {
@@ -690,22 +368,4 @@ const btnStyle: React.CSSProperties = {
 
 const activeBtnStyle: React.CSSProperties = {
   background: 'black', color: 'white', borderColor: 'black',
-}
-
-const labelStyle: React.CSSProperties = {
-  fontFamily: 'var(--font-diatype), sans-serif', fontWeight: 400,
-  fontSize: 13, letterSpacing: '0.08em', color: 'black',
-  display: 'flex', alignItems: 'center', gap: 8,
-}
-
-const inputStyle: React.CSSProperties = {
-  fontFamily: 'var(--font-diatype), sans-serif', fontWeight: 400,
-  fontSize: 13, letterSpacing: '0.08em',
-  background: 'none', border: '1px solid rgba(0,0,0,0.35)',
-  padding: '4px 8px', color: 'black', width: 80,
-}
-
-const colorInputStyle: React.CSSProperties = {
-  width: 32, height: 24, padding: 0, border: '1px solid rgba(0,0,0,0.35)',
-  cursor: 'pointer', background: 'none',
 }

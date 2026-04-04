@@ -26,15 +26,13 @@ export const HOME_CONTENT_QUERY = `{
 }`
 
 export const INFO_PAGE_QUERY = `{
-  "infoPage": *[_type == "infoPage"][0]{
+  "infoPage": *[_id == "b0e897fb-a27d-4a0d-ba12-5d3f9876026c"][0]{
     overviewEn, overviewFr,
     musicIntroEn, musicIntroFr,
     musicEthosEn, musicEthosFr,
     diningEn, diningFr,
-    accommodationNoteEn, accommodationNoteEr
-  },
-  "accommodation": *[_type == "accommodation"][0]{
-    introEn, introFr,
+    accommodationNoteEn, accommodationNoteEr,
+    accommodationIntroEn, accommodationIntroFr,
     locations[] {
       name,
       hotels[] { hotelName, url, description, descriptionFr }

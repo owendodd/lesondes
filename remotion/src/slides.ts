@@ -2,6 +2,7 @@ export interface LineDef {
   id: string;
   text: string;
   charDelay: number;
+  typeOutCharDelay?: number; // overrides charDelay for the untype pass only
   spaceExtra?: number;
   pauseAfter: number;
   startDelay?: number;
@@ -11,6 +12,8 @@ export interface SlideDef {
   id: string;
   lines: LineDef[];
   nextOverlap: number;
+  typeOutDelay?: number; // ms to wait after last type-in char before untyping (default 300)
+  direction?: "row" | "column"; // layout direction for multi-line slides (default: row when >1 line)
 }
 
 export const SLIDES: SlideDef[] = [

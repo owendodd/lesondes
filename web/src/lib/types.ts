@@ -74,10 +74,9 @@ export interface InfoPage {
   overviewFr: string
   musicIntroEn: string
   musicIntroFr: string
-  musicEthosEn: string
-  musicEthosFr: string
   diningEn: string
   diningFr: string
-  accommodationNoteEn: string
-  accommodationNoteEr: string
+  accommodationIntroEn: string
+  accommodationIntroFr: string
+  locations: Location[]
 }

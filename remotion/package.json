@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "studio": "remotion studio",
-    "render": "remotion render IgAnimation ../web/recordings/les-ondes-ig.mp4 --codec=h264 --crf=15",
-    "render:loops": "remotion render IgAnimation ../web/recordings/les-ondes-ig.mp4 --codec=h264 --crf=15 --props='{\"loops\":3}'"
+    "render": "remotion render IgPost ../web/recordings/les-ondes-ig.mp4 --codec=h264 --crf=10 --jpeg-quality=100 --muted",
+    "render:loops": "remotion render IgPost ../web/recordings/les-ondes-ig.mp4 --codec=h264 --crf=15 --props='{\"loops\":3}'",
+    "render:story": "remotion render IgStory ../web/recordings/les-ondes-ig-story.mp4 --codec=h264 --crf=15"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.0",
