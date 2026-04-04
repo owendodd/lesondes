@@ -61,3 +61,22 @@ export interface Accommodation {
   introFr: string
   locations: Location[]
 }
+
+export interface ScheduleItem {
+  dayEn: string
+  dayFr: string
+  detailEn: string
+  detailFr: string
+}
+
+export interface InfoPage {
+  overviewEn: string
+  overviewFr: string
+  musicIntroEn: string
+  musicIntroFr: string
+  schedule: ScheduleItem[]
+  diningEn: string
+  diningFr: string
+  accommodationNoteEn: string
+  accommodationNoteEr: string
+}

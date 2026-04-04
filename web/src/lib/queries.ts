@@ -25,6 +25,22 @@ export const HOME_CONTENT_QUERY = `{
   }
 }`
 
+export const INFO_PAGE_QUERY = `{
+  "infoPage": *[_type == "infoPage"][0]{
+    overviewEn, overviewFr,
+    musicIntroEn, musicIntroFr,
+    schedule[] { dayEn, dayFr, detailEn, detailFr },
+    diningEn, diningFr,
+    accommodationNoteEn, accommodationNoteEr
+  },
+  "accommodation": *[_type == "accommodation"][0]{
+    locations[] {
+      name,
+      hotels[] { hotelName, url, description, descriptionFr }
+    }
+  }
+}`
+
 export const ACCOMMODATION_QUERY = `{
   "siteConfig": *[_type == "siteConfig"][0]{
     contactEmail, brevoFormAction

@@ -7,6 +7,7 @@ import { infoLink } from './src/sanity/schemaTypes/infoLink'
 import { infoBottom } from './src/sanity/schemaTypes/infoBottom'
 import { credit } from './src/sanity/schemaTypes/credit'
 import { accommodation } from './src/sanity/schemaTypes/accommodation'
+import { infoPage } from './src/sanity/schemaTypes/infoPage'
 
 export default defineConfig({
   name: 'default',
@@ -15,6 +16,6 @@ export default defineConfig({
   dataset: 'production',
   plugins: [structureTool(), visionTool()],
   schema: {
-    types: [siteConfig, artist, infoLink, infoBottom, credit, accommodation],
+    types: [siteConfig, artist, infoLink, infoBottom, credit, accommodation, infoPage],
   },
 })
