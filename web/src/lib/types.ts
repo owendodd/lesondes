@@ -27,6 +27,7 @@ export interface InfoLink {
 export interface InfoBottom {
   hotelName: string
   hotelNameFr?: string
+  hotelUrl?: string
   foodCreditPrefixEn: string
   foodCreditPrefixFr: string
   foodPerson: string

@@ -18,7 +18,7 @@ export const HOME_CONTENT_QUERY = `{
     _id, labelEn, labelFr, url
   },
   "infoBottom": *[_type == "infoBottom"][0]{
-    hotelName, hotelNameFr, foodCreditPrefixEn, foodCreditPrefixFr, foodPerson, wineCreditPrefixEn, wineCreditPrefixFr, winePerson
+    hotelName, hotelNameFr, hotelUrl, foodCreditPrefixEn, foodCreditPrefixFr, foodPerson, wineCreditPrefixEn, wineCreditPrefixFr, winePerson
   },
   "credits": *[_type == "credit"] | order(order asc) {
     _id, roleEn, roleFr, personName, url
