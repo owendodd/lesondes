@@ -149,7 +149,7 @@ export function Announce2({ loops = 1 }: Announce2Props) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: 140,
+          gap: 100,
         }}
       >
         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 120 }}>
