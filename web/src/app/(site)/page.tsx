@@ -5,7 +5,6 @@ import { InfoTop } from '@/components/InfoTop'
 import { ArtistList } from '@/components/ArtistList'
 import { InfoBottom } from '@/components/InfoBottom'
 import { NewsletterContact } from '@/components/NewsletterContact'
-import { Credits } from '@/components/Credits'
 import { LangSwitcher } from '@/components/LangSwitcher'
 import {
   siteBodyTextClass,
@@ -26,7 +25,6 @@ interface HomeData {
   artists: Artist[]
   infoLinks: InfoLink[]
   infoBottom: InfoBottomType
-  credits: Credit[]
 }
 
 type HomeContent = Omit<HomeData, 'siteConfig'>
@@ -41,7 +39,6 @@ export default async function Home() {
     artists: raw?.artists ?? [],
     infoLinks: raw?.infoLinks ?? [],
     infoBottom: raw?.infoBottom ?? { hotelName: '', foodCreditPrefixEn: '', foodCreditPrefixFr: '', foodPerson: '', wineCreditPrefixEn: '', wineCreditPrefixFr: '', winePerson: '' },
-    credits: raw?.credits ?? [],
   }
 
   return (
@@ -56,7 +53,6 @@ export default async function Home() {
 
         <div className={siteBottomFullWidthStackClass}>
           <NewsletterContact brevoFormAction={data.siteConfig.brevoFormAction} email={data.siteConfig.contactEmail} />
-          <Credits credits={data.credits} />
           <div className={siteBodyTextClass}>
             <LangSwitcher />
           </div>

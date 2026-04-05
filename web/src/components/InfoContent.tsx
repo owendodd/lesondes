@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import imageUrlBuilder from '@sanity/image-url'
+import { createImageUrlBuilder } from '@sanity/image-url'
 import { client } from '@/lib/sanity'
 import { useLang } from '@/hooks/useLang'
 import { NewsletterContact } from '@/components/NewsletterContact'
@@ -15,7 +15,7 @@ import {
 } from '@/lib/siteSpacing'
 import type { InfoPage, SiteConfig, Credit } from '@/lib/types'
 
-const builder = imageUrlBuilder(client)
+const builder = createImageUrlBuilder(client)
 
 const pageClass = `${siteContainerClass} flex flex-col gap-[30px] max-[740px]:gap-4 pt-0 pb-[120px] max-[740px]:pb-16`
 const linkClass = 'text-inherit underline decoration-2 underline-offset-2 hover:text-[#888] transition-colors duration-150'
