@@ -32,7 +32,7 @@ export const IG1B_SLIDES: SlideDef[] = [
       { id: "1b-a14", text: "Youmna Saba",              charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
     ],
     nextOverlap: 400,
-    typeOutDelay: -2400,
+    typeOutDelay: 100,
   },
 ];
 
@@ -148,15 +148,6 @@ export function Ig1b({ loops = 1 }: Ig1bProps) {
         overflow: "hidden",
       }}
     >
-      {/* SVG filter */}
-      <svg style={{ display: "none" }} aria-hidden="true">
-        <defs>
-          <filter id="roughen-1b" x="-5%" y="-5%" width="110%" height="110%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.2" numOctaves={4} seed={20} result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={6} xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-      </svg>
 
       <div
         style={{
@@ -189,5 +180,5 @@ const textStyle: React.CSSProperties = {
   letterSpacing: "-0.02em",
   textAlign: "center",
   whiteSpace: "nowrap",
-  filter: "url(#roughen-1b)",
+
 };

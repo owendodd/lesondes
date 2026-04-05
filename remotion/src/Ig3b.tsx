@@ -137,15 +137,6 @@ export function Ig3b({ loops = 1 }: Ig3bProps) {
         overflow: "hidden",
       }}
     >
-      {/* SVG filter */}
-      <svg style={{ display: "none" }} aria-hidden="true">
-        <defs>
-          <filter id="roughen-3b" x="-5%" y="-5%" width="110%" height="110%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.2" numOctaves={4} seed={20} result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={8} xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-      </svg>
 
       <div
         style={{
@@ -185,5 +176,5 @@ const textStyle: React.CSSProperties = {
   letterSpacing: "-0.02em",
   textAlign: "center",
   whiteSpace: "nowrap",
-  filter: "url(#roughen-3b)",
+
 };

@@ -2,12 +2,12 @@ export const siteContainerClass = 'mx-auto w-full max-w-[800px] px-6 max-[740px]
 
 export const sitePageStackClass = 'flex flex-col'
 
-export const sitePageGapClass = 'gap-[120px] max-[740px]:gap-16'
+export const sitePageGapClass = 'gap-[80px] max-[740px]:gap-20'
 
-export const sitePagePaddingYClass = 'py-[120px] max-[740px]:py-16'
+export const sitePagePaddingYClass = 'py-[80px] max-[740px]:py-20'
 
 export const siteBodyTextClass =
-  'text-[26px] leading-[1.1] tracking-[0.08em] filter-[url(#roughen)] max-[740px]:text-[24px]'
+  'text-[26px] leading-[1.1] tracking-[0.08em] max-[740px]:text-[24px]'
 
-export const siteBottomFullWidthStackClass = 'm-0 w-full flex flex-col gap-[60px]'
+export const siteBottomFullWidthStackClass = 'm-0 w-full flex flex-col gap-[80px]'
 

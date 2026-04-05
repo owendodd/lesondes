@@ -144,15 +144,6 @@ export function Announce1({ loops = 1 }: Announce1Props) {
         overflow: "hidden",
       }}
     >
-      {/* SVG filter */}
-      <svg style={{ display: "none" }} aria-hidden="true">
-        <defs>
-          <filter id="roughen-ann1" x="-5%" y="-5%" width="110%" height="110%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.2" numOctaves={4} seed={20} result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={6} xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-      </svg>
 
       <div
         style={{
@@ -185,5 +176,5 @@ const textStyle: React.CSSProperties = {
   letterSpacing: "-0.02em",
   textAlign: "center",
   whiteSpace: "nowrap",
-  filter: "url(#roughen-ann1)",
+
 };
