@@ -5,6 +5,9 @@ export const infoPage = defineType({
   title: 'Info Page',
   type: 'document',
   fields: [
+    // Hero image
+    defineField({ name: 'heroImage', title: 'Hero image', type: 'image', options: { hotspot: true } }),
+
     // Overview
     defineField({ name: 'overviewEn', title: 'Overview (EN)', type: 'text' }),
     defineField({ name: 'overviewFr', title: 'Overview (FR)', type: 'text' }),

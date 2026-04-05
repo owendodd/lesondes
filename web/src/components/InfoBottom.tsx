@@ -7,7 +7,7 @@ export function InfoBottom({ data }: { data: InfoBottomType }) {
   const { lang } = useLang()
 
   return (
-    <div className="[grid-area:info-bottom] flex flex-col gap-4 self-end text-center filter-[url(#roughen)]">
+    <div className="[grid-area:info-bottom] flex flex-col gap-4 self-end text-center">
       <p>{lang === 'fr' ? (data.hotelNameFr || data.hotelName) : data.hotelName}</p>
       <p>
         {lang === 'fr' ? data.foodCreditPrefixFr : data.foodCreditPrefixEn}

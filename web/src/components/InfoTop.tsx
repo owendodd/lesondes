@@ -8,7 +8,7 @@ export function InfoTop({ links }: { links: InfoLink[] }) {
   const { lang } = useLang()
 
   return (
-    <div className="[grid-area:info-top] flex flex-col gap-4 text-center filter-[url(#roughen)]">
+    <div className="[grid-area:info-top] flex flex-col gap-4 text-center">
       <div className="flex flex-col gap-4">
         {links.slice(0, 1).map(link => (
           <a

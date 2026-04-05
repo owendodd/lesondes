@@ -27,6 +27,7 @@ export const HOME_CONTENT_QUERY = `{
 
 export const INFO_PAGE_QUERY = `{
   "infoPage": *[_id == "b0e897fb-a27d-4a0d-ba12-5d3f9876026c"][0]{
+    heroImage,
     overviewEn, overviewFr,
     musicIntroEn, musicIntroFr,
     musicEthosEn, musicEthosFr,

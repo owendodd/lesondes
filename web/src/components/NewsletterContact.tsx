@@ -21,7 +21,7 @@ const inputClass =
   'w-full border-0 bg-transparent p-0 text-center font-sans text-[inherit] leading-[inherit] tracking-[inherit] text-black/20 outline-none placeholder:text-black focus:text-black focus:placeholder:text-transparent'
 
 const submitClass =
-  'cursor-pointer border-0 bg-transparent p-0 text-center font-sans text-[inherit] leading-[inherit] tracking-[inherit] text-black underline decoration-2 underline-offset-2 outline-none'
+  'cursor-pointer border-0 bg-transparent p-0 text-center font-sans text-[inherit] leading-[inherit] tracking-[inherit] text-black underline decoration-2 underline-offset-2 outline-none hover:text-[#888]'
 
 export function NewsletterContact({
   brevoFormAction,

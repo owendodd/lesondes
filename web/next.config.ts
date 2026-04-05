@@ -7,6 +7,9 @@ const appDir = path.dirname(fileURLToPath(import.meta.url))
 const turbopackRoot = path.join(appDir, '..')
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [{ hostname: 'cdn.sanity.io' }],
+  },
   turbopack: {
     root: turbopackRoot,
   },

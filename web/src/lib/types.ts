@@ -70,6 +70,7 @@ export interface ScheduleItem {
 }
 
 export interface InfoPage {
+  heroImage?: { asset: { _ref: string }; hotspot?: object; crop?: object }
   overviewEn: string
   overviewFr: string
   musicIntroEn: string

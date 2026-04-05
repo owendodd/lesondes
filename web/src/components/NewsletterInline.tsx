@@ -53,7 +53,7 @@ export function NewsletterInline({ brevoFormAction }: { brevoFormAction: string 
   }
 
   return (
-    <div className="newsletter-inline filter-[url(#roughen)]">
+    <div className="newsletter-inline">
       <p className="newsletter-inline-title">{lang === 'fr' ? 'Infolettre' : 'Newsletter'}</p>
 
       <input

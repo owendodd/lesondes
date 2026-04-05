@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={diatype.variable}>
-      <body className="bg-white font-normal font-sans text-black antialiased">{children}</body>
+      <body className="bg-white font-normal font-sans text-black">{children}</body>
     </html>
   )
 }

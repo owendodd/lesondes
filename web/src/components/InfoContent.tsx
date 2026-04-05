@@ -1,8 +1,12 @@
 'use client'
 
+import Image from 'next/image'
+import imageUrlBuilder from '@sanity/image-url'
+import { client } from '@/lib/sanity'
 import { useLang } from '@/hooks/useLang'
 import { NewsletterContact } from '@/components/NewsletterContact'
 import { Credits } from '@/components/Credits'
+import { LangSwitcher } from '@/components/LangSwitcher'
 import {
   siteBodyTextClass,
   siteBottomFullWidthStackClass,
@@ -11,7 +15,9 @@ import {
 } from '@/lib/siteSpacing'
 import type { InfoPage, SiteConfig, Credit } from '@/lib/types'
 
-const pageClass = `${siteContainerClass} flex flex-col gap-[30px] max-[740px]:gap-4 pt-0 pb-[30px] max-[740px]:pb-4`
+const builder = imageUrlBuilder(client)
+
+const pageClass = `${siteContainerClass} flex flex-col gap-[30px] max-[740px]:gap-4 pt-0 pb-[120px] max-[740px]:pb-16`
 const linkClass = 'text-inherit underline decoration-2 underline-offset-2 hover:text-[#888] transition-colors duration-150'
 
 export function InfoContent({
@@ -28,7 +34,20 @@ export function InfoContent({
 
   return (
     <div className={pageClass}>
-      <div className={`flex flex-col gap-[30px] max-[740px]:gap-4 filter-[url(#roughen)] ${siteBodyTextClass}`}>
+
+      {/* Hero image */}
+      {d.heroImage && (
+        <Image
+          src={builder.image(d.heroImage).auto('format').url()}
+          alt=""
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="w-full h-auto block"
+        />
+      )}
+
+      <div className={`flex flex-col gap-[30px] max-[740px]:gap-4 ${siteBodyTextClass}`}>
 
         {/* Overview */}
         <p className="leading-[1.1]">{isFr ? d.overviewFr : d.overviewEn}</p>
@@ -61,12 +80,15 @@ export function InfoContent({
       </div>
 
       {/* Footer */}
-      <div className={`${siteBottomFullWidthStackClass} mt-[30px] max-[740px]:mt-4`}>
+      <div className={`${siteBottomFullWidthStackClass} mt-[90px] max-[740px]:mt-[60px]`}>
         <NewsletterContact
           brevoFormAction={siteConfig.brevoFormAction}
           email={siteConfig.contactEmail}
         />
         <Credits credits={credits} />
+        <div className={siteBodyTextClass}>
+          <LangSwitcher />
+        </div>
       </div>
 
     </div>

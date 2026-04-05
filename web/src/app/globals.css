@@ -16,6 +16,10 @@
   }
 }
 
+/* Link + button hover — unlayered so it beats Tailwind utility layers */
+a:hover { color: #888; }
+header a:hover { color: inherit; }
+
 /* Home: explicit grid — keep outside @layer so Tailwind v4 does not drop or reorder rules */
 .home-content-grid {
   display: grid;
