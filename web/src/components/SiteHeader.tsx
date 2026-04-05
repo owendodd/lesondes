@@ -8,7 +8,7 @@ import { useLang } from '@/hooks/useLang'
 import type { SiteConfig } from '@/lib/types'
 
 const headerClass =
-  'flex items-baseline justify-center gap-[clamp(40px,4.85vw,68px)] px-6 py-[80px] text-[clamp(40px,5.4vw,80px)] font-normal leading-[1.1] tracking-[-0.02em] max-[740px]:px-5 max-[740px]:py-12 max-[740px]:text-[clamp(28px,9vw,48px)]'
+  'flex items-baseline justify-center gap-[clamp(40px,4.85vw,68px)] px-6 py-[80px] text-[clamp(40px,5.4vw,80px)] font-normal leading-[1.1] tracking-[-0.02em] filter-[url(#roughen-header)] max-[740px]:px-5 max-[740px]:py-12 max-[740px]:text-[clamp(28px,9vw,48px)]'
 
 const wrapClass =
   'flex w-full items-baseline justify-center gap-[clamp(40px,4.85vw,68px)] max-[740px]:flex-wrap max-[740px]:gap-[clamp(12px,4vw,32px)]'

@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import { LangProvider } from '@/components/LangProvider'
 import { LangSwitcher } from '@/components/LangSwitcher'
+import { SvgFilter } from '@/components/SvgFilter'
 import { SiteHeader } from '@/components/SiteHeader'
 import { getSiteConfig } from '@/lib/sanity'
 import type { SiteConfig } from '@/lib/types'
@@ -19,6 +20,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   return (
     <>
       <LangProvider>
+        <SvgFilter />
         <SiteHeader config={config} />
         <div>
           {children}
