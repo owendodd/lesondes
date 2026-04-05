@@ -119,6 +119,15 @@ export function Announce2({ loops = 1 }: Announce2Props) {
   return (
     <div style={{ width: 2160, height: 2700, background: "#fff", position: "relative", overflow: "hidden" }}>
 
+      {/* SVG filter */}
+      <svg style={{ display: "none" }} aria-hidden="true">
+        <defs>
+          <filter id="roughen-ann2" x="-5%" y="-5%" width="110%" height="110%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves={4} seed={20} result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale={4.2} xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+      </svg>
 
       {/* Upper half: video full bleed */}
       <div style={{ position: "absolute", top: 0, left: 0, width: 2160, height: 1350, overflow: "hidden" }}>
@@ -170,5 +179,5 @@ const titleStyle: React.CSSProperties = {
   letterSpacing: "-0.02em",
   textAlign: "center",
   whiteSpace: "nowrap",
-
+  filter: "url(#roughen-ann2)",
 };
