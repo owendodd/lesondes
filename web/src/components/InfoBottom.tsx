@@ -3,6 +3,14 @@
 import { useLang } from '@/hooks/useLang'
 import type { InfoBottom as InfoBottomType } from '@/lib/types'
 
+function HotelName({ name }: { name: string }) {
+  const words = name.split(' ')
+  if (words.length <= 3) return <>{name}</>
+  const first = words.slice(0, words.length - 3).join(' ')
+  const last = words.slice(words.length - 3).join(' ')
+  return <>{first}<br />{last}</>
+}
+
 export function InfoBottom({ data }: { data: InfoBottomType }) {
   const { lang } = useLang()
 
@@ -26,10 +34,10 @@ export function InfoBottom({ data }: { data: InfoBottomType }) {
             rel="noopener noreferrer"
             className="underline decoration-2 underline-offset-2 hover:text-[#888] transition-colors duration-150"
           >
-            {lang === 'fr' ? (data.hotelNameFr || data.hotelName) : data.hotelName}
+            <HotelName name={lang === 'fr' ? (data.hotelNameFr || data.hotelName) : data.hotelName} />
           </a>
         ) : (
-          lang === 'fr' ? (data.hotelNameFr || data.hotelName) : data.hotelName
+          <HotelName name={lang === 'fr' ? (data.hotelNameFr || data.hotelName) : data.hotelName} />
         )}
       </p>
     </div>
