@@ -9,22 +9,7 @@ import {
 } from "remotion";
 import { SlideDef } from "./slides";
 import { computeTimeline } from "./timeline";
-
-// ── Slide definition ───────────────────────────────────────────────────────────
-
-export const ANNOUNCE2_SLIDES: SlideDef[] = [
-  {
-    id: "ann2",
-    direction: "column",
-    nextOverlap: -1000,
-    typeOutDelay: 800,
-    lines: [
-      { id: "ann2-title",   text: "LES ONDES",   charDelay: 70, typeOutCharDelay: 40, pauseAfter: 60,  startDelay: 1000 },
-      { id: "ann2-cerbere", text: "Cerbère",      charDelay: 53, typeOutCharDelay: 40, pauseAfter: 60 },
-      { id: "ann2-dates",   text: "May 29 30 31", charDelay: 43, typeOutCharDelay: 40, spaceExtra: 53, pauseAfter: 0 },
-    ],
-  },
-];
+import { ANNOUNCE2_SLIDES } from "./Announce2";
 
 // ── Layout helper ─────────────────────────────────────────────────────────────
 function layoutSpaceSet(text: string): Set<number> {
@@ -79,12 +64,12 @@ function TextLine({
 }
 
 // ── Props ──────────────────────────────────────────────────────────────────────
-export interface Announce2Props {
+export interface Announce2bProps {
   loops?: number;
 }
 
 // ── Component ──────────────────────────────────────────────────────────────────
-export function Announce2({ loops = 1 }: Announce2Props) {
+export function Announce2b({ loops = 1 }: Announce2bProps) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const currentMs = (frame / fps) * 1000;
@@ -122,27 +107,18 @@ export function Announce2({ loops = 1 }: Announce2Props) {
       {/* SVG filter */}
       <svg style={{ display: "none" }} aria-hidden="true">
         <defs>
-          <filter id="roughen-ann2" x="-5%" y="-5%" width="110%" height="110%">
+          <filter id="roughen-ann2b" x="-5%" y="-5%" width="110%" height="110%">
             <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves={4} seed={20} result="noise" />
             <feDisplacementMap in="SourceGraphic" in2="noise" scale={4.8} xChannelSelector="R" yChannelSelector="G" />
           </filter>
         </defs>
       </svg>
 
-      {/* Upper half: video full bleed */}
-      <div style={{ position: "absolute", top: 0, left: 0, width: 2160, height: 1350, overflow: "hidden" }}>
-        <OffthreadVideo
-          src={staticFile("video/BG3_slow.mp4")}
-          playbackRate={1.25}
-          style={{ width: "100%", minWidth: "100%", height: "100%", objectFit: "cover", display: "block" }}
-        />
-      </div>
-
-      {/* Lower half: name / location / date lockup centered */}
+      {/* Upper half: name / location / date lockup centered */}
       <div
         style={{
           position: "absolute",
-          top: 1350,
+          top: 0,
           left: 0,
           width: 2160,
           height: 1350,
@@ -166,6 +142,15 @@ export function Announce2({ loops = 1 }: Announce2Props) {
         </p>
       </div>
 
+      {/* Lower half: video full bleed */}
+      <div style={{ position: "absolute", top: 1350, left: 0, width: 2160, height: 1350, overflow: "hidden" }}>
+        <OffthreadVideo
+          src={staticFile("video/BG3_slow.mp4")}
+          playbackRate={1.25}
+          style={{ width: "100%", minWidth: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        />
+      </div>
+
     </div>
   );
 }
@@ -180,5 +165,5 @@ const titleStyle: React.CSSProperties = {
   letterSpacing: "-0.02em",
   textAlign: "center",
   whiteSpace: "nowrap",
-  filter: "url(#roughen-ann2)",
+  filter: "url(#roughen-ann2b)",
 };

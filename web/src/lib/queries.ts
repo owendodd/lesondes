@@ -20,7 +20,7 @@ export const HOME_CONTENT_QUERY = `{
   "infoBottom": *[_type == "infoBottom"][0]{
     hotelName, hotelNameFr, hotelUrl, foodCreditPrefixEn, foodCreditPrefixFr, foodPerson, wineCreditPrefixEn, wineCreditPrefixFr, winePerson
   },
-  "credits": *[_type == "credit"] | order(order asc) {
+  "credits": *[_type == "credit" && videoCredit == true] | order(order asc) {
     _id, roleEn, roleFr, personName, url
   }
 }`

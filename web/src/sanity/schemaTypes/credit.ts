@@ -10,6 +10,7 @@ export const credit = defineType({
     defineField({ name: 'personName', title: 'Person name', type: 'string' }),
     defineField({ name: 'url',        title: 'URL',          type: 'url' }),
     defineField({ name: 'order',      title: 'Order',        type: 'number' }),
+    defineField({ name: 'videoCredit', title: 'Show on home page (video credit)', type: 'boolean' }),
   ],
   preview: { select: { title: 'personName', subtitle: 'roleEn' } },
 })
