@@ -173,7 +173,7 @@ const textStyle: React.CSSProperties = {
   fontFamily: "ABCDiatype, sans-serif",
   fontWeight: 400,
   color: "#000",
-  fontSize: 130,
+  fontSize: 140,
   lineHeight: 1,
   letterSpacing: "-0.02em",
   textAlign: "center",
