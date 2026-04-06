@@ -124,7 +124,7 @@ export function Announce2({ loops = 1 }: Announce2Props) {
         <defs>
           <filter id="roughen-ann2" x="-5%" y="-5%" width="110%" height="110%">
             <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves={4} seed={20} result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={4.2} xChannelSelector="R" yChannelSelector="G" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale={4.8} xChannelSelector="R" yChannelSelector="G" />
           </filter>
         </defs>
       </svg>

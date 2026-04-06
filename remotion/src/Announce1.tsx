@@ -16,20 +16,20 @@ export const ANNOUNCE1_SLIDES: SlideDef[] = [
     id: "ann1-artists",
     direction: "column",
     lines: [
-      { id: "a1-01", text: "Miriam Adefris",          charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
-      { id: "a1-02", text: "Pierre Bastien",           charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
-      { id: "a1-03", text: "CTM",                      charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
-      { id: "a1-04", text: "Lukas de Clerck",          charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
-      { id: "a1-05", text: "Maya Dhondt",              charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
-      { id: "a1-06", text: "Mats Erlandsson",          charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
-      { id: "a1-07", text: "Elisabeth Klinck",         charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
-      { id: "a1-08", text: "Louis Laurain",            charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
-      { id: "a1-09", text: "Molly Lewis",              charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
-      { id: "a1-10", text: "Lubomyr Melnyk",           charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
-      { id: "a1-11", text: "Chantal Michelle",         charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
-      { id: "a1-12", text: "Mohammad Reza\nMortazavi", charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
-      { id: "a1-13", text: "Fredrik Rasten",           charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
-      { id: "a1-14", text: "Youmna Saba",              charDelay: 40, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
+      { id: "a1-01", text: "Miriam Adefris",          charDelay: 38, typeOutCharDelay: 35, pauseAfter: 0, startDelay: 75 },
+      { id: "a1-02", text: "Pierre Bastien",           charDelay: 44, typeOutCharDelay: 42, pauseAfter: 0, startDelay: 90 },
+      { id: "a1-03", text: "CTM",                      charDelay: 55, typeOutCharDelay: 50, pauseAfter: 0, startDelay: 70 },
+      { id: "a1-04", text: "Lukas de Clerck",          charDelay: 36, typeOutCharDelay: 38, pauseAfter: 0, startDelay: 85 },
+      { id: "a1-05", text: "Maya Dhondt",              charDelay: 48, typeOutCharDelay: 44, pauseAfter: 0, startDelay: 65 },
+      { id: "a1-06", text: "Mats Erlandsson",          charDelay: 42, typeOutCharDelay: 36, pauseAfter: 0, startDelay: 95 },
+      { id: "a1-07", text: "Elisabeth Klinck",         charDelay: 34, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 80 },
+      { id: "a1-08", text: "Louis Laurain",            charDelay: 50, typeOutCharDelay: 46, pauseAfter: 0, startDelay: 70 },
+      { id: "a1-09", text: "Molly Lewis",              charDelay: 46, typeOutCharDelay: 40, pauseAfter: 0, startDelay: 85 },
+      { id: "a1-10", text: "Lubomyr Melnyk",           charDelay: 40, typeOutCharDelay: 34, pauseAfter: 0, startDelay: 90 },
+      { id: "a1-11", text: "Chantal Michelle",         charDelay: 46, typeOutCharDelay: 42, pauseAfter: 0, startDelay: 75 },
+      { id: "a1-12", text: "Mohammad Reza\nMortazavi", charDelay: 36, typeOutCharDelay: 38, pauseAfter: 0, startDelay: 85 },
+      { id: "a1-13", text: "Fredrik Rasten",           charDelay: 52, typeOutCharDelay: 48, pauseAfter: 0, startDelay: 65 },
+      { id: "a1-14", text: "Youmna Saba",              charDelay: 44, typeOutCharDelay: 36, pauseAfter: 0, startDelay: 80 },
     ],
     nextOverlap: 400,
     typeOutDelay: 100,
@@ -149,7 +149,7 @@ export function Announce1({ loops = 1 }: Announce1Props) {
         <defs>
           <filter id="roughen-ann1" x="-5%" y="-5%" width="110%" height="110%">
             <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves={4} seed={20} result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={4.2} xChannelSelector="R" yChannelSelector="G" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale={4.8} xChannelSelector="R" yChannelSelector="G" />
           </filter>
         </defs>
       </svg>
