@@ -15,15 +15,6 @@ function escapeXml(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
-async function fetchImageB64(src: string): Promise<string> {
-  const blob = await fetch(src).then(r => r.blob())
-  return new Promise(res => {
-    const fr = new FileReader()
-    fr.onload = () => res(fr.result as string)
-    fr.readAsDataURL(blob)
-  })
-}
-
 async function loadFonts() {
   const [medBuf, heavyBuf] = await Promise.all([
     fetch('/fonts/ABCDiatype-Medium-Trial.woff2').then(r => r.arrayBuffer()),
@@ -46,7 +37,7 @@ function svgDefs(medB64: string, heavyB64: string) {
 function applyRoughen(ctx: CanvasRenderingContext2D, W: number, H: number) {
   // scale: matches feDisplacementMap scale (0.2) × 2x export resolution
   // freq: matches feTurbulence baseFrequency (1.7) — higher = finer grain
-  const scale = 1.4
+  const scale = 1.6
   const freq = 1
   const src = ctx.getImageData(0, 0, W, H)
   const dst = new Uint8ClampedArray(src.data.length)
@@ -106,136 +97,107 @@ function exportPng(svgStr: string, filename: string, cW: number, cH: number): Pr
 
 type AssetHandle = { save: () => Promise<void> }
 
-// ── IG Post ───────────────────────────────────────────────────────────────────
+// ── IG Ballroom Text ──────────────────────────────────────────────────────────
+
+const BALLROOM_PARAS = [
+  'Inside the Art Deco liner-shaped Hôtel Belvédère du Rayon Vert is a hidden Italian-style theatre built in 1932 for travelers waiting at the French\u2013Spanish border.',
+  'During its early years the theatre welcomed major figures of French popular music, including Fernandel, Maurice Chevalier and Mistinguett\u2014the legendary entertainer closely associated with the Parisian cabaret Moulin Rouge.',
+  'Nearly a century later, the theatre remains a remarkable relic of the Riviera\u2019s interwar cultural life, suspended between sea, railway lines, and the Spanish border.',
+]
+
+// Measure text using the exact font data used in SVG export (not the Next.js-hashed CSS name)
+function measureLines(text: string, maxWidth: number, fontSize: number, ls: number, ctx: CanvasRenderingContext2D): string[] {
+  const words = text.split(' ')
+  const lines: string[] = []
+  let current = ''
+  for (const word of words) {
+    const test = current ? `${current} ${word}` : word
+    const width = ctx.measureText(test).width + ls * test.length
+    if (current && width > maxWidth) {
+      lines.push(current.trim())
+      current = word
+    } else {
+      current = test
+    }
+  }
+  if (current.trim()) lines.push(current.trim())
+  return lines
+}
+
+async function saveIgBallroomText(filename: string) {
+  const W = 1080, H = 1350, S = 2
+  const cW = W * S, cH = H * S
+  const fontSize = 48 * S
+  const ls = -0.02 * fontSize
+  const lineH = fontSize * 1.1
+  const contentW = 984 * S
+  const contentX = 48 * S
+  const topPad = 48 * S
+  const paraGap = 32 * S
+  // Footer center y derived from Figma: bottom-[101px] + translateY(100%) of ~lineH/2
+  const footerY = (H - 75) * S
+
+  const { medB64, heavyB64 } = await loadFonts()
+
+  // Load the exact same font bytes into the document so canvas measureText is accurate
+  const ff = new FontFace('ABCDiatypeMeasure', `url('data:font/woff2;base64,${medB64}') format('woff2')`)
+  await ff.load()
+  document.fonts.add(ff)
+
+  const measureCanvas = document.createElement('canvas')
+  const measureCtx = measureCanvas.getContext('2d')!
+  measureCtx.font = `400 ${fontSize}px ABCDiatypeMeasure, sans-serif`
+
+  const wrappedParas = BALLROOM_PARAS.map(p => measureLines(p, contentW, fontSize, ls, measureCtx))
+
+  let bodyEls = ''
+  let y = topPad + fontSize / 2
+
+  for (let pi = 0; pi < wrappedParas.length; pi++) {
+    for (let li = 0; li < wrappedParas[pi].length; li++) {
+      bodyEls += `<text x="${contentX}" y="${y}" font-family="ABCDiatype, sans-serif" font-size="${fontSize}" letter-spacing="${ls}" fill="#000" dominant-baseline="middle" filter="url(#r)">${escapeXml(wrappedParas[pi][li])}</text>\n`
+      if (li < wrappedParas[pi].length - 1) y += lineH
+    }
+    if (pi < wrappedParas.length - 1) y += lineH + paraGap
+  }
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${cW}" height="${cH}">`
+    + svgDefs(medB64, heavyB64)
+    + `<rect x="0" y="0" width="${cW}" height="${cH}" fill="#ffffff"/>`
+    + bodyEls
+    + `<text x="${cW / 2}" y="${footerY}" text-anchor="middle" font-family="ABCDiatype, sans-serif" font-size="${fontSize}" letter-spacing="${ls}" fill="#000" dominant-baseline="middle" filter="url(#r)">LES ONDES<tspan dx="${48 * S}">Cerb\u00e8re</tspan></text>`
+    + '</svg>'
+
+  await exportPng(svg, filename, cW, cH)
+}
+
+function IgBallroomTextLayout() {
+  return (
+    <div style={{ width: 1080, height: 1350, background: '#fff', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: 48, left: 48, width: 984, display: 'flex', flexDirection: 'column', gap: 32 }}>
+        {BALLROOM_PARAS.map((p, i) => (
+          <p key={i} style={{ ...ballroomStyle, filter: 'url(#roughen)', margin: 0 }}>{p}</p>
+        ))}
+      </div>
+      <p style={{ ...ballroomStyle, filter: 'url(#roughen)', position: 'absolute', bottom: 48, left: 0, right: 0, textAlign: 'center', margin: 0 }}>
+        LES ONDES&nbsp;&nbsp;&nbsp;&nbsp;Cerb{'\u00e8'}re
+      </p>
+    </div>
+  )
+}
+
+const IgBallroomText = forwardRef<AssetHandle>(function IgBallroomText(_, ref) {
+  useImperativeHandle(ref, () => ({ save: () => saveIgBallroomText('ig-ballroom-text.png') }))
+  return <IgBallroomTextLayout />
+})
+
+// ── Header Banner ─────────────────────────────────────────────────────────────
 
 const IG_POST_ARTISTS = [
   'Miriam Adefris', 'Pierre Bastien', 'Lukas de Clerck', 'Maya Dhondt',
   'Mats Erlandsson', 'Elisabeth Klinck', 'Louis Laurain', 'Lubomyr Melnyk',
   'Chantal Michelle', 'Mohammad Reza\nMortazavi', 'Fredrik Rasten', 'Youmna Saba', 'CTM',
 ]
-
-async function saveIgPost(imageSrc: string, filename: string) {
-  const W = 1080, H = 1350, S = 2
-  const cW = W * S, cH = H * S
-  const photoH = 675 * S
-  const pad = 48 * S
-  const titleSize = 60 * S
-  const titleLS = -1.2 * S
-  const bodySize = 26 * S
-  const bodyLS = 0.08 * bodySize
-  const contentW = 984 * S
-  const contentX = (cW - contentW) / 2
-  const upperH = photoH - pad * 2
-  const titleCenterY = pad + upperH / 2 + titleSize * 0.35
-  const artistsTop = photoH + pad
-  const artistGap = 16 * S
-
-  const { medB64, heavyB64 } = await loadFonts()
-  const photoB64 = await fetchImageB64(imageSrc)
-
-  let artistEls = ''
-  let yTop = artistsTop
-  IG_POST_ARTISTS.forEach((artist) => {
-    const lines = artist.split('\n')
-    lines.forEach((line, li) => {
-      const y = yTop + li * bodySize + bodySize / 2
-      artistEls += `<text x="${contentX}" y="${y}" font-family="ABCDiatype, sans-serif" font-size="${bodySize}" letter-spacing="${bodyLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">${escapeXml(line)}</text>\n`
-    })
-    yTop += lines.length * bodySize + artistGap
-  })
-
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${cW}" height="${cH}">`
-    + svgDefs(medB64, heavyB64)
-    + `<image href="${photoB64}" x="0" y="0" width="${cW}" height="${photoH}" preserveAspectRatio="xMidYMid slice"/>`
-    + `<rect x="0" y="${photoH}" width="${cW}" height="${cH - photoH}" fill="#ffffff"/>`
-    + `<text x="${cW / 2}" y="${titleCenterY}" text-anchor="middle" font-family="ABCDiatype, sans-serif" font-size="${titleSize}" letter-spacing="${titleLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">LES ONDES<tspan dx="${48 * S}">Cerb\u00e8re</tspan></text>`
-    + artistEls
-    + `<text x="${contentX + contentW}" y="${artistsTop + bodySize / 2}" text-anchor="end" font-family="ABCDiatype, sans-serif" font-size="${bodySize}" letter-spacing="${bodyLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">May 29 30 31</text>`
-    + '</svg>'
-
-  await exportPng(svg, filename, cW, cH)
-}
-
-function IgPostLayout({ image }: { image: string }) {
-  return (
-    <div style={{ width: 1080, height: 1350, background: '#fff', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 675, backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 48, boxSizing: 'border-box', gap: 48 }}>
-        <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>LES ONDES</p>
-        <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>Cerbère</p>
-      </div>
-      <div style={{ position: 'absolute', top: 675, left: 0, right: 0, height: 675, padding: 48, boxSizing: 'border-box', display: 'flex', gap: 48, alignItems: 'flex-start' }}>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {IG_POST_ARTISTS.map((name, i) => (
-            <p key={i} style={{ ...textStyle, filter: 'url(#roughen)' }}>{name}</p>
-          ))}
-        </div>
-        <p style={{ ...textStyle, flex: 1, textAlign: 'right', filter: 'url(#roughen)' }}>May 29 30 31</p>
-      </div>
-    </div>
-  )
-}
-
-const IgPat1Post = forwardRef<AssetHandle>(function IgPat1Post(_, ref) {
-  useImperativeHandle(ref, () => ({ save: () => saveIgPost('/images/Pat1.jpg', 'ig-pat1.png') }))
-  return <IgPostLayout image="/images/Pat1.jpg" />
-})
-
-const IgPat2Post = forwardRef<AssetHandle>(function IgPat2Post(_, ref) {
-  useImperativeHandle(ref, () => ({ save: () => saveIgPost('/images/Pat2.jpg', 'ig-pat2.png') }))
-  return <IgPostLayout image="/images/Pat2.jpg" />
-})
-
-const IgPat3Post = forwardRef<AssetHandle>(function IgPat3Post(_, ref) {
-  useImperativeHandle(ref, () => ({ save: () => saveIgPost('/images/Pat3.jpg', 'ig-pat3.png') }))
-  return <IgPostLayout image="/images/Pat3.jpg" />
-})
-
-// ── IG Title ──────────────────────────────────────────────────────────────────
-
-async function saveIgTitle(imageSrc: string, filename: string) {
-  const W = 1080, H = 1350, S = 2
-  const cW = W * S, cH = H * S
-  const titleSize = 60 * S
-  const titleLS = -1.2 * S
-  const titleCenterY = cH / 2 + titleSize * 0.35
-
-  const { medB64, heavyB64 } = await loadFonts()
-  const photoB64 = await fetchImageB64(imageSrc)
-
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${cW}" height="${cH}">`
-    + svgDefs(medB64, heavyB64)
-    + `<image href="${photoB64}" x="0" y="0" width="${cW}" height="${cH}" preserveAspectRatio="xMidYMid slice"/>`
-    + `<text x="${cW / 2}" y="${titleCenterY}" text-anchor="middle" font-family="ABCDiatype, sans-serif" font-size="${titleSize}" letter-spacing="${titleLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">LES ONDES<tspan dx="${48 * S}">Cerb\u00e8re</tspan></text>`
-    + '</svg>'
-
-  await exportPng(svg, filename, cW, cH)
-}
-
-function IgTitleLayout({ image }: { image: string }) {
-  return (
-    <div style={{ width: 1080, height: 1350, position: 'relative', overflow: 'hidden', backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 48 }}>
-      <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>LES ONDES</p>
-      <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>Cerbère</p>
-    </div>
-  )
-}
-
-const IgPat1Title = forwardRef<AssetHandle>(function IgPat1Title(_, ref) {
-  useImperativeHandle(ref, () => ({ save: () => saveIgTitle('/images/Pat1.jpg', 'ig-pat1t.png') }))
-  return <IgTitleLayout image="/images/Pat1.jpg" />
-})
-
-const IgPat2Title = forwardRef<AssetHandle>(function IgPat2Title(_, ref) {
-  useImperativeHandle(ref, () => ({ save: () => saveIgTitle('/images/Pat2.jpg', 'ig-pat2t.png') }))
-  return <IgTitleLayout image="/images/Pat2.jpg" />
-})
-
-const IgPat3Title = forwardRef<AssetHandle>(function IgPat3Title(_, ref) {
-  useImperativeHandle(ref, () => ({ save: () => saveIgTitle('/images/Pat3.jpg', 'ig-pat3t.png') }))
-  return <IgTitleLayout image="/images/Pat3.jpg" />
-})
-
-// ── Header Banner ─────────────────────────────────────────────────────────────
 
 async function saveHeaderBanner(W: number, H: number) {
   const S = 2
@@ -335,14 +297,9 @@ type AssetEntry = {
 }
 
 const ASSETS: AssetEntry[] = [
-  { id: 'ig-pat1',        name: 'IgPat1',        width: 1080, height: 1350, Component: IgPat1Post        },
-  { id: 'ig-pat2',        name: 'IgPat2',        width: 1080, height: 1350, Component: IgPat2Post        },
-  { id: 'ig-pat3',        name: 'IgPat3',        width: 1080, height: 1350, Component: IgPat3Post        },
-  { id: 'ig-pat1t',       name: 'IgPat1T',       width: 1080, height: 1350, Component: IgPat1Title       },
-  { id: 'ig-pat2t',       name: 'IgPat2T',       width: 1080, height: 1350, Component: IgPat2Title       },
-  { id: 'ig-pat3t',       name: 'IgPat3T',       width: 1080, height: 1350, Component: IgPat3Title       },
-  { id: 'header-banner',  name: 'Sticker',        width: 1500, height: 88, scrollable: true, Component: HeaderBannerAsset  },
-  { id: 'artist-overlay', name: 'ArtistSticker', width: 1500, height: 88, scrollable: true, Component: ArtistOverlayAsset },
+  { id: 'ig-ballroom-text', name: 'IgBallroomText', width: 1080, height: 1350, Component: IgBallroomText },
+  { id: 'header-banner',    name: 'Sticker',        width: 1500, height: 88,   scrollable: true, Component: HeaderBannerAsset  },
+  { id: 'artist-overlay',   name: 'ArtistSticker',  width: 1500, height: 88,   scrollable: true, Component: ArtistOverlayAsset },
 ]
 
 // ── Page ──────────────────────────────────────────────────────────────────────
@@ -395,7 +352,7 @@ export default function IgPage() {
         <defs>
           <filter id="roughen" x="-5%" y="-5%" width="110%" height="110%">
             <feTurbulence type="fractalNoise" baseFrequency="1" numOctaves={4} seed={10} result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={1.4} xChannelSelector="R" yChannelSelector="G" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale={1.6} xChannelSelector="R" yChannelSelector="G" />
           </filter>
         </defs>
       </svg>
@@ -431,9 +388,9 @@ const titleStyle: React.CSSProperties = {
   margin: 0, color: '#000', whiteSpace: 'nowrap', textAlign: 'center',
 }
 
-const textStyle: React.CSSProperties = {
-  fontSize: 26, lineHeight: 1, letterSpacing: '0.08em',
-  margin: 0, color: '#000', whiteSpace: 'pre',
+const ballroomStyle: React.CSSProperties = {
+  fontSize: 48, lineHeight: 1.1, letterSpacing: '-0.02em',
+  margin: 0, color: '#000',
 }
 
 const btnStyle: React.CSSProperties = {
