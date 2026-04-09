@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
-// ── Asset helpers ────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function toBase64(buf: ArrayBuffer): string {
   let binary = ''
@@ -24,12 +24,94 @@ async function fetchImageB64(src: string): Promise<string> {
   })
 }
 
-// ── IG Post shared save logic ─────────────────────────────────────────────────
+async function loadFonts() {
+  const [medBuf, heavyBuf] = await Promise.all([
+    fetch('/fonts/ABCDiatype-Medium-Trial.woff2').then(r => r.arrayBuffer()),
+    fetch('/fonts/ABCDiatype-Heavy-Trial.woff2').then(r => r.arrayBuffer()),
+  ])
+  return { medB64: toBase64(medBuf), heavyB64: toBase64(heavyBuf) }
+}
+
+function svgDefs(medB64: string, heavyB64: string) {
+  return '<defs>'
+    + '<style>'
+    + "@font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64," + medB64 + "') format('woff2'); font-weight: 400; }"
+    + "@font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64," + heavyB64 + "') format('woff2'); font-weight: 700; }"
+    + '</style>'
+    + '</defs>'
+}
+
+// Canvas-based roughen: browsers don't render SVG filters when drawing SVG blobs to canvas,
+// so we apply the displacement effect manually via pixel manipulation after rasterising.
+function applyRoughen(ctx: CanvasRenderingContext2D, W: number, H: number) {
+  // scale: matches feDisplacementMap scale (0.2) × 2x export resolution
+  // freq: matches feTurbulence baseFrequency (1.7) — higher = finer grain
+  const scale = 1.4
+  const freq = 1
+  const src = ctx.getImageData(0, 0, W, H)
+  const dst = new Uint8ClampedArray(src.data.length)
+
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      // Two independent hash channels → x and y displacement
+      const h1 = Math.sin(x * 12.9898 * freq + y * 78.233 * freq) * 43758.5453
+      const h2 = Math.sin(x * 93.9898 * freq + y * 67.345 * freq) * 43758.5453
+      const dx = Math.round((h1 - Math.floor(h1) - 0.5) * scale)
+      const dy = Math.round((h2 - Math.floor(h2) - 0.5) * scale)
+
+      const sx = Math.min(W - 1, Math.max(0, x + dx))
+      const sy = Math.min(H - 1, Math.max(0, y + dy))
+
+      const si = (sy * W + sx) * 4
+      const di = (y  * W + x)  * 4
+      dst[di]     = src.data[si]
+      dst[di + 1] = src.data[si + 1]
+      dst[di + 2] = src.data[si + 2]
+      dst[di + 3] = src.data[si + 3]
+    }
+  }
+
+  ctx.putImageData(new ImageData(dst, W, H), 0, 0)
+}
+
+function exportPng(svgStr: string, filename: string, cW: number, cH: number): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const blob = new Blob([svgStr], { type: 'image/svg+xml' })
+    const url = URL.createObjectURL(blob)
+    const img = new Image()
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = cW; canvas.height = cH
+      const ctx = canvas.getContext('2d')!
+      ctx.drawImage(img, 0, 0)
+      URL.revokeObjectURL(url)
+      applyRoughen(ctx, cW, cH)
+      canvas.toBlob(png => {
+        if (!png) { reject(new Error('export failed')); return }
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(png)
+        a.download = filename
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        setTimeout(() => { URL.revokeObjectURL(a.href); document.body.removeChild(a); resolve() }, 100)
+      }, 'image/png')
+    }
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('svg load failed')) }
+    img.src = url
+  })
+}
+
+// ── Asset handle type ─────────────────────────────────────────────────────────
+
+type AssetHandle = { save: () => Promise<void> }
+
+// ── IG Post ───────────────────────────────────────────────────────────────────
 
 const IG_POST_ARTISTS = [
   'Miriam Adefris', 'Pierre Bastien', 'Lukas de Clerck', 'Maya Dhondt',
   'Mats Erlandsson', 'Elisabeth Klinck', 'Louis Laurain', 'Lubomyr Melnyk',
-  'Chantal Michelle', 'Mohammad Reza\nMortazavi', 'Fredrik Rasten', 'Youmna Saba',
+  'Chantal Michelle', 'Mohammad Reza\nMortazavi', 'Fredrik Rasten', 'Youmna Saba', 'CTM',
 ]
 
 async function saveIgPost(imageSrc: string, filename: string) {
@@ -48,12 +130,7 @@ async function saveIgPost(imageSrc: string, filename: string) {
   const artistsTop = photoH + pad
   const artistGap = 16 * S
 
-  const [medBuf, heavyBuf] = await Promise.all([
-    fetch('/fonts/ABCDiatype-Medium-Trial.woff2').then(r => r.arrayBuffer()),
-    fetch('/fonts/ABCDiatype-Heavy-Trial.woff2').then(r => r.arrayBuffer()),
-  ])
-  const medB64 = toBase64(medBuf)
-  const heavyB64 = toBase64(heavyBuf)
+  const { medB64, heavyB64 } = await loadFonts()
   const photoB64 = await fetchImageB64(imageSrc)
 
   let artistEls = ''
@@ -67,48 +144,53 @@ async function saveIgPost(imageSrc: string, filename: string) {
     yTop += lines.length * bodySize + artistGap
   })
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${cW}" height="${cH}">
-  <defs>
-    <style>
-      @font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64,${medB64}') format('woff2'); font-weight: 400; }
-      @font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64,${heavyB64}') format('woff2'); font-weight: 700; }
-    </style>
-    <filter id="r" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="1" numOctaves="4" seed="8" result="noise"/>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.6" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-  </defs>
-  <image href="${photoB64}" x="0" y="0" width="${cW}" height="${photoH}" preserveAspectRatio="xMidYMid slice"/>
-  <rect x="0" y="${photoH}" width="${cW}" height="${cH - photoH}" fill="#ffffff"/>
-  <text x="${cW / 2}" y="${titleCenterY}" text-anchor="middle" font-family="ABCDiatype, sans-serif" font-size="${titleSize}" letter-spacing="${titleLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">LES ONDES<tspan dx="${48 * S}">Cerb\u00e8re</tspan></text>
-  ${artistEls}
-  <text x="${contentX + contentW}" y="${artistsTop + bodySize / 2}" text-anchor="end" font-family="ABCDiatype, sans-serif" font-size="${bodySize}" letter-spacing="${bodyLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">May 29 30 31</text>
-</svg>`
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${cW}" height="${cH}">`
+    + svgDefs(medB64, heavyB64)
+    + `<image href="${photoB64}" x="0" y="0" width="${cW}" height="${photoH}" preserveAspectRatio="xMidYMid slice"/>`
+    + `<rect x="0" y="${photoH}" width="${cW}" height="${cH - photoH}" fill="#ffffff"/>`
+    + `<text x="${cW / 2}" y="${titleCenterY}" text-anchor="middle" font-family="ABCDiatype, sans-serif" font-size="${titleSize}" letter-spacing="${titleLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">LES ONDES<tspan dx="${48 * S}">Cerb\u00e8re</tspan></text>`
+    + artistEls
+    + `<text x="${contentX + contentW}" y="${artistsTop + bodySize / 2}" text-anchor="end" font-family="ABCDiatype, sans-serif" font-size="${bodySize}" letter-spacing="${bodyLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">May 29 30 31</text>`
+    + '</svg>'
 
-  const blob = new Blob([svg], { type: 'image/svg+xml' })
-  const url = URL.createObjectURL(blob)
-  await new Promise<void>((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => {
-      const canvas = document.createElement('canvas')
-      canvas.width = cW; canvas.height = cH
-      canvas.getContext('2d')!.drawImage(img, 0, 0)
-      URL.revokeObjectURL(url)
-      canvas.toBlob(png => {
-        if (!png) { reject(new Error('export failed')); return }
-        const a = document.createElement('a')
-        a.href = URL.createObjectURL(png)
-        a.download = filename
-        a.click()
-        resolve()
-      }, 'image/png')
-    }
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('svg load failed')) }
-    img.src = url
-  })
+  await exportPng(svg, filename, cW, cH)
 }
 
-// ── IG Title-only save logic ──────────────────────────────────────────────────
+function IgPostLayout({ image }: { image: string }) {
+  return (
+    <div style={{ width: 1080, height: 1350, background: '#fff', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 675, backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 48, boxSizing: 'border-box', gap: 48 }}>
+        <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>LES ONDES</p>
+        <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>Cerbère</p>
+      </div>
+      <div style={{ position: 'absolute', top: 675, left: 0, right: 0, height: 675, padding: 48, boxSizing: 'border-box', display: 'flex', gap: 48, alignItems: 'flex-start' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {IG_POST_ARTISTS.map((name, i) => (
+            <p key={i} style={{ ...textStyle, filter: 'url(#roughen)' }}>{name}</p>
+          ))}
+        </div>
+        <p style={{ ...textStyle, flex: 1, textAlign: 'right', filter: 'url(#roughen)' }}>May 29 30 31</p>
+      </div>
+    </div>
+  )
+}
+
+const IgPat1Post = forwardRef<AssetHandle>(function IgPat1Post(_, ref) {
+  useImperativeHandle(ref, () => ({ save: () => saveIgPost('/images/Pat1.jpg', 'ig-pat1.png') }))
+  return <IgPostLayout image="/images/Pat1.jpg" />
+})
+
+const IgPat2Post = forwardRef<AssetHandle>(function IgPat2Post(_, ref) {
+  useImperativeHandle(ref, () => ({ save: () => saveIgPost('/images/Pat2.jpg', 'ig-pat2.png') }))
+  return <IgPostLayout image="/images/Pat2.jpg" />
+})
+
+const IgPat3Post = forwardRef<AssetHandle>(function IgPat3Post(_, ref) {
+  useImperativeHandle(ref, () => ({ save: () => saveIgPost('/images/Pat3.jpg', 'ig-pat3.png') }))
+  return <IgPostLayout image="/images/Pat3.jpg" />
+})
+
+// ── IG Title ──────────────────────────────────────────────────────────────────
 
 async function saveIgTitle(imageSrc: string, filename: string) {
   const W = 1080, H = 1350, S = 2
@@ -117,163 +199,203 @@ async function saveIgTitle(imageSrc: string, filename: string) {
   const titleLS = -1.2 * S
   const titleCenterY = cH / 2 + titleSize * 0.35
 
-  const [medBuf, heavyBuf] = await Promise.all([
-    fetch('/fonts/ABCDiatype-Medium-Trial.woff2').then(r => r.arrayBuffer()),
-    fetch('/fonts/ABCDiatype-Heavy-Trial.woff2').then(r => r.arrayBuffer()),
-  ])
-  const medB64 = toBase64(medBuf)
-  const heavyB64 = toBase64(heavyBuf)
+  const { medB64, heavyB64 } = await loadFonts()
   const photoB64 = await fetchImageB64(imageSrc)
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${cW}" height="${cH}">
-  <defs>
-    <style>
-      @font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64,${medB64}') format('woff2'); font-weight: 400; }
-      @font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64,${heavyB64}') format('woff2'); font-weight: 700; }
-    </style>
-    <filter id="r" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="1" numOctaves="4" seed="8" result="noise"/>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.6" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-  </defs>
-  <image href="${photoB64}" x="0" y="0" width="${cW}" height="${cH}" preserveAspectRatio="xMidYMid slice"/>
-  <text x="${cW / 2}" y="${titleCenterY}" text-anchor="middle" font-family="ABCDiatype, sans-serif" font-size="${titleSize}" letter-spacing="${titleLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">LES ONDES<tspan dx="${48 * S}">Cerb\u00e8re</tspan></text>
-</svg>`
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${cW}" height="${cH}">`
+    + svgDefs(medB64, heavyB64)
+    + `<image href="${photoB64}" x="0" y="0" width="${cW}" height="${cH}" preserveAspectRatio="xMidYMid slice"/>`
+    + `<text x="${cW / 2}" y="${titleCenterY}" text-anchor="middle" font-family="ABCDiatype, sans-serif" font-size="${titleSize}" letter-spacing="${titleLS}" fill="#000" dominant-baseline="middle" filter="url(#r)">LES ONDES<tspan dx="${48 * S}">Cerb\u00e8re</tspan></text>`
+    + '</svg>'
 
-  const blob = new Blob([svg], { type: 'image/svg+xml' })
-  const url = URL.createObjectURL(blob)
-  await new Promise<void>((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => {
-      const canvas = document.createElement('canvas')
-      canvas.width = cW; canvas.height = cH
-      canvas.getContext('2d')!.drawImage(img, 0, 0)
-      URL.revokeObjectURL(url)
-      canvas.toBlob(png => {
-        if (!png) { reject(new Error('export failed')); return }
-        const a = document.createElement('a')
-        a.href = URL.createObjectURL(png)
-        a.download = filename
-        a.click()
-        resolve()
-      }, 'image/png')
-    }
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('svg load failed')) }
-    img.src = url
-  })
+  await exportPng(svg, filename, cW, cH)
 }
 
-// ── Header Banner save logic ──────────────────────────────────────────────────
+function IgTitleLayout({ image }: { image: string }) {
+  return (
+    <div style={{ width: 1080, height: 1350, position: 'relative', overflow: 'hidden', backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 48 }}>
+      <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>LES ONDES</p>
+      <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>Cerbère</p>
+    </div>
+  )
+}
 
-async function saveHeaderBanner() {
-  const W = 1920, H = 300, S = 2
+const IgPat1Title = forwardRef<AssetHandle>(function IgPat1Title(_, ref) {
+  useImperativeHandle(ref, () => ({ save: () => saveIgTitle('/images/Pat1.jpg', 'ig-pat1t.png') }))
+  return <IgTitleLayout image="/images/Pat1.jpg" />
+})
+
+const IgPat2Title = forwardRef<AssetHandle>(function IgPat2Title(_, ref) {
+  useImperativeHandle(ref, () => ({ save: () => saveIgTitle('/images/Pat2.jpg', 'ig-pat2t.png') }))
+  return <IgTitleLayout image="/images/Pat2.jpg" />
+})
+
+const IgPat3Title = forwardRef<AssetHandle>(function IgPat3Title(_, ref) {
+  useImperativeHandle(ref, () => ({ save: () => saveIgTitle('/images/Pat3.jpg', 'ig-pat3t.png') }))
+  return <IgTitleLayout image="/images/Pat3.jpg" />
+})
+
+// ── Header Banner ─────────────────────────────────────────────────────────────
+
+async function saveHeaderBanner(W: number, H: number) {
+  const S = 2
   const cW = W * S, cH = H * S
-  const fontSize = 100 * S
+  const fontSize = 36 * S
   const ls = -fontSize * 0.02
-  const centerY = cH / 2
+  const textY = 20 * S + fontSize * 1.1 / 2
+  const displayText = 'LES ONDES\u00A0\u00A0\u00A0\u00A0Cerb\u00e8re'
 
-  const [medBuf, heavyBuf] = await Promise.all([
-    fetch('/fonts/ABCDiatype-Medium-Trial.woff2').then(r => r.arrayBuffer()),
-    fetch('/fonts/ABCDiatype-Heavy-Trial.woff2').then(r => r.arrayBuffer()),
-  ])
-  const medB64 = toBase64(medBuf)
-  const heavyB64 = toBase64(heavyBuf)
+  const { medB64, heavyB64 } = await loadFonts()
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${cW}" height="${cH}">
-  <defs>
-    <style>
-      @font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64,${medB64}') format('woff2'); font-weight: 400; }
-      @font-face { font-family: 'ABCDiatype'; src: url('data:font/woff2;base64,${heavyB64}') format('woff2'); font-weight: 700; }
-    </style>
-    <filter id="r" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="1" numOctaves="4" seed="8" result="noise"/>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.6" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-  </defs>
-  <rect width="${cW}" height="${cH}" fill="#ffffff"/>
-  <text x="${cW / 2}" y="${centerY}" text-anchor="middle" font-family="ABCDiatype, sans-serif" font-size="${fontSize}" letter-spacing="${ls}" fill="#000" dominant-baseline="middle" filter="url(#r)">LES ONDES<tspan dx="${80 * S}">Cerb\u00e8re</tspan><tspan dx="${80 * S}">May 29 30 31</tspan></text>
-</svg>`
+  const makeSvg = (color: string) =>
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${cW}" height="${cH}">`
+    + svgDefs(medB64, heavyB64)
+    + `<text x="${cW / 2}" y="${textY}" text-anchor="middle" font-family="ABCDiatype, sans-serif" font-size="${fontSize}" letter-spacing="${ls}" fill="${color}" dominant-baseline="middle" filter="url(#r)">${escapeXml(displayText)}</text>`
+    + '</svg>'
 
-  const blob = new Blob([svg], { type: 'image/svg+xml' })
-  const url = URL.createObjectURL(blob)
-  await new Promise<void>((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => {
-      const canvas = document.createElement('canvas')
-      canvas.width = cW; canvas.height = cH
-      canvas.getContext('2d')!.drawImage(img, 0, 0)
-      URL.revokeObjectURL(url)
-      canvas.toBlob(png => {
-        if (!png) { reject(new Error('export failed')); return }
-        const a = document.createElement('a')
-        a.href = URL.createObjectURL(png)
-        a.download = 'header-banner.png'
-        a.click()
-        resolve()
-      }, 'image/png')
-    }
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('svg load failed')) }
-    img.src = url
-  })
+  await exportPng(makeSvg('#000'), 'sticker-black.png', cW, cH)
+  await exportPng(makeSvg('#fff'), 'sticker-white.png', cW, cH)
 }
+
+const HeaderBannerAsset = forwardRef<AssetHandle>(function HeaderBannerAsset(_, ref) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useImperativeHandle(ref, () => ({
+    save: () => saveHeaderBanner(containerRef.current?.offsetWidth ?? 500, containerRef.current?.offsetHeight ?? 88)
+  }))
+  return (
+    <div ref={containerRef} style={{ padding: '20px 16px 16px', backgroundColor: '#fff', display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
+      <p style={{ ...titleStyle, fontSize: 36, filter: 'url(#roughen)', flexShrink: 0 }}>
+        LES ONDES{'\u00A0\u00A0\u00A0\u00A0'}Cerb{'\u00e8'}re
+      </p>
+    </div>
+  )
+})
+
+// ── Artist Overlay ────────────────────────────────────────────────────────────
+
+async function saveArtistOverlay(artistName: string, W: number, H: number) {
+  const S = 2
+  const cW = W * S, cH = H * S
+  const fontSize = 36 * S
+  const ls = -fontSize * 0.02
+  const textY = 20 * S + fontSize * 1.1 / 2
+  const displayText = artistName + '\u00A0\u00A0\u00A0\u00A0LES ONDES\u00A0\u00A0\u00A0\u00A0Cerb\u00e8re'
+  const slug = artistName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+
+  const { medB64, heavyB64 } = await loadFonts()
+
+  const makeSvg = (color: string) =>
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${cW}" height="${cH}">`
+    + svgDefs(medB64, heavyB64)
+    + `<text x="${cW / 2}" y="${textY}" text-anchor="middle" font-family="ABCDiatype, sans-serif" font-size="${fontSize}" letter-spacing="${ls}" fill="${color}" dominant-baseline="middle" filter="url(#r)">${escapeXml(displayText)}</text>`
+    + '</svg>'
+
+  await exportPng(makeSvg('#000'), `artist-sticker-${slug}-black.png`, cW, cH)
+  await exportPng(makeSvg('#fff'), `artist-sticker-${slug}-white.png`, cW, cH)
+}
+
+const ArtistOverlayAsset = forwardRef<AssetHandle>(function ArtistOverlayAsset(_, ref) {
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([])
+
+  useImperativeHandle(ref, () => ({
+    save: async () => {
+      for (let i = 0; i < IG_POST_ARTISTS.length; i++) {
+        const el = rowRefs.current[i]
+        const W = el?.offsetWidth ?? 500
+        const H = el?.offsetHeight ?? 88
+        await saveArtistOverlay(IG_POST_ARTISTS[i].replace('\n', ' '), W, H)
+        await new Promise(r => setTimeout(r, 200))
+      }
+    }
+  }))
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 12 }}>
+      {IG_POST_ARTISTS.map((artist, i) => (
+        <div key={i} ref={el => { rowRefs.current[i] = el }} style={{ padding: '20px 16px 16px', backgroundColor: '#fff', display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
+          <p style={{ ...titleStyle, fontSize: 36, filter: 'url(#roughen)', flexShrink: 0 }}>
+            {artist.replace('\n', ' ')}{'\u00A0\u00A0\u00A0\u00A0'}LES ONDES{'\u00A0\u00A0\u00A0\u00A0'}Cerb{'\u00e8'}re
+          </p>
+        </div>
+      ))}
+    </div>
+  )
+})
 
 // ── Asset registry ────────────────────────────────────────────────────────────
 
-interface AssetDef {
+type AssetEntry = {
   id: string
   name: string
   width: number
   height: number
-  image?: string
-  variant: 'post' | 'title' | 'banner'
-  save: () => Promise<void>
+  autoWidth?: boolean
+  scrollable?: boolean
+  Component: React.ForwardRefExoticComponent<React.RefAttributes<AssetHandle>>
 }
 
-const ASSETS: AssetDef[] = [
-  { id: 'ig-pat1',  name: 'IgPat1',  width: 1080, height: 1350, image: '/images/Pat1.jpg', variant: 'post',  save: () => saveIgPost('/images/Pat1.jpg', 'ig-pat1.png') },
-  { id: 'ig-pat2',  name: 'IgPat2',  width: 1080, height: 1350, image: '/images/Pat2.jpg', variant: 'post',  save: () => saveIgPost('/images/Pat2.jpg', 'ig-pat2.png') },
-  { id: 'ig-pat3',  name: 'IgPat3',  width: 1080, height: 1350, image: '/images/Pat3.jpg', variant: 'post',  save: () => saveIgPost('/images/Pat3.jpg', 'ig-pat3.png') },
-  { id: 'ig-pat1t', name: 'IgPat1T', width: 1080, height: 1350, image: '/images/Pat1.jpg', variant: 'title', save: () => saveIgTitle('/images/Pat1.jpg', 'ig-pat1t.png') },
-  { id: 'ig-pat2t', name: 'IgPat2T', width: 1080, height: 1350, image: '/images/Pat2.jpg', variant: 'title', save: () => saveIgTitle('/images/Pat2.jpg', 'ig-pat2t.png') },
-  { id: 'ig-pat3t', name: 'IgPat3T', width: 1080, height: 1350, image: '/images/Pat3.jpg', variant: 'title', save: () => saveIgTitle('/images/Pat3.jpg', 'ig-pat3t.png') },
-  { id: 'header-banner', name: 'HeaderBanner', width: 1920, height: 300, variant: 'banner', save: saveHeaderBanner },
+const ASSETS: AssetEntry[] = [
+  { id: 'ig-pat1',        name: 'IgPat1',        width: 1080, height: 1350, Component: IgPat1Post        },
+  { id: 'ig-pat2',        name: 'IgPat2',        width: 1080, height: 1350, Component: IgPat2Post        },
+  { id: 'ig-pat3',        name: 'IgPat3',        width: 1080, height: 1350, Component: IgPat3Post        },
+  { id: 'ig-pat1t',       name: 'IgPat1T',       width: 1080, height: 1350, Component: IgPat1Title       },
+  { id: 'ig-pat2t',       name: 'IgPat2T',       width: 1080, height: 1350, Component: IgPat2Title       },
+  { id: 'ig-pat3t',       name: 'IgPat3T',       width: 1080, height: 1350, Component: IgPat3Title       },
+  { id: 'header-banner',  name: 'Sticker',        width: 1500, height: 88, scrollable: true, Component: HeaderBannerAsset  },
+  { id: 'artist-overlay', name: 'ArtistSticker', width: 1500, height: 88, scrollable: true, Component: ArtistOverlayAsset },
 ]
 
-// ── Component ─────────────────────────────────────────────────────────────────
+// ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function IgPage() {
   const [activeId, setActiveId] = useState(ASSETS[0].id)
   const [saving, setSaving] = useState(false)
+  const assetRef = useRef<AssetHandle>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(1)
 
   const asset = ASSETS.find(a => a.id === activeId)!
+  const ActiveAsset = asset.Component
 
   useEffect(() => {
-    function updateScale() {
+    if (asset.scrollable) { setScale(1); return }
+
+    const el = wrapRef.current
+    if (!el) return
+
+    function computeScale() {
+      const w = asset.autoWidth ? (el!.offsetWidth || asset.width) : asset.width
       setScale(Math.min(
-        (window.innerWidth  * 0.88) / asset.width,
+        (window.innerWidth  * 0.88) / w,
         (window.innerHeight * 0.88) / asset.height,
       ))
     }
-    updateScale()
-    window.addEventListener('resize', updateScale)
-    return () => window.removeEventListener('resize', updateScale)
-  }, [asset.width, asset.height])
+
+    computeScale()
+    window.addEventListener('resize', computeScale)
+
+    const obs = asset.autoWidth ? new ResizeObserver(computeScale) : null
+    obs?.observe(el)
+
+    return () => {
+      window.removeEventListener('resize', computeScale)
+      obs?.disconnect()
+    }
+  }, [asset])
 
   const handleSave = useCallback(async () => {
-    if (saving) return
+    if (saving || !assetRef.current) return
     setSaving(true)
-    try { await asset.save() } finally { setSaving(false) }
-  }, [saving, asset])
+    try { await assetRef.current.save() } finally { setSaving(false) }
+  }, [saving])
 
   return (
     <>
       <svg style={{ display: 'none' }} aria-hidden="true">
         <defs>
           <filter id="roughen" x="-5%" y="-5%" width="110%" height="110%">
-            <feTurbulence type="fractalNoise" baseFrequency="1" numOctaves={4} seed={8} result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={1.6} xChannelSelector="R" yChannelSelector="G" />
+            <feTurbulence type="fractalNoise" baseFrequency="1" numOctaves={4} seed={10} result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale={1.4} xChannelSelector="R" yChannelSelector="G" />
           </filter>
         </defs>
       </svg>
@@ -293,57 +415,12 @@ export default function IgPage() {
       </button>
 
       {/* Canvas */}
-      <div style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#e8e8e8', fontFamily: 'var(--font-diatype), sans-serif', fontWeight: 400 }}>
-        <div ref={wrapRef} style={{ width: asset.width, height: asset.height, transform: `scale(${scale})`, transformOrigin: 'center center', flexShrink: 0 }}>
-          {asset.variant === 'post'   && <IgPostPreview image={asset.image!} />}
-          {asset.variant === 'title'  && <IgTitlePreview image={asset.image!} />}
-          {asset.variant === 'banner' && <HeaderBannerPreview />}
+      <div style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: asset.scrollable ? 'flex-start' : 'center', justifyContent: 'center', overflowY: asset.scrollable ? 'auto' : 'hidden', background: '#e8e8e8', fontFamily: 'var(--font-diatype), sans-serif', fontWeight: 400 }}>
+        <div ref={wrapRef} style={asset.scrollable ? { padding: '80px 0' } : { width: asset.autoWidth ? 'max-content' : asset.width, height: asset.height, transform: `scale(${scale})`, transformOrigin: 'center center', flexShrink: 0 }}>
+          <ActiveAsset ref={assetRef} />
         </div>
       </div>
     </>
-  )
-}
-
-// ── Asset preview ─────────────────────────────────────────────────────────────
-
-function IgPostPreview({ image }: { image: string }) {
-  return (
-    <div style={{ width: 1080, height: 1350, background: '#fff', position: 'relative', overflow: 'hidden' }}>
-      {/* Upper half — image background, title centered */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 675, backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 48, boxSizing: 'border-box', gap: 48 }}>
-        <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>LES ONDES</p>
-        <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>Cerbère</p>
-      </div>
-
-      {/* Lower half — artists + date */}
-      <div style={{ position: 'absolute', top: 675, left: 0, right: 0, height: 675, padding: 48, boxSizing: 'border-box', display: 'flex', gap: 48, alignItems: 'flex-start' }}>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {IG_POST_ARTISTS.map((name, i) => (
-            <p key={i} style={{ ...textStyle, filter: 'url(#roughen)' }}>{name}</p>
-          ))}
-        </div>
-        <p style={{ ...textStyle, flex: 1, textAlign: 'right', filter: 'url(#roughen)' }}>May 29 30 31</p>
-      </div>
-    </div>
-  )
-}
-
-function HeaderBannerPreview() {
-  return (
-    <div style={{ width: 1920, height: 300, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 80 }}>
-      <p style={{ ...titleStyle, fontSize: 100, filter: 'url(#roughen)' }}>LES ONDES</p>
-      <p style={{ ...titleStyle, fontSize: 100, filter: 'url(#roughen)' }}>Cerbère</p>
-      <p style={{ ...titleStyle, fontSize: 100, filter: 'url(#roughen)' }}>May 29 30 31</p>
-    </div>
-  )
-}
-
-function IgTitlePreview({ image }: { image: string }) {
-  return (
-    <div style={{ width: 1080, height: 1350, position: 'relative', overflow: 'hidden', backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 48 }}>
-      <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>LES ONDES</p>
-      <p style={{ ...titleStyle, filter: 'url(#roughen)' }}>Cerbère</p>
-    </div>
   )
 }
 
