@@ -59,3 +59,24 @@ export const ACCOMMODATION_QUERY = `{
     }
   }
 }`
+
+/** One round-trip for all page hero images — keyed by page slug */
+export const ALL_HERO_IMAGES_QUERY = `{
+  "home":          *[_type == "infoBottom"][0].heroImage,
+  "info":          *[_id   == "b0e897fb-a27d-4a0d-ba12-5d3f9876026c"][0].heroImage,
+  "accommodation": *[_type == "accommodationPage"][0].heroImage,
+  "tickets":       *[_type == "ticketsPage"][0].heroImage,
+  "access":        *[_type == "accessPage"][0].heroImage
+}`
+
+export const ACCESS_PAGE_QUERY = `*[_type == "accessPage"][0]{
+  sections[] { titleEn, titleFr, bodyEn, bodyFr }
+}`
+
+export const ACCOMMODATION_PAGE_QUERY = `*[_type == "accommodationPage"][0]{
+  introEn, introFr,
+  locations[] {
+    name,
+    hotels[] { hotelName, url, description, descriptionFr }
+  }
+}`

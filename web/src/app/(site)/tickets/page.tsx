@@ -1,9 +1,6 @@
 'use client'
 
-import { siteContainerClass, sitePageGapClass } from '@/lib/siteSpacing'
 import { useEffect, useRef } from 'react'
-
-const pageClass = `${siteContainerClass} flex flex-col ${sitePageGapClass} pt-0 pb-[120px] max-[740px]:pb-16`
 
 export default function TicketsPage() {
   const iframeRef = useRef<HTMLIFrameElement>(null)
@@ -22,15 +19,17 @@ export default function TicketsPage() {
   }, [])
 
   return (
-    <div className={pageClass}>
-      <iframe
-        ref={iframeRef}
-        id="haWidget"
-        allowTransparency={true}
-        scrolling="auto"
-        src="https://www.helloasso.com/associations/les-ondes/evenements/les-ondes-cerbere-2026/widget"
-        style={{ width: '100%', height: '1050px', border: 'none' }}
-      />
+    <div className="px-10 max-[740px]:px-4 pb-8">
+      <div className="filter-none">
+        <iframe
+          ref={iframeRef}
+          id="haWidget"
+          allowTransparency={true}
+          scrolling="auto"
+          src="https://www.helloasso.com/associations/les-ondes/evenements/les-ondes-cerbere-2026/widget"
+          style={{ width: '100%', height: '1050px', border: 'none' }}
+        />
+      </div>
     </div>
   )
 }

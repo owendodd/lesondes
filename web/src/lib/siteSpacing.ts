@@ -1,13 +1,16 @@
-export const siteContainerClass = 'mx-auto w-full max-w-[800px] px-6 max-[740px]:px-5'
+/** Main text: logo, nav, artists, dates, food/wine credits — fluid 28→42px */
+export const siteTextClass = 'text-[clamp(28px,calc(13.2px+2vw),42px)] leading-none tracking-[-0.02em]'
 
-export const sitePageStackClass = 'flex flex-col'
+/** Body text: info/accommodation/access paragraphs */
+export const siteBodyClass = 'text-[24px] leading-[1.2] tracking-[0.04em] max-w-[32em] max-[740px]:text-[20px]'
 
-export const sitePageGapClass = 'gap-[80px] max-[740px]:gap-16'
+/** Roughen filter — apply to text containers (not image containers) */
+export const siteRoughenClass = 'filter-[url(#roughen)]'
 
-export const sitePagePaddingYClass = 'py-[60px] max-[740px]:py-8'
+/** Underlined link */
+export const siteLinkClass =
+  'underline decoration-2 underline-offset-2 text-inherit hover:text-[#888] transition-colors duration-150'
 
-export const siteBodyTextClass =
-  'text-[26px] leading-[1.1] tracking-[0.08em] filter-[url(#roughen)] max-[740px]:text-[22px]'
-
-export const siteBottomFullWidthStackClass = 'm-0 w-full flex flex-col gap-[60px]'
-
+// Legacy alias
+export const siteNavClass = siteTextClass
+export const siteBodyTextClass = siteTextClass
