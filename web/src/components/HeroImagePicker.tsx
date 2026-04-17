@@ -23,8 +23,8 @@ const pathnameToKey: Record<string, keyof HeroImages> = {
 
 export function HeroImagePicker({ images }: { images: HeroImages | null }) {
   const pathname = usePathname()
-  const key = pathnameToKey[pathname] ?? 'home'
-  const image = images?.[key] ?? null
+  const key = pathnameToKey[pathname]
+  const image = key ? (images?.[key] ?? null) : null
 
   if (!image) return null
   return <HeroImage image={image} />

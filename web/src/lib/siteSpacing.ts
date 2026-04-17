@@ -1,5 +1,5 @@
 /** Main text: logo, nav, artists, dates, food/wine credits — fluid 28→42px */
-export const siteTextClass = 'text-[clamp(28px,calc(13.2px+2vw),42px)] leading-none tracking-[-0.02em]'
+export const siteTextClass = 'text-[32px] leading-none tracking-[-0.02em]'
 
 /** Body text: info/accommodation/access paragraphs */
 export const siteBodyClass = 'text-[24px] leading-[1.2] tracking-[0.04em] max-w-[32em] max-[740px]:text-[20px]'

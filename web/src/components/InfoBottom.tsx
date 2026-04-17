@@ -4,14 +4,11 @@ import { useLang } from '@/hooks/useLang'
 import type { InfoBottom as InfoBottomType } from '@/lib/types'
 
 function Credit({ prefix, person }: { prefix: string; person: string }) {
-  const words = prefix.trim().split(/\s+/)
-  const link = words.length > 1 ? words[words.length - 1] : ''
-  const main = words.length > 1 ? words.slice(0, -1).join(' ') : prefix
   return (
     <p className="flex-1">
-      {main}
+      {prefix}
       <br />
-      {link ? `${link} ${person}` : person}
+      {person}
     </p>
   )
 }
