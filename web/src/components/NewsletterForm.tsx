@@ -2,7 +2,7 @@
 
 import { type KeyboardEvent, useRef, useState } from 'react'
 import { useLang } from '@/hooks/useLang'
-import { siteTextClass, siteRoughenClass } from '@/lib/siteSpacing'
+import { siteArtistClass, siteRoughenClass } from '@/lib/siteSpacing'
 
 const messages = {
   placeholder: { en: 'Enter your email...', fr: 'Entrez votre email...' },
@@ -58,7 +58,7 @@ export function NewsletterForm({ brevoFormAction }: { brevoFormAction: string })
   }
 
   return (
-    <div className={`flex flex-col gap-2 ${siteTextClass} ${siteRoughenClass}`}>
+    <div className={`flex flex-col gap-2 ${siteArtistClass} ${siteRoughenClass}`}>
       <p>{lang === 'fr' ? 'Newsletter' : 'Newsletter'}</p>
       <input
         ref={inputRef}

@@ -7,7 +7,7 @@ import { HeroImagePicker } from '@/components/HeroImagePicker'
 import { DateDisplay } from '@/components/HeaderControls'
 import { PageFooter } from '@/components/PageFooter'
 import { getSiteConfig, getAllHeroImages } from '@/lib/sanity'
-import { siteTextClass, siteRoughenClass } from '@/lib/siteSpacing'
+import { siteTitleClass, siteRoughenClass } from '@/lib/siteSpacing'
 import type { SiteConfig } from '@/lib/types'
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -30,18 +30,14 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <SvgFilter />
       <div className="min-h-screen flex flex-col">
 
-        {/* Header: logo+nav left | dates+lang right
-            Mobile: stacks to logo → nav → dates+lang row */}
-        <header className={`flex max-[740px]:flex-col max-[740px]:gap-4 gap-10 px-10 max-[740px]:px-4 pt-4 ${siteTextClass} ${siteRoughenClass}`}>
-          <div className="flex-1 flex flex-col gap-2">
-            <div className="flex flex-wrap gap-x-6 gap-y-2">
-              <Link href="/" scroll={false} className="no-hover text-inherit no-underline flex flex-wrap gap-x-6 gap-y-2">
-                <span>{config.title}</span>
-                <span>{config.location}</span>
-              </Link>
-              <DateDisplay datesEn={config.datesEn} datesFr={config.datesFr} />
-            </div>
-            <SiteNav />
+        <header className={`flex flex-col gap-8 max-[740px]:gap-6 px-10 max-[740px]:px-4 pt-4 ${siteRoughenClass}`}>
+          <SiteNav />
+          <div className={`flex flex-wrap gap-x-[48px] gap-y-1 ${siteTitleClass}`}>
+            <Link href="/" scroll={false} className="no-hover text-inherit no-underline contents">
+              <span className="whitespace-nowrap">{config.title}</span>
+              <span className="whitespace-nowrap">{config.location}</span>
+            </Link>
+            <DateDisplay datesEn={config.datesEn} datesFr={config.datesFr} className="whitespace-nowrap" />
           </div>
         </header>
 
@@ -54,7 +50,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
           </div>
 
           {/* Page-specific content */}
-          <main className={`flex-1 ${siteTextClass} ${siteRoughenClass}`}>
+          <main className={`flex-1 ${siteRoughenClass}`}>
             {children}
           </main>
 

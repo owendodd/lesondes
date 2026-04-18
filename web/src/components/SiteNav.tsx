@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useLang } from '@/hooks/useLang'
+import { siteNavClass, siteRoughenClass } from '@/lib/siteSpacing'
 
 const TICKETS_URL = 'https://www.helloasso.com/associations/les-ondes/evenements/les-ondes-cerbere-2026'
 
@@ -14,10 +15,10 @@ const links = [
 const linkClass = 'text-inherit underline decoration-2 underline-offset-2 hover:text-[#888] transition-colors duration-150'
 
 export function SiteNav() {
-  const { lang, setLang } = useLang()
+  const { lang } = useLang()
 
   return (
-    <nav className="flex flex-wrap gap-x-6 gap-y-2">
+    <nav className={`flex flex-wrap gap-x-8 max-[740px]:gap-x-4 gap-y-2 ${siteNavClass} ${siteRoughenClass}`}>
       <a
         href={TICKETS_URL}
         target="_blank"
@@ -36,13 +37,6 @@ export function SiteNav() {
           {lang === 'fr' ? link.fr : link.en}
         </Link>
       ))}
-      <button
-        type="button"
-        className={linkClass}
-        onClick={() => setLang(lang === 'en' ? 'fr' : 'en')}
-      >
-        {lang === 'en' ? 'FR' : 'EN'}
-      </button>
     </nav>
   )
 }

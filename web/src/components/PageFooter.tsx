@@ -2,15 +2,16 @@
 
 import Link from 'next/link'
 import { useLang } from '@/hooks/useLang'
-import { siteLinkClass, siteRoughenClass } from '@/lib/siteSpacing'
+import { siteLinkClass, siteFooterClass, siteRoughenClass } from '@/lib/siteSpacing'
+import { LangSwitcher } from '@/components/HeaderControls'
 import type { SiteConfig } from '@/lib/types'
 
 export function PageFooter({ config }: { config: Pick<SiteConfig, 'contactEmail'> }) {
   const { lang } = useLang()
 
   return (
-    <footer className={`px-10 max-[740px]:px-4 pt-16 pb-10 max-[740px]:pt-12 text-[24px] max-[740px]:text-[20px] leading-[1.2] tracking-[0.04em] ${siteRoughenClass}`}>
-      <div className="flex flex-wrap gap-x-7 gap-y-2 max-[740px]:flex-col max-[740px]:gap-y-1">
+    <footer className={`px-10 max-[740px]:px-4 pt-[56px] max-[740px]:pt-[48px] pb-[40px] ${siteFooterClass} ${siteRoughenClass}`}>
+      <div className="flex flex-wrap gap-x-7 gap-y-2 max-[740px]:flex-col max-[740px]:gap-y-3">
         <Link href="/newsletter" scroll={false} className={siteLinkClass}>
           {lang === 'fr' ? 'Newsletter' : 'Newsletter'}
         </Link>
@@ -25,6 +26,7 @@ export function PageFooter({ config }: { config: Pick<SiteConfig, 'contactEmail'
         >
           @les.ondes.cerbere
         </a>
+        <LangSwitcher />
       </div>
     </footer>
   )

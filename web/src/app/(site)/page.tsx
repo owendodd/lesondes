@@ -24,7 +24,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="px-10 max-[740px]:px-4 pb-8 flex flex-col gap-16">
+    <div className="px-10 max-[740px]:px-4 flex flex-col gap-[56px] max-[740px]:gap-[48px]">
       <ArtistList artists={artists} />
       <InfoBottom data={infoBottom} />
     </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useLang } from '@/hooks/useLang'
+import { siteArtistClass } from '@/lib/siteSpacing'
 import type { InfoBottom as InfoBottomType } from '@/lib/types'
 
 function Credit({ prefix, person }: { prefix: string; person: string }) {
@@ -18,7 +19,7 @@ export function InfoBottom({ data }: { data: InfoBottomType }) {
   const isFr = lang === 'fr'
 
   return (
-    <div className="flex gap-10 max-[740px]:flex-col max-[740px]:gap-6">
+    <div className={`flex gap-[40px] max-[740px]:flex-col max-[740px]:gap-6 ${siteArtistClass}`}>
       <Credit
         prefix={isFr ? data.foodCreditPrefixFr : data.foodCreditPrefixEn}
         person={data.foodPerson}
