@@ -1,45 +1,33 @@
 'use client'
 
 import { useLang } from '@/hooks/useLang'
+import { siteArtistClass } from '@/lib/siteSpacing'
 import type { InfoBottom as InfoBottomType } from '@/lib/types'
 
-function HotelName({ name }: { name: string }) {
-  const words = name.split(' ')
-  if (words.length <= 3) return <>{name}</>
-  const first = words.slice(0, words.length - 3).join(' ')
-  const last = words.slice(words.length - 3).join(' ')
-  return <>{first}<br />{last}</>
+function Credit({ prefix, person }: { prefix: string; person: string }) {
+  return (
+    <p className="flex-1">
+      {prefix}
+      <br />
+      {person}
+    </p>
+  )
 }
 
 export function InfoBottom({ data }: { data: InfoBottomType }) {
   const { lang } = useLang()
+  const isFr = lang === 'fr'
 
   return (
-    <div className="[grid-area:info-bottom] flex flex-col gap-4 self-end text-center">
-      <p>
-        {lang === 'fr' ? data.foodCreditPrefixFr : data.foodCreditPrefixEn}
-        <br />
-        {data.foodPerson}
-      </p>
-      <p>
-        {lang === 'fr' ? data.wineCreditPrefixFr : data.wineCreditPrefixEn}
-        <br />
-        {data.winePerson}
-      </p>
-      <p>
-        {data.hotelUrl ? (
-          <a
-            href={data.hotelUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline decoration-2 underline-offset-2 hover:text-[#888] transition-colors duration-150"
-          >
-            <HotelName name={lang === 'fr' ? (data.hotelNameFr || data.hotelName) : data.hotelName} />
-          </a>
-        ) : (
-          <HotelName name={lang === 'fr' ? (data.hotelNameFr || data.hotelName) : data.hotelName} />
-        )}
-      </p>
+    <div className={`flex gap-[40px] max-[740px]:flex-col max-[740px]:gap-6 ${siteArtistClass}`}>
+      <Credit
+        prefix={isFr ? data.foodCreditPrefixFr : data.foodCreditPrefixEn}
+        person={data.foodPerson}
+      />
+      <Credit
+        prefix={isFr ? data.wineCreditPrefixFr : data.wineCreditPrefixEn}
+        person={data.winePerson}
+      />
     </div>
   )
 }

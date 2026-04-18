@@ -1,6 +1,6 @@
 import { createClient } from 'next-sanity'
 import { cache } from 'react'
-import { SITE_CONFIG_QUERY } from '@/lib/queries'
+import { SITE_CONFIG_QUERY, ALL_HERO_IMAGES_QUERY } from '@/lib/queries'
 import type { SiteConfig } from '@/lib/types'
 
 export const client = createClient({
@@ -56,4 +56,17 @@ export async function sanityFetch<T>(
 /** Dedupes between `(site)/layout` and `(site)/page` in a single request — one Sanity round-trip for config */
 export const getSiteConfig = cache(() =>
   sanityFetch<SiteConfig | null>(SITE_CONFIG_QUERY, {}, { next: { revalidate: 60 } }),
+)
+
+type SanityImage = { asset: { _ref: string }; hotspot?: object; crop?: object }
+
+/** All per-page hero images in one round-trip */
+export const getAllHeroImages = cache(() =>
+  sanityFetch<{
+    home:          SanityImage | null
+    info:          SanityImage | null
+    accommodation: SanityImage | null
+    tickets:       SanityImage | null
+    access:        SanityImage | null
+  } | null>(ALL_HERO_IMAGES_QUERY, {}, { next: { revalidate: 60 } }),
 )

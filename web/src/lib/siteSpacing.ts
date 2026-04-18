@@ -1,13 +1,23 @@
-export const siteContainerClass = 'mx-auto w-full max-w-[800px] px-6 max-[740px]:px-5'
+/** Nav links: matches body size and letter spacing */
+export const siteNavClass = 'text-[24px] max-[740px]:text-[20px] leading-[1.2] tracking-[0.04em]'
 
-export const sitePageStackClass = 'flex flex-col'
+/** Header title: fluid 48→80px, scaling from ~885px */
+export const siteTitleClass = 'text-[clamp(48px,calc(-2.3px+5.71vw),80px)] leading-none tracking-[-0.02em]'
 
-export const sitePageGapClass = 'gap-[80px] max-[740px]:gap-16'
+/** Artists + food/wine: 40px desktop / 32px mobile */
+export const siteArtistClass = 'text-[40px] max-[740px]:text-[32px] leading-none tracking-[-0.02em]'
 
-export const sitePagePaddingYClass = 'py-[60px] max-[740px]:py-8'
+/** Footer: matches body size */
+export const siteFooterClass = 'text-[24px] max-[740px]:text-[20px] leading-none tracking-[0.04em]'
 
-export const siteBodyTextClass =
-  'text-[26px] leading-[1.1] tracking-[0.08em] filter-[url(#roughen)] max-[740px]:text-[22px]'
+/** Body text: info/accommodation/access paragraphs */
+export const siteBodyClass = 'text-[24px] leading-[1.2] tracking-[0.04em] max-w-[32em] max-[740px]:text-[20px]'
 
-export const siteBottomFullWidthStackClass = 'm-0 w-full flex flex-col gap-[60px]'
+/** Roughen SVG filter */
+export const siteRoughenClass = 'filter-[url(#roughen)]'
 
+/** Underlined link (standalone) */
+export const siteLinkClass = 'border-b-2 border-current leading-none text-inherit hover:text-[#888] transition-colors duration-150'
+
+/** Underlined link (inline within body text) */
+export const siteInlineLinkClass = 'underline decoration-2 underline-offset-[3px] text-inherit hover:text-[#888] transition-colors duration-150'

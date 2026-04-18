@@ -14,35 +14,8 @@
     margin: 0;
     padding: 0;
   }
-
 }
 
-/* Link + button hover — unlayered so it beats Tailwind utility layers */
+/* Link hover — unlayered so it beats Tailwind utility layers */
 a:hover { color: #888; }
-header a:hover { color: inherit; }
-
-/* Home: explicit grid — keep outside @layer so Tailwind v4 does not drop or reorder rules */
-.home-content-grid {
-  display: grid;
-  justify-content: center;
-  column-gap: 0;
-  row-gap: 3rem;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto auto;
-  grid-template-areas:
-    'info-top'
-    'artists'
-    'info-bottom';
-}
-
-@media (min-width: 741px) {
-  .home-content-grid {
-    grid-template-columns: 320px 320px;
-    grid-template-rows: auto 1fr;
-    column-gap: 5rem;
-    row-gap: 2.5rem;
-    grid-template-areas:
-      'info-top artists'
-      'info-bottom artists';
-  }
-}
+.no-hover:hover { color: inherit; }
