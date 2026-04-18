@@ -44,13 +44,13 @@ export function InfoContent({ infoPage: d }: { infoPage: InfoPage }) {
             <p className={headingClass}>{isFr ? 'Musique' : 'Music'}</p>
             <p>{isFr ? d.musicIntroFr : d.musicIntroEn}</p>
             {d.spotifyUrl && (
-              <a href={d.spotifyUrl} target="_blank" rel="noopener noreferrer" className={siteLinkClass}>
-                Spotify
+              <a href={d.spotifyUrl} target="_blank" rel="noopener noreferrer" className={`${siteLinkClass} self-start`}>
+                Listen on Spotify
               </a>
             )}
             {d.appleMusicUrl && (
-              <a href={d.appleMusicUrl} target="_blank" rel="noopener noreferrer" className={siteLinkClass}>
-                Apple Music
+              <a href={d.appleMusicUrl} target="_blank" rel="noopener noreferrer" className={`${siteLinkClass} self-start`}>
+                Listen on Apple Music
               </a>
             )}
           </div>
