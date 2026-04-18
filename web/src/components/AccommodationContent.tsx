@@ -1,7 +1,7 @@
 'use client'
 
 import { useLang } from '@/hooks/useLang'
-import { siteBodyClass, siteLinkClass } from '@/lib/siteSpacing'
+import { siteBodyClass, siteInlineLinkClass } from '@/lib/siteSpacing'
 import type { Location } from '@/lib/types'
 
 interface Props {
@@ -29,11 +29,11 @@ export function AccommodationContent({ introEn, introFr, locations }: Props) {
               {loc.hotels.map(hotel => (
                 <p key={hotel.hotelName}>
                   {hotel.url ? (
-                    <a href={hotel.url} target="_blank" rel="noopener noreferrer" className={siteLinkClass}>
+                    <a href={hotel.url} target="_blank" rel="noopener noreferrer" className={siteInlineLinkClass}>
                       {hotel.hotelName}
                     </a>
                   ) : (
-                    <span className="underline decoration-[1px] underline-offset-2">{hotel.hotelName}</span>
+                    <span className="underline decoration-2 underline-offset-[3px]">{hotel.hotelName}</span>
                   )}
                   {': '}
                   {isFr ? (hotel.descriptionFr || hotel.description) : hotel.description}

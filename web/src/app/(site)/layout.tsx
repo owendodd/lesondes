@@ -54,9 +54,9 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
             {children}
           </main>
 
-          <PageFooter config={config} />
         </div>
 
+        <PageFooter config={{ contactEmail: config.contactEmail, brevoFormAction: config.brevoFormAction }} />
       </div>
       <Analytics />
     </LangProvider>

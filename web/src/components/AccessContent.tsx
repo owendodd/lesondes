@@ -18,7 +18,7 @@ export function AccessContent({ sections }: { sections: Section[] }) {
       <div className={`flex flex-col gap-10 ${siteBodyClass}`}>
         {sections.map((s, i) => (
           <div key={i} className="flex flex-col gap-3">
-            <p className="font-medium">{lang === 'fr' ? s.titleFr : s.titleEn}</p>
+            <p className="uppercase">{lang === 'fr' ? s.titleFr : s.titleEn}</p>
             <p>{lang === 'fr' ? s.bodyFr : s.bodyEn}</p>
           </div>
         ))}

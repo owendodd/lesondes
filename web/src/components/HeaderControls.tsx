@@ -17,7 +17,7 @@ export function LangSwitcher() {
   const { lang, setLang } = useLang()
 
   const btnClass = (active: boolean) =>
-    `cursor-pointer border-0 bg-transparent p-0 font-sans text-[inherit] leading-[inherit] tracking-[inherit] text-black hover:text-[#888] transition-colors duration-150${active ? ' underline decoration-2 underline-offset-2' : ''}`
+    `cursor-pointer bg-transparent p-0 font-sans text-[inherit] leading-none tracking-[inherit] text-black hover:text-[#888] transition-colors duration-150 border-b-2 ${active ? 'border-current' : 'border-transparent'}`
 
   return (
     <div className="shrink-0 flex gap-2">
