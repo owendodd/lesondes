@@ -41,19 +41,16 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
           </div>
         </header>
 
-        {/* Content column: left 65% on desktop, full width on mobile */}
+        {/* Hero image — outside max-w so carousel can bleed full width */}
+        <div className="pt-10 max-[740px]:pt-6 pb-10 max-[740px]:pb-6">
+          <HeroImagePicker images={heroImages} />
+        </div>
+
+        {/* Content column */}
         <div className="w-full max-w-[1000px] flex flex-col flex-1">
-
-          {/* Hero image */}
-          <div className="px-10 max-[740px]:px-0 pt-10 max-[740px]:pt-6 pb-10 max-[740px]:pb-6">
-            <HeroImagePicker images={heroImages} />
-          </div>
-
-          {/* Page-specific content */}
           <main className={`flex-1 ${siteRoughenClass}`}>
             {children}
           </main>
-
         </div>
 
         <PageFooter config={{ contactEmail: config.contactEmail, brevoFormAction: config.brevoFormAction }} />

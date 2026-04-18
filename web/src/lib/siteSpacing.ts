@@ -4,8 +4,8 @@ export const siteNavClass = 'text-[24px] max-[740px]:text-[20px] leading-[1.2] t
 /** Header title: fluid 48→80px, scaling from ~885px */
 export const siteTitleClass = 'text-[clamp(48px,calc(-2.3px+5.71vw),80px)] leading-none tracking-[-0.02em]'
 
-/** Artists + food/wine: 40px desktop / 32px mobile */
-export const siteArtistClass = 'text-[40px] max-[740px]:text-[32px] leading-none tracking-[-0.02em]'
+/** Artists + food/wine: 38px desktop / 28px mobile */
+export const siteArtistClass = 'text-[38px] max-[740px]:text-[28px] leading-none tracking-[-0.02em]'
 
 /** Footer: matches body size */
 export const siteFooterClass = 'text-[24px] max-[740px]:text-[20px] leading-none tracking-[0.04em]'
@@ -17,7 +17,7 @@ export const siteBodyClass = 'text-[24px] leading-[1.2] tracking-[0.04em] max-w-
 export const siteRoughenClass = 'filter-[url(#roughen)]'
 
 /** Underlined link (standalone) */
-export const siteLinkClass = 'border-b-2 border-current leading-none text-inherit hover:text-[#888] transition-colors duration-150'
+export const siteLinkClass = 'border-b-2 border-current leading-none text-inherit hover:text-[#2b5aca] transition-colors duration-150'
 
 /** Underlined link (inline within body text) */
-export const siteInlineLinkClass = 'underline decoration-2 underline-offset-[3px] text-inherit hover:text-[#888] transition-colors duration-150'
+export const siteInlineLinkClass = 'underline decoration-2 underline-offset-[3px] text-inherit hover:text-[#2b5aca] transition-colors duration-150'

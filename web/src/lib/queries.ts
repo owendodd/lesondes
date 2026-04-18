@@ -28,16 +28,11 @@ export const HOME_CONTENT_QUERY = `{
 export const INFO_PAGE_QUERY = `{
   "infoPage": *[_id == "b0e897fb-a27d-4a0d-ba12-5d3f9876026c"][0]{
     heroImage,
-    overviewEn, overviewFr,
+    overviewEn[] { ..., markDefs[]{ ..., _type == "link" => { href } } },
+    overviewFr[] { ..., markDefs[]{ ..., _type == "link" => { href } } },
     musicIntroEn, musicIntroFr,
-    musicEthosEn, musicEthosFr,
-    diningEn, diningFr,
-    accommodationNoteEn, accommodationNoteEr,
-    accommodationIntroEn, accommodationIntroFr,
-    locations[] {
-      name,
-      hotels[] { hotelName, url, description, descriptionFr }
-    }
+    spotifyUrl, appleMusicUrl,
+    diningEn, diningFr
   },
   "siteConfig": *[_type == "siteConfig"][0]{
     contactEmail, brevoFormAction
@@ -63,6 +58,7 @@ export const ACCOMMODATION_QUERY = `{
 /** One round-trip for all page hero images — keyed by page slug */
 export const ALL_HERO_IMAGES_QUERY = `{
   "home":          *[_type == "infoBottom"][0].heroImage,
+  "homeCarousel":  *[_type == "infoBottom"][0].heroImages,
   "info":          *[_id   == "b0e897fb-a27d-4a0d-ba12-5d3f9876026c"][0].heroImage,
   "accommodation": *[_type == "accommodationPage"][0].heroImage,
   "tickets":       *[_type == "ticketsPage"][0].heroImage,

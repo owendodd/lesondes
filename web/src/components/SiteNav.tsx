@@ -12,7 +12,7 @@ const links = [
   { href: '/access', en: 'Access', fr: 'Accès' },
 ]
 
-const linkClass = 'border-b-2 border-current leading-none text-inherit hover:text-[#888] transition-colors duration-150'
+const linkClass = 'border-b-2 border-current leading-none text-inherit hover:text-[#2b5aca] transition-colors duration-150'
 
 export function SiteNav() {
   const { lang } = useLang()

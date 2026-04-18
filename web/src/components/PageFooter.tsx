@@ -76,25 +76,23 @@ export function PageFooter({ config }: { config: Pick<SiteConfig, 'contactEmail'
         </a>
 
         {/* Inline newsletter */}
-        <div className="flex w-full items-baseline gap-x-7 gap-y-3 max-[740px]:flex-col">
-          <div className="border-b-2 border-current w-[300px] max-[740px]:w-full">
-            <input
-              ref={inputRef}
-              type="email"
-              value={emailVal}
-              onChange={e => setEmailVal(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={messages.placeholder[lk]}
-              disabled={submitted}
-              className="w-full h-[24px] bg-transparent border-0 p-0 outline-none font-sans text-[inherit] leading-none tracking-[inherit] text-black placeholder:text-black focus:placeholder:text-transparent"
-            />
-          </div>
+        <div className="flex border-b-2 border-current items-baseline gap-x-7 w-full max-w-[400px] max-[740px]:max-w-full">
+          <input
+            ref={inputRef}
+            type="email"
+            value={emailVal}
+            onChange={e => setEmailVal(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={messages.placeholder[lk]}
+            disabled={submitted}
+            className="flex-1 h-[24px] bg-transparent border-0 p-0 outline-none font-sans text-[inherit] leading-none tracking-[inherit] text-black placeholder:text-black focus:placeholder:text-transparent"
+          />
           <button
             type="button"
             onClick={handleSubmit}
             disabled={submitted}
             style={submitted ? { opacity: 0, pointerEvents: 'none' } : undefined}
-            className={`cursor-pointer border-0 bg-transparent p-0 text-left font-sans text-[inherit] tracking-[inherit] text-black whitespace-nowrap ${siteLinkClass}`}
+            className="cursor-pointer border-0 bg-transparent p-0 text-left font-sans text-[inherit] leading-none tracking-[inherit] text-black whitespace-nowrap hover:text-[#2b5aca] transition-colors duration-150"
           >
             {currentButton}
           </button>

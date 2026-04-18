@@ -70,15 +70,20 @@ export interface ScheduleItem {
   detailFr: string
 }
 
+export type PortableTextBlock = {
+  _type: string
+  _key: string
+  [key: string]: unknown
+}
+
 export interface InfoPage {
   heroImage?: { asset: { _ref: string }; hotspot?: object; crop?: object }
-  overviewEn: string
-  overviewFr: string
+  overviewEn: string | PortableTextBlock[]
+  overviewFr: string | PortableTextBlock[]
   musicIntroEn: string
   musicIntroFr: string
+  spotifyUrl?: string
+  appleMusicUrl?: string
   diningEn: string
   diningFr: string
-  accommodationIntroEn: string
-  accommodationIntroFr: string
-  locations: Location[]
 }

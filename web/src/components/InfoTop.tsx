@@ -14,14 +14,14 @@ export function InfoTop({ links }: { links: InfoLink[] }) {
           <a
             key={link._id}
             href={link.url}
-            className="text-inherit underline decoration-2 underline-offset-2 transition-colors duration-150 hover:text-[#888]"
+            className="text-inherit underline decoration-2 underline-offset-2 transition-colors duration-150 hover:text-[#2b5aca]"
           >
             {lang === 'fr' ? link.labelFr : link.labelEn}
           </a>
         ))}
         <Link
           href="/info"
-          className="text-inherit underline decoration-2 underline-offset-2 transition-colors duration-150 hover:text-[#888]"
+          className="text-inherit underline decoration-2 underline-offset-2 transition-colors duration-150 hover:text-[#2b5aca]"
         >
           {lang === 'fr' ? 'Informations' : 'Information'}
         </Link>
@@ -29,7 +29,7 @@ export function InfoTop({ links }: { links: InfoLink[] }) {
           <a
             key={link._id}
             href={link.url}
-            className="text-inherit underline decoration-2 underline-offset-2 transition-colors duration-150 hover:text-[#888]"
+            className="text-inherit underline decoration-2 underline-offset-2 transition-colors duration-150 hover:text-[#2b5aca]"
           >
             {lang === 'fr' ? link.labelFr : link.labelEn}
           </a>

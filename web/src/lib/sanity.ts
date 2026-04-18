@@ -64,6 +64,7 @@ type SanityImage = { asset: { _ref: string }; hotspot?: object; crop?: object }
 export const getAllHeroImages = cache(() =>
   sanityFetch<{
     home:          SanityImage | null
+    homeCarousel:  SanityImage[] | null
     info:          SanityImage | null
     accommodation: SanityImage | null
     tickets:       SanityImage | null

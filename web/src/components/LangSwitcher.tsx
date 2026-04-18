@@ -2,7 +2,7 @@
 
 import { useLang } from '@/hooks/useLang'
 
-const optionBase = 'cursor-pointer transition-colors duration-150 hover:text-[#888]'
+const optionBase = 'cursor-pointer transition-colors duration-150 hover:text-[#2b5aca]'
 
 export function LangSwitcher() {
   const { lang, setLang } = useLang()
