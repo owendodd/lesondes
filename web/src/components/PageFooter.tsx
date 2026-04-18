@@ -59,7 +59,7 @@ export function PageFooter({ config }: { config: Pick<SiteConfig, 'contactEmail'
 
   return (
     <footer className={`px-10 max-[740px]:px-4 pt-[56px] max-[740px]:pt-[48px] pb-[40px] ${siteFooterClass} ${siteRoughenClass}`}>
-      <div className="flex flex-wrap gap-x-7 gap-y-3 max-[740px]:flex-col max-[740px]:gap-y-3 items-baseline">
+      <div className="flex flex-wrap gap-x-7 gap-y-5 max-[740px]:flex-col max-[740px]:gap-y-5 items-baseline">
 
         <LangSwitcher />
 

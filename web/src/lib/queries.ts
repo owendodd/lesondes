@@ -42,19 +42,6 @@ export const INFO_PAGE_QUERY = `{
   }
 }`
 
-export const ACCOMMODATION_QUERY = `{
-  "siteConfig": *[_type == "siteConfig"][0]{
-    contactEmail, brevoFormAction
-  },
-  "accommodation": *[_type == "accommodation"][0]{
-    introEn, introFr,
-    locations[] {
-      name,
-      hotels[] { hotelName, url, description, descriptionFr }
-    }
-  }
-}`
-
 /** One round-trip for all page hero images — keyed by page slug */
 export const ALL_HERO_IMAGES_QUERY = `{
   "home":          *[_type == "infoBottom"][0].heroImage,

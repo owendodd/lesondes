@@ -17,12 +17,11 @@ export function HomeCarousel({ images }: { images: SanityImageRef[] }) {
     if (!track || images.length <= 1) return
     const firstSlide = track.children[0] as HTMLElement
     if (!firstSlide) return
-    const slideWidth = firstSlide.offsetWidth
     const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4
     if (atEnd) {
       track.scrollTo({ left: 0, behavior: 'smooth' })
     } else {
-      track.scrollBy({ left: slideWidth + 8, behavior: 'smooth' })
+      track.scrollBy({ left: firstSlide.offsetWidth + 8, behavior: 'smooth' })
     }
   }
 
@@ -32,21 +31,19 @@ export function HomeCarousel({ images }: { images: SanityImageRef[] }) {
     <div
       ref={trackRef}
       onClick={advance}
-      className="flex gap-2 overflow-x-auto snap-x snap-mandatory cursor-pointer select-none [&::-webkit-scrollbar]:hidden"
+      className="flex gap-2 overflow-x-auto snap-x snap-mandatory cursor-pointer select-none w-full pl-10 pr-10 max-[740px]:pl-4 max-[740px]:pr-4 scroll-pl-10 max-[740px]:scroll-pl-4 [&::-webkit-scrollbar]:hidden"
       style={{ scrollbarWidth: 'none' }}
     >
       {images.map((image, i) => {
         const url = builder.image(image).auto('format').width(1920).url()
         return (
-          <div
-            key={i}
-            className="flex-shrink-0 snap-start relative aspect-[3/2] w-[100vw] max-w-[1000px] max-[740px]:w-[calc(100vw-48px)]"
-          >
+          <div key={i} className="flex-shrink-0 snap-start h-[640px] max-[740px]:h-[260px]">
             <Image
               src={url}
               alt=""
-              fill
-              className="object-cover select-none pointer-events-none"
+              width={1920}
+              height={1280}
+              className="h-full w-auto max-w-none select-none pointer-events-none"
               priority={i === 0}
               draggable={false}
             />

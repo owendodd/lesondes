@@ -17,5 +17,5 @@
 }
 
 /* Link hover — unlayered so it beats Tailwind utility layers */
-a:hover { color: #888; }
+a:hover { color: #3f6dd9; }
 .no-hover:hover { color: inherit; }

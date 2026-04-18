@@ -4,8 +4,8 @@ export const siteNavClass = 'text-[24px] max-[740px]:text-[20px] leading-[1.2] t
 /** Header title: fluid 48→80px, scaling from ~885px */
 export const siteTitleClass = 'text-[clamp(48px,calc(-2.3px+5.71vw),80px)] leading-none tracking-[-0.02em]'
 
-/** Artists + food/wine: 38px desktop / 28px mobile */
-export const siteArtistClass = 'text-[38px] max-[740px]:text-[28px] leading-none tracking-[-0.02em]'
+/** Artists + food/wine: 34px desktop / 28px mobile */
+export const siteArtistClass = 'text-[34px] max-[740px]:text-[28px] leading-none tracking-[-0.02em]'
 
 /** Footer: matches body size */
 export const siteFooterClass = 'text-[24px] max-[740px]:text-[20px] leading-none tracking-[0.04em]'

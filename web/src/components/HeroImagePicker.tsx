@@ -30,12 +30,12 @@ export function HeroImagePicker({ images }: { images: HeroImages | null }) {
     const carouselImages = images?.homeCarousel
     if (carouselImages?.length) return <HomeCarousel images={carouselImages} />
     const single = images?.home
-    if (single) return <div className="px-10 max-[740px]:px-0"><HeroImage image={single} /></div>
+    if (single) return <div className="px-10 max-[740px]:px-4"><HeroImage image={single} /></div>
     return null
   }
 
   const key = pathnameToKey[pathname]
   const image = key ? (images?.[key] ?? null) : null
   if (!image || Array.isArray(image)) return null
-  return <div className="px-10 max-[740px]:px-0"><HeroImage image={image} /></div>
+  return <div className="px-10 max-[740px]:px-4"><HeroImage image={image} /></div>
 }
