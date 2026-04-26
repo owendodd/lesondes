@@ -11,6 +11,7 @@ import { Announce2, Announce2Props, ANNOUNCE2_SLIDES } from "./Announce2";
 import { Announce2b, Announce2bProps } from "./Announce2b";
 import { Announce3, Announce3Props, ANNOUNCE3_SLIDES } from "./Announce3";
 import { AnnounceBg, AnnounceBgProps } from "./AnnounceBg";
+import { IgDj1, IgDj1Props, igDj1FramesPerRotation } from "./IgDj1";
 import { computeTotalMs } from "./timeline";
 
 const FPS = 25;
@@ -144,6 +145,18 @@ export function Root() {
           durationInFrames: (props.durationSec ?? 10) * FPS,
           props,
         })}
+      />
+      <Composition
+        id="Ig-Dj1"
+        component={IgDj1}
+        fps={FPS}
+        width={2160}
+        height={2700}
+        defaultProps={{ loops: 1 } satisfies IgDj1Props}
+        calculateMetadata={({ props }) => {
+          const loops = Number(props.loops ?? 1);
+          return { durationInFrames: loops * igDj1FramesPerRotation(FPS), props };
+        }}
       />
       <Composition
         id="Announce-3"
