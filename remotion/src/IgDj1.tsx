@@ -7,7 +7,6 @@ import {
   continueRender,
 } from "remotion";
 
-// One full rotation at 8.25rpm (quarter of 33rpm) in frames
 export const igDj1FramesPerRotation = (fps: number) =>
   Math.ceil((60 / 8.25) * fps);
 
@@ -33,7 +32,6 @@ export function IgDj1({ loops = 1 }: IgDj1Props) {
   }, [fontHandle]);
 
   const { fps } = useVideoConfig();
-  // 8.25rpm linear rotation
   const degreesPerFrame = (360 * 8.25) / 60 / fps;
   const rotation = frame * degreesPerFrame;
 
@@ -50,7 +48,7 @@ export function IgDj1({ loops = 1 }: IgDj1Props) {
       {/* Roughen filter */}
       <svg style={{ display: "none" }} aria-hidden="true">
         <defs>
-          <filter id="roughen-igdj1" x="-5%" y="-5%" width="110%" height="110%">
+          <filter id="roughen-igdj1" x="-10%" y="-10%" width="120%" height="120%">
             <feTurbulence type="fractalNoise" baseFrequency="0.4" numOctaves={4} seed={20} result="noise" />
             <feDisplacementMap in="SourceGraphic" in2="noise" scale={6} xChannelSelector="R" yChannelSelector="G" />
           </filter>
@@ -71,34 +69,32 @@ export function IgDj1({ loops = 1 }: IgDj1Props) {
         }}
       />
 
-      {/* "Apéro" — top center */}
-      <p
-        style={{
-          ...text,
-          position: "absolute",
-          top: 96,
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        Apéro
-      </p>
-
-      {/* Fixed dot at canvas center, between the two rotating lines */}
+      {/* Top-left info block */}
       <div
         style={{
           position: "absolute",
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 48,
-          height: 48,
-          borderRadius: "50%",
-          backgroundColor: "#000",
+          left: 96,
+          top: 96,
+          display: "flex",
+          flexDirection: "column",
+          gap: 32,
+          width: 606,
         }}
-      />
+      >
+        <p style={smallText}>LES ONDES{"    "}Cerbère</p>
+        <p style={smallText}>
+          Hôtel le Belvédère{" "}
+          <br />
+          du Rayon Vert
+        </p>
+        <p style={smallText}>
+          Apéro vinyl set
+          <br />
+          May 29, 16h–18h
+        </p>
+      </div>
 
-      {/* "Horasse / (La Becque)" — centered, rotating at 33rpm */}
+      {/* Rotating center: Horasse · (La Becque) */}
       <div
         style={{
           position: "absolute",
@@ -108,44 +104,55 @@ export function IgDj1({ loops = 1 }: IgDj1Props) {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          textAlign: "center",
+          overflow: "visible",
         }}
       >
-        <p style={{ ...text, paddingTop: 40, paddingBottom: 70 }}>Horasse</p>
-        <p style={{ ...text, fontStyle: "italic", paddingTop: 40, paddingBottom: 70 }}>(La Becque)</p>
+        <p style={{ ...largeText, paddingTop: 40, paddingBottom: 80 }}>Horasse</p>
+        <div style={{ width: 64, height: 64, flexShrink: 0 }} />
+        <p style={{ ...largeText, fontStyle: "italic", paddingTop: 40, paddingBottom: 70, paddingRight: 40 }}>(La Becque)</p>
       </div>
 
-      {/* "LES ONDES   Cerbère" — near bottom */}
+      {/* Static center dot */}
       <div
         style={{
           position: "absolute",
           left: "50%",
-          top: "calc(50% + 1054px)",
-          transform: "translateX(-50%)",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 128,
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 64,
+          height: 64,
+          borderRadius: "50%",
+          backgroundColor: "#000",
+          opacity: 0.95,
+          pointerEvents: "none",
         }}
-      >
-        <p style={{ ...text, whiteSpace: "nowrap" }}>LES ONDES</p>
-        <p style={{ ...text, whiteSpace: "nowrap" }}>Cerbère</p>
-      </div>
+      />
     </div>
   );
 }
 
-const text: React.CSSProperties = {
+const smallText: React.CSSProperties = {
   margin: 0,
   fontFamily: "ABCDiatype, sans-serif",
   fontWeight: 400,
-  fontSize: 200,
+  fontSize: 56,
+  lineHeight: 1.1,
+  letterSpacing: "1.04px",
+  color: "#000",
+  opacity: 0.95,
+  filter: "url(#roughen-igdj1)",
+};
+
+const largeText: React.CSSProperties = {
+  margin: 0,
+  fontFamily: "ABCDiatype, sans-serif",
+  fontWeight: 400,
+  fontSize: 220,
   lineHeight: 1,
-  letterSpacing: "-0.02em",
+  letterSpacing: "-4px",
   color: "#000",
   textAlign: "center",
   whiteSpace: "nowrap",
-  opacity: 0.9,
+  opacity: 0.95,
   filter: "url(#roughen-igdj1)",
 };
