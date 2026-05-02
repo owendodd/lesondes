@@ -12,8 +12,14 @@ import { Announce2b, Announce2bProps } from "./Announce2b";
 import { Announce3, Announce3Props, ANNOUNCE3_SLIDES } from "./Announce3";
 import { AnnounceBg, AnnounceBgProps } from "./AnnounceBg";
 import { IgDj1, IgDj1Props, igDj1FramesPerRotation } from "./IgDj1";
+import { IgReel1, IgReel1Props, igReel1FramesPerLoop } from "./IgReel1";
+import { IgReel2, IgReel2Props, igReel2FramesPerLoop } from "./IgReel2";
+import { IgReel3, IgReel3Props, igReel3FramesPerLoop } from "./IgReel3";
+import { IgReel4, IgReel4Props, igReel4FramesPerLoop } from "./IgReel4";
+import { IgReel5, IgReel5Props, igReel5FramesPerLoop } from "./IgReel5";
 import { IgDj2, IgDj2Props, igDj2FramesPerRotation } from "./IgDj2";
 import { IgDj3, IgDj3Props, igDj3FramesPerRotation } from "./IgDj3";
+import { IgReel6, IgReel6Props } from "./IgReel6";
 import { computeTotalMs } from "./timeline";
 
 const FPS = 25;
@@ -183,6 +189,78 @@ export function Root() {
           const loops = Number(props.loops ?? 1);
           return { durationInFrames: loops * igDj3FramesPerRotation(FPS), props };
         }}
+      />
+      <Composition
+        id="Ig-Reel-2"
+        component={IgReel2}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ loops: 1 } satisfies IgReel2Props}
+        calculateMetadata={({ props }) => {
+          const loops = Number(props.loops ?? 1);
+          return { durationInFrames: loops * igReel2FramesPerLoop(FPS), props };
+        }}
+      />
+      <Composition
+        id="Ig-Reel-3"
+        component={IgReel3}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ loops: 1 } satisfies IgReel3Props}
+        calculateMetadata={({ props }) => {
+          const loops = Number(props.loops ?? 1);
+          return { durationInFrames: loops * igReel3FramesPerLoop(FPS), props };
+        }}
+      />
+      <Composition
+        id="Ig-Reel-1"
+        component={IgReel1}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ loops: 1 } satisfies IgReel1Props}
+        calculateMetadata={({ props }) => {
+          const loops = Number(props.loops ?? 1);
+          return { durationInFrames: loops * igReel1FramesPerLoop(FPS), props };
+        }}
+      />
+      <Composition
+        id="Ig-Reel-5"
+        component={IgReel5}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ loops: 1 } satisfies IgReel5Props}
+        calculateMetadata={({ props }) => {
+          const loops = Number(props.loops ?? 1);
+          return { durationInFrames: loops * igReel5FramesPerLoop(FPS), props };
+        }}
+      />
+      <Composition
+        id="Ig-Reel-4"
+        component={IgReel4}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ loops: 1 } satisfies IgReel4Props}
+        calculateMetadata={({ props }) => {
+          const loops = Number(props.loops ?? 1);
+          return { durationInFrames: loops * igReel4FramesPerLoop(FPS), props };
+        }}
+      />
+      <Composition
+        id="Ig-Reel-6"
+        component={IgReel6}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ durationSec: 340 / 30 } satisfies IgReel6Props}
+        calculateMetadata={({ props }) => ({
+          durationInFrames: Math.ceil((props.durationSec ?? 340 / 30) * FPS),
+          props,
+        })}
       />
       <Composition
         id="Announce-3"

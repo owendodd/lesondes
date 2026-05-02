@@ -17,6 +17,7 @@ export interface IgDj3Props {
 export function IgDj3({ loops = 1 }: IgDj3Props) {
   const frame = useCurrentFrame();
   const [fontHandle] = useState(() => delayRender("Loading ABCDiatype fonts"));
+  const [imgHandle] = useState(() => delayRender("img:IgDj3.jpg"));
   useEffect(() => {
     new FontFace(
       "ABCDiatype",
@@ -30,6 +31,12 @@ export function IgDj3({ loops = 1 }: IgDj3Props) {
       })
       .catch(() => continueRender(fontHandle));
   }, [fontHandle]);
+  useEffect(() => {
+    const img = new Image();
+    img.src = staticFile("images/IgDj3.jpg");
+    img.onload = () => continueRender(imgHandle);
+    img.onerror = () => continueRender(imgHandle);
+  }, []);
 
   const { fps } = useVideoConfig();
   const degreesPerFrame = (360 * 8.25) / 60 / fps;
