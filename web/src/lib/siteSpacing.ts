@@ -1,5 +1,5 @@
 /** Nav links: matches body size and letter spacing */
-export const siteNavClass = 'text-[24px] max-[740px]:text-[20px] leading-[1.2] tracking-[0.04em]'
+export const siteNavClass = 'text-[22px] max-[740px]:text-[18px] leading-[1.2] tracking-[0.04em]'
 
 /** Header title: fluid 48→80px, scaling from ~885px */
 export const siteTitleClass = 'text-[clamp(48px,calc(-2.3px+5.71vw),80px)] leading-none tracking-[-0.02em]'
@@ -8,7 +8,7 @@ export const siteTitleClass = 'text-[clamp(48px,calc(-2.3px+5.71vw),80px)] leadi
 export const siteArtistClass = 'text-[34px] max-[740px]:text-[28px] leading-none tracking-[-0.02em]'
 
 /** Footer: matches body size */
-export const siteFooterClass = 'text-[24px] max-[740px]:text-[20px] leading-none tracking-[0.04em]'
+export const siteFooterClass = 'text-[22px] max-[740px]:text-[18px] leading-none tracking-[0.04em]'
 
 /** Body text: info/accommodation/access paragraphs */
 export const siteBodyClass = 'text-[24px] leading-[1.2] tracking-[0.04em] max-w-[32em] max-[740px]:text-[20px]'
