@@ -49,7 +49,8 @@ export const ALL_HERO_IMAGES_QUERY = `{
   "info":          *[_id   == "b0e897fb-a27d-4a0d-ba12-5d3f9876026c"][0].heroImage,
   "accommodation": *[_type == "accommodationPage"][0].heroImage,
   "tickets":       *[_type == "ticketsPage"][0].heroImage,
-  "access":        *[_type == "accessPage"][0].heroImage
+  "access":        *[_type == "accessPage"][0].heroImage,
+  "schedule":      *[_type == "schedulePage"][0].heroImage
 }`
 
 export const ACCESS_PAGE_QUERY = `*[_type == "accessPage"][0]{

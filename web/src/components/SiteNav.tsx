@@ -7,6 +7,7 @@ import { siteNavClass, siteRoughenClass } from '@/lib/siteSpacing'
 const TICKETS_URL = 'https://www.helloasso.com/associations/les-ondes/evenements/les-ondes-cerbere-2026'
 
 const links = [
+  { href: '/schedule', en: 'Schedule', fr: 'Programme' },
   { href: '/info', en: 'About', fr: 'À propos' },
   { href: '/accommodation', en: 'Staying', fr: 'Se loger' },
   { href: '/access', en: 'Access', fr: 'Accès' },

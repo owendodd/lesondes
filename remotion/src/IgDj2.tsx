@@ -95,7 +95,7 @@ export function IgDj2({ loops = 1 }: IgDj2Props) {
           du Rayon Vert
         </p>
         <p style={smallText}>
-          Afters vinyl set
+          Afters set
           <br />
           May 29, 23h–late
         </p>
@@ -114,7 +114,7 @@ export function IgDj2({ loops = 1 }: IgDj2Props) {
           overflow: "visible",
         }}
       >
-        <p style={{ ...largeText, paddingTop: 40, paddingBottom: 80 }}>Souleymane Said</p>
+        <p style={{ ...largeText, paddingTop: 40, paddingBottom: 80 }}>Souleymane</p>
         <div style={{ width: 64, height: 64, flexShrink: 0 }} />
         <p style={{ ...largeText, fontStyle: "italic", paddingTop: 40, paddingBottom: 70, paddingRight: 40 }}>(Latency)</p>
       </div>

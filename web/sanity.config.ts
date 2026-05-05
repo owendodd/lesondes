@@ -10,6 +10,7 @@ import { infoPage }         from './src/sanity/schemaTypes/infoPage'
 import { accommodationPage } from './src/sanity/schemaTypes/accommodationPage'
 import { ticketsPage }      from './src/sanity/schemaTypes/ticketsPage'
 import { accessPage }       from './src/sanity/schemaTypes/accessPage'
+import { schedulePage }     from './src/sanity/schemaTypes/schedulePage'
 
 export default defineConfig({
   name: 'default',
@@ -86,6 +87,16 @@ export default defineConfig({
                   .documentId('accessPage')
               ),
 
+            // ── SCHEDULE ──────────────────────────────────────────
+            S.listItem()
+              .title('Schedule')
+              .id('schedule-group')
+              .child(
+                S.document()
+                  .schemaType('schedulePage')
+                  .documentId('schedulePage')
+              ),
+
             S.divider(),
 
             // ── SETTINGS ──────────────────────────────────────────
@@ -113,6 +124,7 @@ export default defineConfig({
       accommodationPage,
       ticketsPage,
       accessPage,
+      schedulePage,
     ],
   },
 })

@@ -13,6 +13,7 @@ interface HeroImages {
   accommodation: SanityImageRef | null
   tickets:       SanityImageRef | null
   access:        SanityImageRef | null
+  schedule:      SanityImageRef | null
 }
 
 const pathnameToKey: Record<string, keyof HeroImages> = {
@@ -21,6 +22,7 @@ const pathnameToKey: Record<string, keyof HeroImages> = {
   '/accommodation': 'accommodation',
   '/tickets':       'tickets',
   '/access':        'access',
+  '/schedule':      'schedule',
 }
 
 export function HeroImagePicker({ images }: { images: HeroImages | null }) {
