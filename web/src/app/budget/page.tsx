@@ -25,25 +25,25 @@ function allValue(cats: Category[], ti = 0) { return cats.reduce((s, c) => s + c
 
 const INIT_INCOME: Category[] = [
   { id: 'tickets', label: 'Tickets', rows: [
-    { id: 'ti1', label: 'Friday',   qty:  50, price: 160 },
-    { id: 'ti2', label: 'Saturday', qty: 100, price: 160 },
-    { id: 'ti3', label: 'Sunday',   qty:  50, price: 160 },
+    { id: 'ti1', label: 'Friday',   qty:  38, price: 160 },
+    { id: 'ti2', label: 'Saturday', qty:  44, price: 160 },
+    { id: 'ti3', label: 'Sunday',   qty:  37, price: 160 },
   ]},
   { id: 'friday', label: 'Friday', rows: [
-    { id: 'fi1', label: 'Dinner',        qty: 80, price: 60 },
-    { id: 'fi2', label: 'Dinner drinks', qty: 80, price: 20 },
-    { id: 'fi3', label: 'Afters drinks', qty: 80, price: 30 },
+    { id: 'fi1', label: 'Dinner',        qty: 33, price: 60 },
+    { id: 'fi2', label: 'Dinner drinks', qty: 33, price: 20 },
+    { id: 'fi3', label: 'Afters drinks', qty: 33, price: 30 },
   ]},
   { id: 'saturday', label: 'Saturday', rows: [
-    { id: 'si1', label: 'Lunch',         qty: 80, price: 45 },
-    { id: 'si2', label: 'Lunch drinks',  qty: 80, price: 10 },
-    { id: 'si3', label: 'Dinner',        qty: 80, price: 60 },
-    { id: 'si4', label: 'Dinner drinks', qty: 80, price: 20 },
-    { id: 'si5', label: 'Afters drinks', qty: 80, price: 30 },
+    { id: 'si1', label: 'Lunch',         qty: 38, price: 45 },
+    { id: 'si2', label: 'Lunch drinks',  qty: 38, price: 10 },
+    { id: 'si3', label: 'Dinner',        qty: 38, price: 60 },
+    { id: 'si4', label: 'Dinner drinks', qty: 38, price: 20 },
+    { id: 'si5', label: 'Afters drinks', qty: 38, price: 30 },
   ]},
   { id: 'sunday', label: 'Sunday', rows: [
-    { id: 'su1', label: 'Lunch',        qty: 80, price: 45 },
-    { id: 'su2', label: 'Lunch drinks', qty: 80, price: 10 },
+    { id: 'su1', label: 'Lunch',        qty: 32, price: 45 },
+    { id: 'su2', label: 'Lunch drinks', qty: 32, price: 10 },
   ]},
   { id: 'merch', label: 'Merchandise', rows: [
     { id: 'me1', label: 'Merch sales', qty: 40, price: 40 },
