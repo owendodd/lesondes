@@ -69,6 +69,5 @@ export const getAllHeroImages = cache(() =>
     accommodation: SanityImage | null
     tickets:       SanityImage | null
     access:        SanityImage | null
-    schedule:      SanityImage | null
   } | null>(ALL_HERO_IMAGES_QUERY, {}, { next: { revalidate: 60 } }),
 )
