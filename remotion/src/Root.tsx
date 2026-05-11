@@ -1,5 +1,15 @@
 import React from "react";
 import { Composition } from "remotion";
+import { IgStory110, IgStory110Props } from "./IgStory110";
+import { IgStory111, IgStory111Props } from "./IgStory111";
+import { IgStory112, IgStory112Props } from "./IgStory112";
+import { IgStory113, IgStory113Props } from "./IgStory113";
+import { IgStory114, IgStory114Props } from "./IgStory114";
+import { IgStory115, IgStory115Props } from "./IgStory115";
+import { IgStory116, IgStory116Props } from "./IgStory116";
+import { IgStory117, IgStory117Props } from "./IgStory117";
+import { IgStory118, IgStory118Props } from "./IgStory118";
+import { IgStoryHotel, IgStoryHotelProps } from "./IgStoryHotel";
 import { Ig1a, Ig1aProps, IG1A_SLIDES } from "./Ig1a";
 import { Ig1b, Ig1bProps, IG1B_SLIDES } from "./Ig1b";
 import { Ig2a, Ig2aProps } from "./Ig2a";
@@ -274,6 +284,134 @@ export function Root() {
           const durationInFrames = Math.ceil(computeTotalMs(loops, ANNOUNCE3_SLIDES) / (1000 / FPS));
           return { durationInFrames, props };
         }}
+      />
+
+      {/* ── Info stories ── */}
+      <Composition
+        id="Ig-Story-110"
+        component={IgStory110}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ durationSec: 5 } satisfies IgStory110Props}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 5) * FPS, props })}
+      />
+      <Composition
+        id="Ig-Story-111"
+        component={IgStory111}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ durationSec: 5 } satisfies IgStory111Props}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 5) * FPS, props })}
+      />
+      <Composition
+        id="Ig-Story-112"
+        component={IgStory112}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ durationSec: 5 } satisfies IgStory112Props}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 5) * FPS, props })}
+      />
+      <Composition
+        id="Ig-Story-113"
+        component={IgStory113}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ durationSec: 5 } satisfies IgStory113Props}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 5) * FPS, props })}
+      />
+      <Composition
+        id="Ig-Story-114"
+        component={IgStory114}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ durationSec: 10 } satisfies IgStory114Props}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 10) * FPS, props })}
+      />
+      <Composition
+        id="Ig-Story-115"
+        component={IgStory115}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ durationSec: 10 } satisfies IgStory115Props}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 10) * FPS, props })}
+      />
+      <Composition
+        id="Ig-Story-116"
+        component={IgStory116}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ durationSec: 10 } satisfies IgStory116Props}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 10) * FPS, props })}
+      />
+      <Composition
+        id="Ig-Story-117"
+        component={IgStory117}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ durationSec: 10 } satisfies IgStory117Props}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 10) * FPS, props })}
+      />
+      <Composition
+        id="Ig-Story-118"
+        component={IgStory118}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ durationSec: 5 } satisfies IgStory118Props}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 5) * FPS, props })}
+      />
+      <Composition
+        id="Ig-Story-119"
+        component={IgStoryHotel}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ name: "Les Elmes", location: "Banyuls-sur-Mer", imagePath: "images/IgStory119.jpg", durationSec: 5 } satisfies IgStoryHotelProps}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 5) * FPS, props })}
+      />
+      <Composition
+        id="Ig-Story-120"
+        component={IgStoryHotel}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ name: "Villa Camille", location: "Banyuls-sur-Mer", imagePath: "images/IgStory120.jpg", durationSec: 5 } satisfies IgStoryHotelProps}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 5) * FPS, props })}
+      />
+      <Composition
+        id="Ig-Story-121"
+        component={IgStoryHotel}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ name: "Le Ribéral", location: "Cerbère", imagePath: "images/IgStory121.jpg", durationSec: 5 } satisfies IgStoryHotelProps}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 5) * FPS, props })}
+      />
+      <Composition
+        id="Ig-Story-122"
+        component={IgStoryHotel}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ name: "Le Manoir", location: "Banyuls-sur-Mer", imagePath: "images/IgStory122.jpg", durationSec: 5 } satisfies IgStoryHotelProps}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 5) * FPS, props })}
+      />
+      <Composition
+        id="Ig-Story-123"
+        component={IgStoryHotel}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        defaultProps={{ name: "La Marinette", location: "Collioure", imagePath: "images/IgStory123.jpg", durationSec: 5 } satisfies IgStoryHotelProps}
+        calculateMetadata={({ props }) => ({ durationInFrames: (props.durationSec ?? 5) * FPS, props })}
       />
     </>
   );
