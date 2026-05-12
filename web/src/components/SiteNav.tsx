@@ -20,14 +20,6 @@ export function SiteNav() {
 
   return (
     <nav className={`flex flex-wrap gap-x-8 max-[740px]:gap-x-4 gap-y-2 ${siteNavClass} ${siteRoughenClass}`}>
-      <a
-        href={TICKETS_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={linkClass}
-      >
-        {lang === 'fr' ? 'Billets' : 'Tickets'}
-      </a>
       {links.map(link => (
         <Link
           key={link.href}
