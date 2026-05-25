@@ -12,6 +12,7 @@ import { ticketsPage }      from './src/sanity/schemaTypes/ticketsPage'
 import { accessPage }       from './src/sanity/schemaTypes/accessPage'
 import { schedulePage }     from './src/sanity/schemaTypes/schedulePage'
 import { budgetState }     from './src/sanity/schemaTypes/budgetState'
+import { runsheetState }  from './src/sanity/schemaTypes/runsheetState'
 
 export default defineConfig({
   name: 'default',
@@ -127,6 +128,7 @@ export default defineConfig({
       accessPage,
       schedulePage,
       budgetState,
+      runsheetState,
     ],
   },
 })
