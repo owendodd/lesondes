@@ -473,6 +473,7 @@ export function RunSheet() {
   const [openMenu, setOpenMenu]       = useState<string | null>(null)
   const [confirmId, setConfirmId]     = useState<string | null>(null)
   const [editingId, setEditingId]     = useState<string | null>(null)
+  const [saveStatus, setSaveStatus]   = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
 
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -496,21 +497,33 @@ export function RunSheet() {
 
   function scheduleSync(state: PersistedState) {
     if (saveTimer.current) clearTimeout(saveTimer.current)
+    setSaveStatus('saving')
     saveTimer.current = setTimeout(() => {
       fetch('/api/runsheet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(state),
-      }).catch(() => {})
+      })
+        .then(r => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`)
+          setSaveStatus('saved')
+        })
+        .catch(err => {
+          console.error('[runsheet] save failed:', err)
+          setSaveStatus('error')
+        })
     }, 600)
   }
 
   // ── Load on mount ──
   useEffect(() => {
     fetch('/api/runsheet')
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.json()
+      })
       .then(data => { if (data) applyServerState(data) })
-      .catch(() => {})
+      .catch(err => console.error('[runsheet] load failed:', err))
       .finally(() => setLoaded(true))
   }, [])
 
@@ -612,10 +625,23 @@ export function RunSheet() {
       <div style={{ maxWidth: 820, margin: '0 auto', padding: '40px 24px 80px' }}>
 
         {/* Header */}
-        <div style={{ marginBottom: 32 }}>
+        <div style={{ marginBottom: 32, display: 'flex', alignItems: 'baseline', gap: 14 }}>
           <h1 style={{ fontSize: 30, lineHeight: 1, letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
             Les Ondes run sheet
           </h1>
+          <span className="no-print" style={{
+            fontSize: 10,
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            opacity: saveStatus === 'error' ? 1 : 0.35,
+            color: saveStatus === 'error' ? '#dc2626' : 'inherit',
+            transition: 'opacity 0.2s',
+          }}>
+            {saveStatus === 'saving' && 'Saving…'}
+            {saveStatus === 'saved'  && 'Saved'}
+            {saveStatus === 'error'  && 'Save failed — check console'}
+            {saveStatus === 'idle'   && (loaded ? 'Synced' : '')}
+          </span>
         </div>
 
         {/* Person filter */}
