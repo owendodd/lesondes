@@ -613,22 +613,9 @@ export function RunSheet() {
 
         {/* Header */}
         <div style={{ marginBottom: 32 }}>
-          <p style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.35, marginBottom: 8 }}>
-            Les Ondes · Cerbère · 25–31 mai 2026 · Document interne
-          </p>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 8 }}>
-            <h1 style={{ fontSize: 30, lineHeight: 1, letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
-              Run Sheet
-            </h1>
-            {loaded && (
-              <span style={{ fontSize: 10, opacity: 0.3, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                auto-synced
-              </span>
-            )}
-          </div>
-          <p style={{ fontSize: 12, opacity: 0.45, lineHeight: 1.5 }}>
-            Hôtel Belvédère du Rayon Vert&ensp;·&ensp;Questions → Owen, Ashley ou Maïlys
-          </p>
+          <h1 style={{ fontSize: 30, lineHeight: 1, letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
+            Les Ondes run sheet
+          </h1>
         </div>
 
         {/* Person filter */}
