@@ -16,12 +16,16 @@
   }
 }
 
-/* Link hover — 2px stroke outside the letterforms in the WebGL ink blue:
-   a 4px centered stroke painted under the fill leaves only its outer half
-   visible. Unlayered so it beats Tailwind utility layers. .link-box opts
-   buttons styled as links into the same effect */
+/* Link hover — 2px stroke outside the letterforms in the WebGL ink blue,
+   softened with a 2px blur. Built from stacked text-shadows: they render
+   behind the glyphs, so the blur never touches the text itself. Unlayered so
+   it beats Tailwind utility layers. .link-box opts buttons styled as links
+   into the same effect */
+a, .link-box { transition: text-shadow 150ms ease; }
 a:hover, .link-box:hover {
-  -webkit-text-stroke: 4px #a7c9f2;
-  paint-order: stroke fill;
+  text-shadow:
+    -2px -2px 2px #a7c9f2,  0 -2px 2px #a7c9f2,  2px -2px 2px #a7c9f2,
+    -2px  0   2px #a7c9f2,                       2px  0   2px #a7c9f2,
+    -2px  2px 2px #a7c9f2,  0  2px 2px #a7c9f2,  2px  2px 2px #a7c9f2;
 }
-.no-hover:hover { color: inherit; -webkit-text-stroke: 0; }
+.no-hover:hover { color: inherit; text-shadow: none; }
