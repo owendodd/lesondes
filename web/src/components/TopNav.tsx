@@ -7,18 +7,16 @@ import { siteMinimalNavClass } from '@/lib/siteSpacing'
 
 const links = [
   { href: '/', en: 'Home', fr: 'Accueil' },
-  { href: '/archive', en: 'Archive', fr: 'Archive' },
-  { href: '/newsletter', en: 'Newsletter', fr: 'Newsletter' },
+  { href: '/archive', en: 'Archive', fr: 'Archives' },
+  { href: '/newsletter', en: 'Newsletter', fr: 'Infolettre' },
 ]
-
-const hoverClass = 'hover:text-[#2b5aca] transition-colors duration-150'
 
 export function TopNav() {
   const pathname = usePathname()
   const { lang, setLang } = useLang()
 
   const langClass = (active: boolean) =>
-    `cursor-pointer bg-transparent p-0 font-sans text-[inherit] leading-none tracking-[inherit] text-black ${active ? '' : `opacity-30 ${hoverClass}`}`
+    `cursor-pointer bg-transparent p-0 font-sans text-[inherit] leading-none tracking-[inherit] text-black ${active ? '' : 'opacity-30 link-box'}`
 
   return (
     <header className={`relative z-10 flex justify-between items-center px-8 max-[740px]:px-4 py-4 ${siteMinimalNavClass}`}>
@@ -28,7 +26,7 @@ export function TopNav() {
             key={link.href}
             href={link.href}
             scroll={false}
-            className={`text-inherit no-underline ${pathname === link.href ? 'opacity-30 no-hover' : hoverClass}`}
+            className={`text-inherit no-underline ${pathname === link.href ? 'opacity-30 no-hover' : ''}`}
           >
             {lang === 'fr' ? link.fr : link.en}
           </Link>

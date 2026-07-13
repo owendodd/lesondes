@@ -1,4 +1,5 @@
 import { getSiteConfig } from '@/lib/sanity'
+import { ComingSoon } from '@/components/ComingSoon'
 import { siteDisplayClass } from '@/lib/siteSpacing'
 
 export default async function Home() {
@@ -10,7 +11,7 @@ export default async function Home() {
         <span className="whitespace-nowrap">{config?.title ?? 'LES ONDES'}</span>
         <span className="whitespace-nowrap">2027</span>
       </h1>
-      <p className={`text-center ${siteDisplayClass}`}>Coming Soon</p>
+      <ComingSoon />
     </div>
   )
 }

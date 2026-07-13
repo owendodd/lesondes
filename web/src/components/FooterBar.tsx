@@ -1,6 +1,6 @@
 import { siteMinimalNavClass } from '@/lib/siteSpacing'
 
-const linkClass = 'text-inherit no-underline hover:text-[#2b5aca] transition-colors duration-150'
+const linkClass = 'text-inherit no-underline'
 
 export function FooterBar({ contactEmail }: { contactEmail: string }) {
   return (

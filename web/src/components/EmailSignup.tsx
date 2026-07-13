@@ -5,10 +5,10 @@ import { useLang } from '@/hooks/useLang'
 import { siteDisplayClass } from '@/lib/siteSpacing'
 
 const messages = {
-  placeholder: { en: 'Sign up for updates', fr: 'Inscrivez-vous aux nouvelles' },
+  placeholder: { en: 'Sign up for updates', fr: 'Restez informés' },
   subscribe:   { en: 'Subscribe',           fr: "S'inscrire" },
   invalid:     { en: 'Invalid email',       fr: 'Email invalide' },
-  success:     { en: 'Thank you!',          fr: 'Merci !' },
+  success:     { en: 'Thank you!',          fr: 'Merci !' },
 }
 
 function isValidEmail(email: string) {
@@ -70,7 +70,7 @@ export function EmailSignup({ brevoFormAction }: { brevoFormAction: string }) {
           <button
             type="button"
             onClick={handleSubmit}
-            className="cursor-pointer border-0 bg-transparent p-0 font-sans text-[inherit] leading-none tracking-[inherit] text-black whitespace-nowrap hover:text-[#2b5aca] transition-colors duration-150"
+            className="link-box cursor-pointer border-0 bg-transparent p-0 font-sans text-[inherit] leading-none tracking-[inherit] text-black whitespace-nowrap"
           >
             {error ? messages.invalid[lk] : messages.subscribe[lk]}
           </button>
