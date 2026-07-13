@@ -1,32 +1,16 @@
-import { sanityFetch } from '@/lib/sanity'
-import { HOME_CONTENT_QUERY } from '@/lib/queries'
-import { ArtistList } from '@/components/ArtistList'
-import { InfoBottom } from '@/components/InfoBottom'
-import type { Artist, InfoBottom as InfoBottomType } from '@/lib/types'
-
-interface HomeContent {
-  artists: Artist[]
-  infoBottom: InfoBottomType
-}
+import { getSiteConfig } from '@/lib/sanity'
+import { siteDisplayClass } from '@/lib/siteSpacing'
 
 export default async function Home() {
-  const raw = await sanityFetch<HomeContent>(HOME_CONTENT_QUERY, {}, { next: { revalidate: 60 } })
-
-  const artists = raw?.artists ?? []
-  const infoBottom = raw?.infoBottom ?? {
-    hotelName: '',
-    foodCreditPrefixEn: '',
-    foodCreditPrefixFr: '',
-    foodPerson: '',
-    wineCreditPrefixEn: '',
-    wineCreditPrefixFr: '',
-    winePerson: '',
-  }
+  const config = await getSiteConfig()
 
   return (
-    <div className="px-10 max-[740px]:px-4 flex flex-col gap-[56px] max-[740px]:gap-[48px]">
-      <ArtistList artists={artists} />
-      <InfoBottom data={infoBottom} />
+    <div className="flex-1 flex flex-col items-center justify-center gap-3 px-8 max-[740px]:px-4">
+      <h1 className={`flex flex-wrap justify-center gap-x-[0.55em] gap-y-2 text-center ${siteDisplayClass}`}>
+        <span className="whitespace-nowrap">{config?.title ?? 'LES ONDES'}</span>
+        <span className="whitespace-nowrap">2027</span>
+      </h1>
+      <p className={`text-center ${siteDisplayClass}`}>Coming Soon</p>
     </div>
   )
 }

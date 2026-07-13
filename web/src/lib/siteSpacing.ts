@@ -13,8 +13,11 @@ export const siteFooterClass = 'text-[22px] max-[740px]:text-[18px] leading-none
 /** Body text: info/accommodation/access paragraphs */
 export const siteBodyClass = 'text-[24px] leading-[1.2] tracking-[0.04em] max-w-[32em] max-[740px]:text-[20px]'
 
-/** Roughen SVG filter */
-export const siteRoughenClass = 'filter-[url(#roughen)]'
+/** Minimal site (2027): nav + footer text — 32px at 1440w, scaling down fluidly */
+export const siteMinimalNavClass = 'text-[clamp(17px,2.22vw,32px)] leading-none tracking-[-0.03em]'
+
+/** Minimal site (2027): display text — ~118px at 1440w, scaling down fluidly. Regular weight; everything else is Medium */
+export const siteDisplayClass = 'font-normal text-[clamp(44px,8.19vw,118px)] leading-none tracking-[-0.07em]'
 
 /** Underlined link (standalone) */
 export const siteLinkClass = 'border-b-2 border-current leading-none text-inherit hover:text-[#2b5aca] transition-colors duration-150'

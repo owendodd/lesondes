@@ -25,6 +25,21 @@ export const HOME_CONTENT_QUERY = `{
   }
 }`
 
+/** Archive page: 2026 lineup + credits + photo strip (carousel images already in Sanity) */
+export const ARCHIVE_CONTENT_QUERY = `{
+  "artists": *[_type == "artist"] | order(lower(lastName) asc) {
+    _id, firstName, lastName
+  },
+  "infoBottom": *[_type == "infoBottom"][0]{
+    hotelName, hotelNameFr, foodCreditPrefixEn, foodCreditPrefixFr, foodPerson, wineCreditPrefixEn, wineCreditPrefixFr, winePerson
+  },
+  "photos": *[_type == "infoBottom"][0].heroImages[]{
+    "url": asset->url,
+    "width": asset->metadata.dimensions.width,
+    "height": asset->metadata.dimensions.height
+  }
+}`
+
 export const INFO_PAGE_QUERY = `{
   "infoPage": *[_id == "b0e897fb-a27d-4a0d-ba12-5d3f9876026c"][0]{
     heroImage,
