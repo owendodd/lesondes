@@ -15,8 +15,9 @@ export function TopNav() {
   const pathname = usePathname()
   const { lang, setLang } = useLang()
 
+  // Selected language is dimmed, matching the nav's current-page treatment
   const langClass = (active: boolean) =>
-    `cursor-pointer bg-transparent p-0 font-sans text-[inherit] leading-none tracking-[inherit] text-black ${active ? '' : 'opacity-30 link-box'}`
+    `cursor-pointer bg-transparent p-0 font-sans text-[inherit] leading-none tracking-[inherit] text-black ${active ? 'opacity-30' : 'link-box'}`
 
   return (
     <header className={`relative z-10 flex justify-between items-center px-8 max-[740px]:px-4 py-4 ${siteMinimalNavClass}`}>

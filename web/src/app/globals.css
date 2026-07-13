@@ -16,8 +16,12 @@
   }
 }
 
-/* Link hover — 2px stroke around the letterforms in the WebGL ink blue.
-   Unlayered so it beats Tailwind utility layers. .link-box opts buttons
-   styled as links into the same effect */
-a:hover, .link-box:hover { -webkit-text-stroke: 2px #a7c9f2; }
+/* Link hover — 2px stroke outside the letterforms in the WebGL ink blue:
+   a 4px centered stroke painted under the fill leaves only its outer half
+   visible. Unlayered so it beats Tailwind utility layers. .link-box opts
+   buttons styled as links into the same effect */
+a:hover, .link-box:hover {
+  -webkit-text-stroke: 4px #a7c9f2;
+  paint-order: stroke fill;
+}
 .no-hover:hover { color: inherit; -webkit-text-stroke: 0; }
