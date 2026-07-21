@@ -1,0 +1,5 @@
+name: lesondes
+type: node
+up:
+  - node:
+      version: 22.22.0
