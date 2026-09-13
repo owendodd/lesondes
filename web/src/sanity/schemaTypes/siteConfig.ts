@@ -13,5 +13,6 @@ export const siteConfig = defineType({
     defineField({ name: 'contactEmail',    title: 'Contact Email',        type: 'string', initialValue: 'poste@les-ondes.fr' }),
     defineField({ name: 'ticketUrl',       title: 'Ticket URL',           type: 'url' }),
     defineField({ name: 'brevoFormAction', title: 'Brevo Form Action URL', type: 'url' }),
+    defineField({ name: 'headerImage',     title: 'Header banner image (2027 site nav)', type: 'image', options: { hotspot: true } }),
   ],
 })

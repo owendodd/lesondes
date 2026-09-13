@@ -12,6 +12,12 @@ export const infoBottom = defineType({
       type: 'array',
       of: [defineArrayMember({ type: 'image', options: { hotspot: true } })],
     }),
+    defineField({
+      name: 'archiveGalleryImages',
+      title: 'Archive page gallery (bento grid, in order)',
+      type: 'array',
+      of: [defineArrayMember({ type: 'image', options: { hotspot: true } })],
+    }),
     defineField({ name: 'hotelName',          title: 'Hotel name (EN)',          type: 'string' }),
     defineField({ name: 'hotelNameFr',        title: 'Hotel name (FR)',          type: 'string' }),
     defineField({ name: 'hotelUrl',           title: 'Hotel Google Maps URL',    type: 'url'    }),

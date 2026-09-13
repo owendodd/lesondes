@@ -1,3 +1,5 @@
+export type SanityImageRef = { asset: { _ref: string }; hotspot?: object; crop?: object }
+
 export interface SiteConfig {
   title: string
   location: string
@@ -7,6 +9,7 @@ export interface SiteConfig {
   contactEmail: string
   ticketUrl?: string
   brevoFormAction: string
+  headerImage?: SanityImageRef | null
 }
 
 export interface Artist {

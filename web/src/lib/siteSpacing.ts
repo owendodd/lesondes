@@ -19,6 +19,9 @@ export const siteMinimalNavClass = 'text-[clamp(17px,2.22vw,32px)] leading-none 
 /** Minimal site (2027): display text — ~118px at 1440w, scaling down fluidly. Regular weight; everything else is Medium */
 export const siteDisplayClass = 'font-normal text-[clamp(44px,8.19vw,118px)] leading-none tracking-[-0.07em]'
 
+/** 2027/archive/about redesign: nav, body copy, footer — 20px at 1440w (Figma), scaling down fluidly. Regular weight */
+export const siteFigmaTextClass = 'font-normal text-[clamp(14px,1.39vw,20px)] leading-none tracking-[-0.02em]'
+
 /** Underlined link (standalone) */
 export const siteLinkClass = 'border-b-2 border-current leading-none text-inherit hover:text-[#2b5aca] transition-colors duration-150'
 

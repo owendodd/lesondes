@@ -1,6 +1,5 @@
 import { Analytics } from '@vercel/analytics/next'
 import { LangProvider } from '@/components/LangProvider'
-import { SiteBackground } from '@/components/SiteBackground'
 import { TopNav } from '@/components/TopNav'
 import { FooterBar } from '@/components/FooterBar'
 import { getSiteConfig } from '@/lib/sanity'
@@ -20,13 +19,12 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
 
   return (
     <LangProvider>
-      <SiteBackground />
-      <div className="min-h-svh flex flex-col">
-        <TopNav />
+      <div className="min-h-svh flex flex-col bg-white">
+        <TopNav headerImage={config.headerImage} />
         <main className="flex-1 flex flex-col">
           {children}
         </main>
-        <FooterBar contactEmail={config.contactEmail} />
+        <FooterBar contactEmail={config.contactEmail} brevoFormAction={config.brevoFormAction} />
       </div>
       <Analytics />
     </LangProvider>
