@@ -10,6 +10,14 @@ export interface SiteConfig {
   ticketUrl?: string
   brevoFormAction: string
   headerImage?: SanityImageRef | null
+  navImage2027?: SanityImageRef | null
+  navImage2026?: SanityImageRef | null
+  navImageAbout?: SanityImageRef | null
+  navImageLang?: SanityImageRef | null
+  comingSoonImageBrand?: SanityImageRef | null
+  comingSoonImageMessage?: SanityImageRef | null
+  comingSoonImageContact?: SanityImageRef | null
+  comingSoonImageSignup?: SanityImageRef | null
 }
 
 export interface Artist {

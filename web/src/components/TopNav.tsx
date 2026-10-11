@@ -2,57 +2,66 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { createImageUrlBuilder } from '@sanity/image-url'
 import { client } from '@/lib/sanity'
 import { useLang } from '@/hooks/useLang'
-import { siteFigmaTextClass } from '@/lib/siteSpacing'
+import { siteFigmaTextClass, siteFigmaBarHeightClass, siteFigmaCellAspectClass } from '@/lib/siteSpacing'
 import type { SanityImageRef } from '@/lib/types'
 
 const builder = createImageUrlBuilder(client)
 
-const links = [
-  { href: '/', label: '2027' },
-  { href: '/archive', label: '2026' },
-  { href: '/about', en: 'About', fr: 'À propos' },
-] as const
+function imgUrl(ref?: SanityImageRef | null) {
+  return ref ? builder.image(ref).auto('format').width(480).url() : null
+}
 
-export function TopNav({ headerImage }: { headerImage?: SanityImageRef | null }) {
-  const pathname = usePathname()
+export function TopNav({
+  headerImage,
+  navImage2027,
+  navImage2026,
+  navImageAbout,
+  navImageLang,
+}: {
+  headerImage?: SanityImageRef | null
+  navImage2027?: SanityImageRef | null
+  navImage2026?: SanityImageRef | null
+  navImageAbout?: SanityImageRef | null
+  navImageLang?: SanityImageRef | null
+}) {
   const { lang, setLang } = useLang()
-  const imageUrl = headerImage ? builder.image(headerImage).auto('format').width(830).url() : null
+
+  const links: { key: string; href: string; label: string; image?: SanityImageRef | null; uppercase: boolean }[] = [
+    { key: 'les-ondes', href: '/', label: 'LES ONDES', image: headerImage, uppercase: true },
+    { key: '2027', href: '/', label: '2027', image: navImage2027, uppercase: true },
+    { key: '2026', href: '/archive', label: '2026', image: navImage2026, uppercase: true },
+    { key: 'about', href: '/about', label: lang === 'fr' ? 'À propos' : 'About', image: navImageAbout, uppercase: false },
+  ]
+
+  // Show only the language you'd switch to, spelled out.
+  const otherLang = lang === 'fr' ? 'en' : 'fr'
+  const otherLangLabel = otherLang === 'fr' ? 'Français' : 'English'
+  const langUrl = imgUrl(navImageLang)
+
+  const cellClass = `relative h-full ${siteFigmaCellAspectClass} shrink-0 overflow-hidden no-hover text-black`
 
   return (
-    <header className={`relative z-10 flex items-stretch h-[260px] max-[740px]:h-[160px] ${siteFigmaTextClass}`}>
-      <div className="relative aspect-[415/260] h-full shrink-0 flex items-center justify-center overflow-hidden">
-        {imageUrl && (
-          <Image src={imageUrl} alt="" fill priority className="object-cover pointer-events-none" />
-        )}
-        <p className="relative uppercase whitespace-nowrap">Les Ondes</p>
-      </div>
-      <nav className="flex-1 bg-[#f0f1ea] flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-2">
-        {links.map(link => {
-          const active = pathname === link.href
-          const label = 'label' in link ? link.label : (lang === 'fr' ? link.fr : link.en)
-          return (
-            <Link
-              key={link.href}
-              href={link.href}
-              scroll={false}
-              className={`whitespace-nowrap no-underline ${active ? 'text-black/50 no-hover' : 'text-black'}`}
-            >
-              {label}
-            </Link>
-          )
-        })}
-        <button
-          type="button"
-          className="link-box cursor-pointer border-0 bg-transparent p-0 whitespace-nowrap text-black"
-          onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
-        >
-          {lang === 'fr' ? 'EN' : 'FR'}
-        </button>
-      </nav>
+    <header className={`relative z-10 flex gap-px ${siteFigmaBarHeightClass} ${siteFigmaTextClass}`}>
+      {links.map(link => {
+        const url = imgUrl(link.image)
+        return (
+          <Link key={link.key} href={link.href} scroll={false} className={`${cellClass} no-underline`}>
+            <div className="nav-card absolute inset-0 flex items-center justify-center px-1">
+              {url && <Image src={url} alt="" fill sizes="240px" priority className="object-cover pointer-events-none" />}
+              <p className={`relative whitespace-nowrap ${link.uppercase ? 'uppercase' : ''}`}>{link.label}</p>
+            </div>
+          </Link>
+        )
+      })}
+      <button type="button" onClick={() => setLang(otherLang)} className={`${cellClass} cursor-pointer border-0 bg-transparent p-0`}>
+        <div className="nav-card absolute inset-0 flex items-center justify-center px-1">
+          {langUrl && <Image src={langUrl} alt="" fill sizes="240px" className="object-cover pointer-events-none" />}
+          <p className="relative whitespace-nowrap">{otherLangLabel}</p>
+        </div>
+      </button>
     </header>
   )
 }

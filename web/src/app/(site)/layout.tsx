@@ -1,30 +1,13 @@
 import { Analytics } from '@vercel/analytics/next'
 import { LangProvider } from '@/components/LangProvider'
-import { TopNav } from '@/components/TopNav'
-import { FooterBar } from '@/components/FooterBar'
-import { getSiteConfig } from '@/lib/sanity'
-import type { SiteConfig } from '@/lib/types'
 
-export default async function SiteLayout({ children }: { children: React.ReactNode }) {
-  const rawConfig = await getSiteConfig()
-
-  const config: SiteConfig = rawConfig ?? {
-    title: 'LES ONDES',
-    location: 'Cerbère',
-    datesEn: 'May 29 30 31',
-    datesFr: '29 30 31 Mai',
-    contactEmail: 'poste@les-ondes.fr',
-    brevoFormAction: '',
-  }
-
+export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <LangProvider>
       <div className="min-h-svh flex flex-col bg-white">
-        <TopNav headerImage={config.headerImage} />
         <main className="flex-1 flex flex-col">
           {children}
         </main>
-        <FooterBar contactEmail={config.contactEmail} brevoFormAction={config.brevoFormAction} />
       </div>
       <Analytics />
     </LangProvider>

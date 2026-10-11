@@ -7,7 +7,15 @@ export const SITE_CONFIG_QUERY = `*[_type == "siteConfig"][0]{
   contactEmail,
   ticketUrl,
   brevoFormAction,
-  headerImage
+  headerImage,
+  navImage2027,
+  navImage2026,
+  navImageAbout,
+  navImageLang,
+  comingSoonImageBrand,
+  comingSoonImageMessage,
+  comingSoonImageContact,
+  comingSoonImageSignup
 }`
 
 /** Home page body only — pair with `getSiteConfig()` so layout + page share one cached config fetch */

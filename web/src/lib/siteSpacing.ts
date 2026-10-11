@@ -22,8 +22,17 @@ export const siteDisplayClass = 'font-normal text-[clamp(44px,8.19vw,118px)] lea
 /** 2027/archive/about redesign: nav, body copy, footer — 20px at 1440w (Figma), scaling down fluidly. Regular weight */
 export const siteFigmaTextClass = 'font-normal text-[clamp(14px,1.39vw,20px)] leading-none tracking-[-0.02em]'
 
-/** Underlined link (standalone) */
-export const siteLinkClass = 'border-b-2 border-current leading-none text-inherit hover:text-[#2b5aca] transition-colors duration-150'
+/** 2027/archive/about redesign: header + footer bar height (156px at 1440w in Figma), scaling down fluidly */
+export const siteFigmaBarHeightClass = 'h-[clamp(90px,10.8vw,160px)]'
 
-/** Underlined link (inline within body text) */
-export const siteInlineLinkClass = 'underline decoration-2 underline-offset-[3px] text-inherit hover:text-[#2b5aca] transition-colors duration-150'
+/** 2027/archive/about redesign: nav/footer photo tile aspect ratio (240x156 in Figma) */
+export const siteFigmaCellAspectClass = 'aspect-[240/156]'
+
+/** Coming soon holding page: heading + message — 24px at 1440w (Figma), scaling down fluidly */
+export const siteComingSoonTextClass = 'font-normal text-[clamp(16px,1.67vw,24px)] leading-none tracking-[-0.02em]'
+
+/** Underlined link (standalone). Hover color comes from the consolidated `a:hover` rule in globals.css. */
+export const siteLinkClass = 'border-b-2 border-current leading-none text-inherit'
+
+/** Underlined link (inline within body text). Hover color comes from the consolidated `a:hover` rule in globals.css. */
+export const siteInlineLinkClass = 'underline decoration-2 underline-offset-[3px] text-inherit'
