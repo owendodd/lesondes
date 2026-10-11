@@ -6,7 +6,16 @@ export const SITE_CONFIG_QUERY = `*[_type == "siteConfig"][0]{
   datesFr,
   contactEmail,
   ticketUrl,
-  brevoFormAction
+  brevoFormAction,
+  headerImage,
+  navImage2027,
+  navImage2026,
+  navImageAbout,
+  navImageLang,
+  comingSoonImageBrand,
+  comingSoonImageMessage,
+  comingSoonImageContact,
+  comingSoonImageSignup
 }`
 
 /** Home page body only — pair with `getSiteConfig()` so layout + page share one cached config fetch */
@@ -25,7 +34,7 @@ export const HOME_CONTENT_QUERY = `{
   }
 }`
 
-/** Archive page: 2026 lineup + credits + photo strip (carousel images already in Sanity) */
+/** Archive page: 2026 lineup + credits + gallery bento grid (curated images already in Sanity) */
 export const ARCHIVE_CONTENT_QUERY = `{
   "artists": *[_type == "artist"] | order(lower(lastName) asc) {
     _id, firstName, lastName
@@ -33,7 +42,7 @@ export const ARCHIVE_CONTENT_QUERY = `{
   "infoBottom": *[_type == "infoBottom"][0]{
     hotelName, hotelNameFr, foodCreditPrefixEn, foodCreditPrefixFr, foodPerson, wineCreditPrefixEn, wineCreditPrefixFr, winePerson
   },
-  "photos": *[_type == "infoBottom"][0].heroImages[]{
+  "photos": *[_type == "infoBottom"][0].archiveGalleryImages[]{
     "url": asset->url,
     "width": asset->metadata.dimensions.width,
     "height": asset->metadata.dimensions.height

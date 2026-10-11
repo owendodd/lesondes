@@ -1,21 +1,25 @@
-import { siteMinimalNavClass } from '@/lib/siteSpacing'
+'use client'
 
-const linkClass = 'text-inherit no-underline'
+import Link from 'next/link'
+import { siteFigmaTextClass, siteFigmaBarHeightClass } from '@/lib/siteSpacing'
 
 export function FooterBar({ contactEmail }: { contactEmail: string }) {
   return (
-    <footer className={`relative z-10 flex flex-wrap gap-x-6 gap-y-3 px-8 max-[740px]:px-4 pt-10 pb-4 ${siteMinimalNavClass}`}>
-      <a href={`mailto:${contactEmail}`} className={linkClass}>
+    <footer className={`relative z-10 bg-[#eadecf] flex flex-wrap items-center gap-4 px-8 max-[740px]:px-4 ${siteFigmaBarHeightClass} ${siteFigmaTextClass}`}>
+      <a href={`mailto:${contactEmail}`} className="text-inherit no-underline">
         {contactEmail}
       </a>
       <a
         href="https://www.instagram.com/les.ondes.cerbere"
         target="_blank"
         rel="noopener noreferrer"
-        className={linkClass}
+        className="text-inherit no-underline"
       >
         @les.ondes.cerbere
       </a>
+      <Link href="/newsletter" scroll={false} className="text-inherit no-underline">
+        Newsletter
+      </Link>
     </footer>
   )
 }

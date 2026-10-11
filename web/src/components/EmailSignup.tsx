@@ -2,22 +2,26 @@
 
 import { type KeyboardEvent, useRef, useState } from 'react'
 import { useLang } from '@/hooks/useLang'
-import { siteDisplayClass } from '@/lib/siteSpacing'
+import { siteFigmaTextClass } from '@/lib/siteSpacing'
 
 const messages = {
-  placeholder: { en: 'Sign up for updates', fr: 'Restez informés' },
-  subscribe:   { en: 'Subscribe',           fr: "S'inscrire" },
-  invalid:     { en: 'Invalid email',       fr: 'Email invalide' },
-  success:     { en: 'Thank you!',          fr: 'Merci !' },
+  placeholder: {
+    stacked: { en: 'Sign up for updates', fr: 'Restez informés' },
+    inline:  { en: 'Enter your email',    fr: 'Entrez votre email' },
+  },
+  subscribe: { en: 'Subscribe',     fr: "S'inscrire" },
+  invalid:   { en: 'Invalid email', fr: 'Email invalide' },
+  success:   { en: 'Thank you!',    fr: 'Merci !' },
 }
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
-export function EmailSignup({ brevoFormAction }: { brevoFormAction: string }) {
+export function EmailSignup({ brevoFormAction, variant = 'stacked' }: { brevoFormAction: string; variant?: 'stacked' | 'inline' }) {
   const { lang } = useLang()
   const lk = lang === 'fr' ? 'fr' : 'en'
+  const inline = variant === 'inline'
 
   const [emailVal, setEmailVal]   = useState('')
   const [error, setError]         = useState(false)
@@ -52,20 +56,20 @@ export function EmailSignup({ brevoFormAction }: { brevoFormAction: string }) {
   }
 
   return (
-    <div className={`flex flex-col items-center w-full ${siteDisplayClass}`}>
+    <div className={`flex w-full text-black ${siteFigmaTextClass} ${inline ? 'flex-row items-center gap-8' : 'flex-col items-center'}`}>
       {submitted ? (
-        <p className="text-center">{messages.success[lk]}</p>
+        <p className={inline ? '' : 'text-center'}>{messages.success[lk]}</p>
       ) : (
-        <div className="flex w-full flex-col items-center gap-1">
+        <div className={`flex ${inline ? 'flex-row items-center gap-8' : 'w-full flex-col items-center gap-1'}`}>
           <input
             ref={inputRef}
             type="email"
             value={emailVal}
             onChange={e => setEmailVal(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={messages.placeholder[lk]}
+            placeholder={messages.placeholder[variant][lk]}
             autoComplete="email"
-            className="w-full text-center bg-transparent border-0 p-0 outline-none font-sans text-[inherit] leading-none tracking-[inherit] text-black placeholder:text-black/60 focus:placeholder:text-black/20"
+            className={`appearance-none bg-transparent border-0 rounded-none p-0 outline-none shadow-none font-sans text-[inherit] leading-none tracking-[inherit] text-black ${inline ? 'w-[14em] text-left placeholder:text-black/50' : 'w-full max-w-[24em] text-center placeholder:text-black'}`}
           />
           <button
             type="button"

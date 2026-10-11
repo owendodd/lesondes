@@ -16,16 +16,17 @@
   }
 }
 
-/* Link hover — 2px stroke outside the letterforms in the WebGL ink blue,
-   softened with a 2px blur. Built from stacked text-shadows: they render
-   behind the glyphs, so the blur never touches the text itself. Unlayered so
-   it beats Tailwind utility layers. .link-box opts buttons styled as links
-   into the same effect */
-a, .link-box { transition: text-shadow 150ms ease; }
-a:hover, .link-box:hover {
-  text-shadow:
-    -2px -2px 2px #a7c9f2,  0 -2px 2px #a7c9f2,  2px -2px 2px #a7c9f2,
-    -2px  0   2px #a7c9f2,                       2px  0   2px #a7c9f2,
-    -2px  2px 2px #a7c9f2,  0  2px 2px #a7c9f2,  2px  2px 2px #a7c9f2;
-}
-.no-hover:hover { color: inherit; text-shadow: none; }
+/* Link hover — one consolidated style, site-wide: text dims to light gray.
+   Unlayered so it beats Tailwind utility layers. .link-box opts buttons
+   styled as links into the same effect. .no-hover opts an element out
+   (e.g. the current page's nav link, or a nav card using the scale hover
+   below instead). */
+a, .link-box { transition: color 150ms ease; }
+a:hover, .link-box:hover { color: #999999; }
+.no-hover:hover { color: inherit; }
+
+/* Header/footer nav cards (TopNav): the card scales down on hover with a
+   springy overshoot. The parent link/button is a fixed-size, overflow-hidden
+   box that never resizes, so this never shifts surrounding layout. */
+.nav-card { transition: transform 120ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+.nav-card:hover { transform: scale(0.98); }

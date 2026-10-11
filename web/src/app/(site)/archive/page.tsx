@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
-import { sanityFetch, getSiteConfig } from '@/lib/sanity'
+import { sanityFetch } from '@/lib/sanity'
 import { ARCHIVE_CONTENT_QUERY } from '@/lib/queries'
-import { ArchiveInfo } from '@/components/ArchiveInfo'
-import { ArchiveCarousel } from '@/components/ArchiveCarousel'
-import { siteDisplayClass } from '@/lib/siteSpacing'
+import { ArchiveText } from '@/components/ArchiveText'
+import { ArchiveGallery } from '@/components/ArchiveGallery'
 import type { Artist, InfoBottom } from '@/lib/types'
 
 export const metadata: Metadata = {
@@ -17,32 +16,17 @@ interface ArchiveContent {
 }
 
 export default async function ArchivePage() {
-  const [config, content] = await Promise.all([
-    getSiteConfig(),
-    sanityFetch<ArchiveContent>(ARCHIVE_CONTENT_QUERY, {}, { next: { revalidate: 60 } }),
-  ])
+  const content = await sanityFetch<ArchiveContent>(ARCHIVE_CONTENT_QUERY, {}, { next: { revalidate: 60 } })
 
   const photos = content?.photos ?? []
 
   return (
     <div className="flex flex-col">
-      <h1 className={`flex flex-wrap justify-center gap-x-[0.55em] gap-y-2 text-center px-8 max-[740px]:px-4 pt-[10vh] pb-[14vh] ${siteDisplayClass}`}>
-        <span className="whitespace-nowrap">{config?.title ?? 'LES ONDES'}</span>
-        <span className="whitespace-nowrap">{config?.location ?? 'Cerbère'} 2026</span>
-      </h1>
+      <div className="px-4 pt-4 pb-20">
+        <ArchiveText artists={content?.artists ?? []} infoBottom={content?.infoBottom ?? null} />
+      </div>
 
-      <ArchiveInfo
-        artists={content?.artists ?? []}
-        infoBottom={content?.infoBottom ?? null}
-        datesEn={config?.datesEn ?? 'May 29 30 31'}
-        datesFr={config?.datesFr ?? '29 30 31 Mai'}
-      />
-
-      {photos.length > 0 && (
-        <div className="mt-[10vh]">
-          <ArchiveCarousel photos={photos} />
-        </div>
-      )}
+      <ArchiveGallery photos={photos} />
     </div>
   )
 }
